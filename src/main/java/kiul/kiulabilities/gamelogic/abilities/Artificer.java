@@ -125,7 +125,7 @@ public class Artificer implements Listener {
 
     @EventHandler
     public void ultCheckActivate (PlayerSwapHandItemsEvent e) {
-        // wee woo
+        // wee woo woo
         int ultimateTimer = 10;
 
         Player p = (Player) e.getPlayer();
