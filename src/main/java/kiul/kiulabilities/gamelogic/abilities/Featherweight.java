@@ -6,6 +6,7 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,10 +33,9 @@ public class Featherweight implements Listener {
     @EventHandler
     public void onClick(PlayerInteractEvent e) {
 
-
         Player p = e.getPlayer();
-        int primaryTimer = 20;
-        int secondaryTimer = 25;
+        int primaryTimer = 5;
+        int secondaryTimer = 5;
 
         if (p.getInventory().getItemInMainHand().getItemMeta().getLore() != null) {
             if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Become intangible and invisible for a short time")) {
@@ -45,8 +45,10 @@ public class Featherweight implements Listener {
                         primaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
                         // ABILITY CODE START
                         p.setVelocity(new Vector(0, 8, 0));
-
-
+                        for (Player ap : Bukkit.getOnlinePlayers()){
+                            ap.spawnParticle(Particle.SPIT,0,0,0,10);
+                            ap.spawnParticle(Particle.CLOUD,0,0,0,10);
+                        }
                         //ABILITY CODE END
                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                             @Override
