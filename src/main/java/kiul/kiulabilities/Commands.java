@@ -51,7 +51,23 @@ public class Commands implements CommandExecutor, Listener {
                     trackerTrigger.setItemMeta(trackerTriggerMeta);
                     p.getInventory().addItem(trackerTrigger);
                     break;
+                case "featherweight":
+                    ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),3);
+                    ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),3);
+                    ItemStack flyTrigger = new ItemStack(Material.FEATHER);
+                    ItemMeta flyTriggerMeta = flyTrigger.getItemMeta();
+                    lore.add(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Fly up into the sky");
+                    lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "----");
+                    flyTriggerMeta.setLore(lore);
+                    flyTriggerMeta.setDisplayName(ChatColor.WHITE + "Featherweight Ability Item");
+                    p.setMetadata("featherweight", new FixedMetadataValue(plugin, "pat"));
+                    flyTrigger.setItemMeta(flyTriggerMeta);
+                    p.getInventory().addItem(flyTrigger);
+                    lore.clear();
+                    ItemStack i = new ItemStack(Material.FEATHER);
+                    ItemMeta im = i.getItemMeta();
+                    break;
+                }
             }
-        }
     return false;}
 }
