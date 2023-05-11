@@ -6,6 +6,7 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,7 +14,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -32,21 +37,22 @@ public class Featherweight implements Listener {
     @EventHandler
     public void onClick(PlayerInteractEvent e) {
 
-
         Player p = e.getPlayer();
-        int primaryTimer = 20;
-        int secondaryTimer = 25;
+        int primaryTimer = 5;
+        int secondaryTimer = 5;
 
         if (p.getInventory().getItemInMainHand().getItemMeta().getLore() != null) {
-            if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Become intangible and invisible for a short time")) {
+            if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Fly up into the sky")) {
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     if (!primaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (primaryCooldown.get(p.getUniqueId())).longValue() > primaryTimer * 1000)) {
                         e.setCancelled(true);
                         primaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
                         // ABILITY CODE START
-                        p.setVelocity(new Vector(0, 8, 0));
-
-
+                        p.setVelocity(new Vector(0, 1, 0));
+                        for (Player ap : Bukkit.getOnlinePlayers()) {
+                            ap.spawnParticle(Particle.SPIT, p.getLocation(), 10);
+                            ap.spawnParticle(Particle.CLOUD, p.getLocation(), 10);
+                        }
                         //ABILITY CODE END
                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                             @Override
@@ -65,7 +71,6 @@ public class Featherweight implements Listener {
                         e.setCancelled(true);
                         secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
                         // ABILITY CODE START
-
 
 
                         //ABILITY CODE END
@@ -89,13 +94,13 @@ public class Featherweight implements Listener {
     }
 
     @EventHandler
-    public void ultCheckActivate (PlayerSwapHandItemsEvent e) {
+    public void ultCheckActivate(PlayerSwapHandItemsEvent e) {
 
         int ultimateTimer = 10;
 
         Player p = (Player) e.getPlayer();
         if (p.getInventory().getItemInMainHand().getItemMeta() != null) {
-            if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Become intangible and invisible for a short time")) {
+            if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Fly up into the sky")) {
                 e.setCancelled(true);
                 if (ultimatePointsListeners.getUltPoints(p) >= ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId())) {
                     if (!ultimateCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (ultimateCooldown.get(p.getUniqueId())).longValue() > ultimateTimer * 1000)) {
@@ -106,6 +111,8 @@ public class Featherweight implements Listener {
                             @Override
                             public void run() {
                                 // ULTIMATE CODE HERE
+
+                                //ULTIMATE CODE END
                             }
                         }, ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId()) * 20);
 
@@ -118,4 +125,19 @@ public class Featherweight implements Listener {
             }
         }
     }
-}
+
+    @EventHandler
+    public void onPlayerToggleSneakEvent(PlayerToggleSneakEvent e) {
+        Player p = e.getPlayer();
+        new BukkitRunnable() {
+            public void run() {
+
+                if (p.isSneaking() == true) {
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING,5,1));
+                } else {
+                    cancel();
+                }
+            }
+        }.runTaskTimer(plugin,0L,20L);
+    }
+    }
