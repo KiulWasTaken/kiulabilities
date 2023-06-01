@@ -8,11 +8,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.plugin.Plugin;
@@ -71,6 +75,19 @@ public class Featherweight implements Listener {
                         e.setCancelled(true);
                         secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
                         // ABILITY CODE START
+                        ArmorStand stand = (ArmorStand) p.getWorld().spawnEntity(p.getLocation(), EntityType.ARMOR_STAND);
+                        stand.setVisible(false);
+                        stand.getNearbyEntities(7,10,7);
+
+                        for (Entity ne:stand.getNearbyEntities(7,10,7)) {
+                            double distance = getDistanceToCenter(ne.getLocation().getX(),ne.getLocation().getY(),stand.getLocation().getX(),stand.getLocation().getY());
+                            double scaledDistance = 1/distance;
+                            if (ne != p) {
+                             ne.setVelocity(new Vector(0,7,0));
+                             ne.setVelocity(ne.getLocation().toVector().subtract(stand.getLocation().toVector()).normalize().multiply(scaledDistance));
+
+                            }
+                        }
 
 
                         //ABILITY CODE END
@@ -139,5 +156,11 @@ public class Featherweight implements Listener {
                 }
             }
         }.runTaskTimer(plugin,0L,20L);
+    }
+
+    private double getDistanceToCenter(double x, double z, double CENTER_X, double CENTER_Z) {
+        double deltaX = x - CENTER_X;
+        double deltaZ = z - CENTER_Z;
+        return Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
     }
     }
