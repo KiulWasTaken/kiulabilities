@@ -7,3 +7,5 @@ description: kiul's abilities for pat events
 commands:
   test:
     description: allows you to test abilities in devevlopment
+  giveultpoint:
+    description: gives the user one ultimate point

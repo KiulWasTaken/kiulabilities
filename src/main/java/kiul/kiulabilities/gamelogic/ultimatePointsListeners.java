@@ -27,14 +27,15 @@ public class ultimatePointsListeners implements Listener {
     public static HashMap<UUID,Integer> maximumUltPoints = new HashMap<>();
     public static void addUltPoint(Player p){
 
-        int ultPoints = (Integer) ultimatePointsConfig.get().get(p.getUniqueId().toString());
+
         if (ultimatePointsConfig.get().get(p.getUniqueId().toString()) == null) {
             ultimatePointsConfig.get().set(p.getUniqueId().toString(),1);
-            ultPoints ++;
             p.playSound(p.getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL,1,0.5f);
             CheckUltPoints(p);
-        } else if (ultPoints < 6) {
-            ultimatePointsConfig.get().set(p.getUniqueId().toString(), ultPoints + 1);
+        }
+        int ultPoints = (Integer) ultimatePointsConfig.get().get(p.getUniqueId().toString());
+        if (ultPoints < 6) {
+            ultimatePointsConfig.get().set(p.getUniqueId().toString(), ultimatePointsConfig.get().get(p.getUniqueId().toString() + 1));
             ultPoints ++;
             p.playSound(p.getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL,1,0.5f);
             switch (ultPoints) {

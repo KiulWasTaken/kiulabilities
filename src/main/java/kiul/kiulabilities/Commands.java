@@ -64,10 +64,23 @@ public class Commands implements CommandExecutor, Listener {
                     flyTrigger.setItemMeta(flyTriggerMeta);
                     p.getInventory().addItem(flyTrigger);
                     lore.clear();
-                    ItemStack i = new ItemStack(Material.FEATHER);
-                    ItemMeta im = i.getItemMeta();
+                    break;
+                case "artificer":
+                    ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
+                    ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),2);
+                    ItemStack boomTrigger = new ItemStack(Material.REDSTONE);
+                    ItemMeta boomTriggerMeta = boomTrigger.getItemMeta();
+                    lore.add(ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Creates a small, non-damaging explosion that boosts the player several blocks");
+                    lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Create a medium explosion at your feet, throwing nearby players back and dealing damage");
+                    boomTriggerMeta.setLore(lore);
+                    boomTriggerMeta.setDisplayName(ChatColor.WHITE + "Artificer Ability Item");
+                    p.setMetadata("artificer", new FixedMetadataValue(plugin, "pat"));
+                    boomTrigger.setItemMeta(boomTriggerMeta);
+                    p.getInventory().addItem(boomTrigger);
                     break;
                 }
-            }
+            } else if (label.equalsIgnoreCase("giveultpoint")) {
+            ultimatePointsListeners.addUltPoint(p);
+        }
     return false;}
 }
