@@ -157,34 +157,38 @@ public class Featherweight implements Listener {
         Player p = e.getPlayer();
         new BukkitRunnable() {
             public void run() {
-
                 if (p.isSneaking() == true) {
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING,10,1, false, false));
-                } else {
-                    cancel();
+                    if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Fly up into the sky")) {
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 10, 1, false, false));
+                    } else {
+                        cancel();
+                    }
                 }
             }
         }.runTaskTimer(plugin,0L,10L);
         new BukkitRunnable() {
             public void run() {
 
-                if (p.isSneaking() == true && p.getLocation().add(0,-1,0).clone().getBlock().getType() == Material.AIR) {
-                    Location center = p.getLocation().add(0,-2,0); // replace world, x, y, z with your desired values
-                    double radius = 0.5;
-                    double height = 0.1; // controls the height of the spiral
-                    int totalParticles = 100; // adjust the total number of particles
+                if (p.isSneaking() == true && p.getLocation().add(0, -1, 0).clone().getBlock().getType() == Material.AIR) {
+                    if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Fly up into the sky")) {
 
-                    for (int i = 0; i < totalParticles; i++) {
-                        double angle = 0.1 * i;
-                        double x = (radius + height * angle) * Math.cos(angle);
-                        double y = height * angle;
-                        double z = (radius + height * angle) * Math.sin(angle);
-                        Particle.DustOptions dustOptions = new Particle.DustOptions(Color.WHITE, 1); // Example particle type and color
-                        Location loc = center.clone().add(x, y, z);
-                        loc.getWorld().spawnParticle(Particle.REDSTONE, loc, 0, 0, 0, 0, dustOptions);
+                        Location center = p.getLocation().add(0, -2, 0); // replace world, x, y, z with your desired values
+                        double radius = 0.5;
+                        double height = 0.1; // controls the height of the spiral
+                        int totalParticles = 100; // adjust the total number of particles
+
+                        for (int i = 0; i < totalParticles; i++) {
+                            double angle = 0.1 * i;
+                            double x = (radius + height * angle) * Math.cos(angle);
+                            double y = height * angle;
+                            double z = (radius + height * angle) * Math.sin(angle);
+                            Particle.DustOptions dustOptions = new Particle.DustOptions(Color.WHITE, 1); // Example particle type and color
+                            Location loc = center.clone().add(x, y, z);
+                            loc.getWorld().spawnParticle(Particle.REDSTONE, loc, 0, 0, 0, 0, dustOptions);
+                        }
+                    } else {
+                        cancel();
                     }
-                } else {
-                    cancel();
                 }
             }
         }.runTaskTimer(plugin,0L,3L);

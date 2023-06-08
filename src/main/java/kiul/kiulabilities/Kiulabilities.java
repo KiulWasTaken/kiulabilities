@@ -1,9 +1,6 @@
 package kiul.kiulabilities;
 
-import kiul.kiulabilities.gamelogic.abilities.Artificer;
-import kiul.kiulabilities.gamelogic.abilities.Featherweight;
-import kiul.kiulabilities.gamelogic.abilities.Stealth;
-import kiul.kiulabilities.gamelogic.abilities.Tracker;
+import kiul.kiulabilities.gamelogic.abilities.*;
 import kiul.kiulabilities.gamelogic.menuClickListener;
 import kiul.kiulabilities.gamelogic.ultimatePointsConfig;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
@@ -25,6 +22,7 @@ public final class Kiulabilities extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new menuClickListener(), this);
         getServer().getPluginManager().registerEvents(new Artificer(), this);
         getServer().getPluginManager().registerEvents(new Featherweight(), this);
+        getServer().getPluginManager().registerEvents(new Earth(), this);
     }
 
     @Override

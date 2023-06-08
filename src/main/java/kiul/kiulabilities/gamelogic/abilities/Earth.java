@@ -5,10 +5,7 @@ import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -24,7 +21,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class Artificer implements Listener {
+public class Earth implements Listener {
     public Plugin plugin = Kiulabilities.getPlugin(Kiulabilities.class);
     private final HashMap<UUID, Long> primaryCooldown = new HashMap<>();
     private final HashMap<UUID, Long> secondaryCooldown = new HashMap<>();
@@ -33,36 +30,46 @@ public class Artificer implements Listener {
     private final ArrayList<Player> voidthing = new ArrayList<>();
 
     @EventHandler
-    public void blockPlaceEvent(BlockPlaceEvent e){
+    public void blockPlaceEvent(BlockPlaceEvent e) {
         Player p = e.getPlayer();
-        if(p.getInventory().getItemInMainHand().getItemMeta().getLore().get(0) == (ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Creates a small, non-damaging explosion that boosts the player several blocks"));
-            e.setCancelled(true);
+        if (p.getInventory().getItemInMainHand().getItemMeta().getLore().get(0) == (ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Launches the player into the air, creating a damaging crater when landing and negates fall damage"))
+            ;
+        e.setCancelled(true);
     }
 
     @EventHandler
     public void onClick(PlayerInteractEvent e) {
+
 
         Player p = e.getPlayer();
         int primaryTimer = 1;
         int secondaryTimer = 1;
 
         if (p.getInventory().getItemInMainHand().getItemMeta().getLore() != null) {
-            if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Creates a small, non-damaging explosion that boosts the player several blocks")) {
+            if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Launches the player into the air, creating a damaging crater when landing and negates fall damage")) {
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     if (!primaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (primaryCooldown.get(p.getUniqueId())).longValue() > primaryTimer * 1000)) {
                         e.setCancelled(true);
                         primaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
                         // ABILITY CODE START
+                        if (p.isOnGround()) {
 
-                        for (Player ap : Bukkit.getOnlinePlayers()){
-                            ap.playSound(p.getLocation(),Sound.ENTITY_GENERIC_EXPLODE,1,1);
-                            ap.spawnParticle(Particle.EXPLOSION_LARGE,p.getLocation(),1);
-                            ap.spawnParticle(Particle.EXPLOSION_NORMAL,p.getLocation(),1);
-                            ap.spawnParticle(Particle.SQUID_INK,p.getLocation(),5,0.1,0.1,0.1,0.001);
-                            ap.spawnParticle(Particle.LAVA,p.getLocation(),10,0.1,0.1,0.1,0.001);
-                            ap.spawnParticle(Particle.ASH,p.getLocation(),25,0.1,0.1,0.1, 0.5);
+                            p.setVelocity(new Vector(0,1,0));
+                            p.spawnParticle(Particle.BLOCK_DUST,p.getLocation(),5);
+                            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+                                @Override
+                                public void run(){
+                                    TNTPrimed rock = p.getWorld().spawn(p.getLocation(), TNTPrimed.class);
+                                    rock.setMetadata("rock",new FixedMetadataValue(plugin,"stone"));
+                                    rock.setYield(2);
+                                    rock.setFuseTicks(0);
+                                }
+                            }, 20L);
                         }
-                        p.setVelocity(p.getLocation().getDirection().multiply(1));
+
+                            }
+                        }
+
                         //ABILITY CODE END
                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                             @Override
@@ -82,26 +89,6 @@ public class Artificer implements Listener {
                         secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
                         // ABILITY CODE START
 
-                       List<Entity> nearbyEntities = p.getNearbyEntities(5,5,5);
-                       for (Entity q:nearbyEntities){
-                           q.setVelocity(q.getVelocity().multiply(-1));
-                           if (q instanceof Player){
-                                setVelocity(q,p);
-                           }
-                       }
-                        for (Player ap : Bukkit.getOnlinePlayers()) {
-                            ap.playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
-                            ap.spawnParticle(Particle.EXPLOSION_LARGE, p.getLocation(), 1, 0.1, 1, 0.1);
-                            ap.spawnParticle(Particle.EXPLOSION_NORMAL, p.getLocation(), 1);
-                            ap.spawnParticle(Particle.SQUID_INK, p.getLocation(), 5, 0.1, 0.1, 0.1, 0.001);
-                            ap.spawnParticle(Particle.LAVA, p.getLocation(), 10, 0.1, 0.1, 0.1, 0.001);
-                            ap.spawnParticle(Particle.ASH, p.getLocation(), 25, 0.1, 0.1, 0.1, 0.5);
-                        }
-
-                        TNTPrimed boom = p.getWorld().spawn(p.getLocation(), TNTPrimed.class);
-                        boom.setMetadata("boom",new FixedMetadataValue(plugin,"uruguay"));
-                        boom.setYield(2);
-                        boom.setFuseTicks(0);
 
                         //ABILITY CODE END
                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -120,18 +107,16 @@ public class Artificer implements Listener {
                     }
                 }
             }
-        }
-    }
 
     @EventHandler
-    public void ultCheckActivate (PlayerSwapHandItemsEvent e) {
+    public void ultCheckActivate(PlayerSwapHandItemsEvent e) {
         // wee woo woo woo
         int ultimateTimer = 10;
 
         Player p = (Player) e.getPlayer();
 
         if (p.getInventory().getItemInMainHand().getItemMeta() != null) {
-            if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Creates a small, non-damaging explosion that boosts the player several blocks")) {
+            if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Launches the player into the air, creating a damaging crater when landing and negates fall damage")) {
                 e.setCancelled(true);
                 if (ultimatePointsListeners.getUltPoints(p) >= ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId())) {
                     if (!ultimateCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (ultimateCooldown.get(p.getUniqueId())).longValue() > ultimateTimer * 1000)) {
@@ -141,14 +126,7 @@ public class Artificer implements Listener {
                             @Override
                             public void run() {
                                 // ULTIMATE CODE HERE
-                                for (Player ap : Bukkit.getOnlinePlayers()) {
-                                    if (ap != p);
-                                    {
-                                        ap.getWorld().spawnEntity(ap.getLocation().add(2, 7, 2), EntityType.PRIMED_TNT);
-                                        ap.getWorld().spawnEntity(ap.getLocation().add(-2, 7, -2), EntityType.PRIMED_TNT);
-                                        ap.getWorld().spawnEntity(ap.getLocation().add(2, 7, -2), EntityType.PRIMED_TNT);
-                                    }
-                                }
+
                                 //ULTIMATE CODE END
                             }
                         }, ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId()) * 20);
@@ -163,26 +141,8 @@ public class Artificer implements Listener {
         }
     }
     @EventHandler
-    public void passiveAbility (PlayerItemConsumeEvent e){
-
-        Player p = e.getPlayer();
-
-        if (e.getItem().getType() == Material.GOLDEN_APPLE){
-            p.getInventory().addItem(new ItemStack(Material.TNT));
-            p.playSound(p.getLocation(),Sound.BLOCK_NOTE_BLOCK_CHIME,1,1);
-        }
-
-
-    }
-    private void setVelocity(Entity toPush, Player aura) {
-        Location pushTo = aura.getLocation().subtract(toPush.getLocation());
-        org.bukkit.util.Vector pushVector = new Vector(pushTo.toVector().normalize().multiply(-0.8).getX(), 0.5, pushTo.toVector().normalize().multiply(-0.8).getZ());
-        toPush.setVelocity(pushVector);
-    }
-
-    @EventHandler
     public void noDamage (EntityDamageByEntityEvent e) {
-        if (e.getDamager().hasMetadata("boom")) {
+        if (e.getDamager().hasMetadata("rock")) {
             e.setCancelled(true);
         }
     }

@@ -78,6 +78,19 @@ public class Commands implements CommandExecutor, Listener {
                     boomTrigger.setItemMeta(boomTriggerMeta);
                     p.getInventory().addItem(boomTrigger);
                     break;
+                case "earth":
+                    ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
+                    ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),2);
+                    ItemStack rockTrigger = new ItemStack(Material.STONE);
+                    ItemMeta rockTriggerMeta = rockTrigger.getItemMeta();
+                    lore.add(ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Launches the player into the air, creating a damaging crater when landing and negates fall damage");
+                    lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "-");
+                    rockTriggerMeta.setLore(lore);
+                    rockTriggerMeta.setDisplayName(ChatColor.WHITE + "Earth Ability Item");
+                    p.setMetadata("earth", new FixedMetadataValue(plugin, "pat"));
+                    rockTrigger.setItemMeta(rockTriggerMeta);
+                    p.getInventory().addItem(rockTrigger);
+                    break;
                 }
             } else if (label.equalsIgnoreCase("giveultpoint")) {
             ultimatePointsListeners.addUltPoint(p);
