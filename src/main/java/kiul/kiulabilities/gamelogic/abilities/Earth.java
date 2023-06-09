@@ -4,70 +4,56 @@ import kiul.kiulabilities.Kiulabilities;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.*;
-import org.bukkit.entity.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 
-public class Earth implements Listener {
+public class Earth {
     public Plugin plugin = Kiulabilities.getPlugin(Kiulabilities.class);
     private final HashMap<UUID, Long> primaryCooldown = new HashMap<>();
     private final HashMap<UUID, Long> secondaryCooldown = new HashMap<>();
 
     private final HashMap<UUID, Long> ultimateCooldown = new HashMap<>();
     private final ArrayList<Player> voidthing = new ArrayList<>();
+    public static ArrayList<Player> primaryTrigger = new ArrayList<>();
 
-    @EventHandler
-    public void blockPlaceEvent(BlockPlaceEvent e) {
-        Player p = e.getPlayer();
-        if (p.getInventory().getItemInMainHand().getItemMeta().getLore().get(0) == (ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Launches the player into the air, creating a damaging crater when landing and negates fall damage"))
-            ;
-        e.setCancelled(true);
-    }
 
     @EventHandler
     public void onClick(PlayerInteractEvent e) {
 
 
         Player p = e.getPlayer();
-        int primaryTimer = 1;
-        int secondaryTimer = 1;
+        int primaryTimer = 20;
+        int secondaryTimer = 25;
 
         if (p.getInventory().getItemInMainHand().getItemMeta().getLore() != null) {
-            if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Launches the player into the air, creating a damaging crater when landing and negates fall damage")) {
+            if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Become intangible and invisible for a short time")) {
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     if (!primaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (primaryCooldown.get(p.getUniqueId())).longValue() > primaryTimer * 1000)) {
                         e.setCancelled(true);
                         primaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
                         // ABILITY CODE START
                         if (p.isOnGround()) {
-
-                            p.setVelocity(new Vector(0,1,0));
-                            p.spawnParticle(Particle.BLOCK_DUST,p.getLocation(),5);
-                            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
-                                @Override
-                                public void run(){
-                                    TNTPrimed rock = p.getWorld().spawn(p.getLocation(), TNTPrimed.class);
-                                    rock.setMetadata("rock",new FixedMetadataValue(plugin,"stone"));
-                                    rock.setYield(2);
-                                    rock.setFuseTicks(0);
-                                }
-                            }, 20L);
-                        }
-
-                            }
+                            primaryTrigger.add(p);
+                            p.setVelocity(new Vector(0, 1, 0));
+                            p.spawnParticle(Particle.BLOCK_DUST, p.getLocation(), 5);
                         }
 
                         //ABILITY CODE END
@@ -90,6 +76,7 @@ public class Earth implements Listener {
                         // ABILITY CODE START
 
 
+
                         //ABILITY CODE END
                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                             @Override
@@ -107,16 +94,17 @@ public class Earth implements Listener {
                     }
                 }
             }
+        }
+    }
 
     @EventHandler
-    public void ultCheckActivate(PlayerSwapHandItemsEvent e) {
-        // wee woo woo woo
+    public void ultCheckActivate (PlayerSwapHandItemsEvent e) {
+
         int ultimateTimer = 10;
 
         Player p = (Player) e.getPlayer();
-
         if (p.getInventory().getItemInMainHand().getItemMeta() != null) {
-            if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Launches the player into the air, creating a damaging crater when landing and negates fall damage")) {
+            if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Become intangible and invisible for a short time")) {
                 e.setCancelled(true);
                 if (ultimatePointsListeners.getUltPoints(p) >= ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId())) {
                     if (!ultimateCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (ultimateCooldown.get(p.getUniqueId())).longValue() > ultimateTimer * 1000)) {
@@ -126,8 +114,6 @@ public class Earth implements Listener {
                             @Override
                             public void run() {
                                 // ULTIMATE CODE HERE
-
-                                //ULTIMATE CODE END
                             }
                         }, ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId()) * 20);
 
@@ -139,11 +125,34 @@ public class Earth implements Listener {
                 }
             }
         }
+    } @EventHandler
+    public void noDamage (EntityDamageByEntityEvent e) {
+        if (e.getDamager().hasMetadata("rock") && primaryTrigger.contains(e.getEntity())) {
+            e.setCancelled(true);
+        } else {
+            e.setDamage(6);
+        }
     }
     @EventHandler
-    public void noDamage (EntityDamageByEntityEvent e) {
-        if (e.getDamager().hasMetadata("rock")) {
-            e.setCancelled(true);
+    public void primaryStart (EntityDamageEvent e) {
+        Player p = (Player) e.getEntity();
+        if (primaryTrigger.contains(p) && e.getCause() == EntityDamageEvent.DamageCause.FALL){
+            e.setDamage(0);
+            TNTPrimed rock = (TNTPrimed) p.getWorld().spawnEntity(p.getLocation(), EntityType.PRIMED_TNT);
+            rock.setMetadata("rock",new FixedMetadataValue(plugin,"beans"));
+            rock.setYield(2);
+            rock.setFuseTicks(0);
+
+
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                @Override
+                public void run() {
+
+                    primaryTrigger.remove(p);
+                }
+            }, 20);
+
         }
     }
 }
+
