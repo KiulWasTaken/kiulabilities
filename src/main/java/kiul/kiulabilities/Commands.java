@@ -83,8 +83,8 @@ public class Commands implements CommandExecutor, Listener {
                     ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),2);
                     ItemStack rockTrigger = new ItemStack(Material.STONE);
                     ItemMeta rockTriggerMeta = rockTrigger.getItemMeta();
-                    lore.add(ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Launches the player into the air, creating a damaging crater when landing and negates fall damage");
-                    lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "-");
+                    lore.add(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + " » " + ChatColor.GRAY + "Launches the player into the air, creating a damaging crater when landing and negates fall damage");
+                    lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + " » " + ChatColor.GRAY + "-");
                     rockTriggerMeta.setLore(lore);
                     rockTriggerMeta.setDisplayName(ChatColor.WHITE + "Earth Ability Item");
                     p.setMetadata("earth", new FixedMetadataValue(plugin, "pat"));

@@ -4,14 +4,13 @@ import kiul.kiulabilities.Kiulabilities;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -25,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class Earth {
+public class Earth implements Listener {
     public Plugin plugin = Kiulabilities.getPlugin(Kiulabilities.class);
     private final HashMap<UUID, Long> primaryCooldown = new HashMap<>();
     private final HashMap<UUID, Long> secondaryCooldown = new HashMap<>();
@@ -44,13 +43,17 @@ public class Earth {
         int secondaryTimer = 25;
 
         if (p.getInventory().getItemInMainHand().getItemMeta().getLore() != null) {
-            if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Become intangible and invisible for a short time")) {
+            p.sendMessage("pre-test");
+            if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + " » " + ChatColor.GRAY + "Launches the player into the air, creating a damaging crater when landing and negates fall damage")) {
+                p.sendMessage("test 1");
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     if (!primaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (primaryCooldown.get(p.getUniqueId())).longValue() > primaryTimer * 1000)) {
                         e.setCancelled(true);
                         primaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
+                        p.sendMessage("test 2");
                         // ABILITY CODE START
                         if (p.isOnGround()) {
+                            p.sendMessage("test 3");
                             primaryTrigger.add(p);
                             p.setVelocity(new Vector(0, 1, 0));
                             p.spawnParticle(Particle.BLOCK_DUST, p.getLocation(), 5);
@@ -74,8 +77,30 @@ public class Earth {
                         e.setCancelled(true);
                         secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
                         // ABILITY CODE START
+                        Location origin = p.getEyeLocation();
+                        Vector direction = origin.getDirection();
+                        Location centerLocation = origin.clone().add(direction);
+                        Location rotated = origin.clone();
+                        rotated.setPitch(0);
+                        rotated.setYaw(origin.getYaw() - 90);
+                        Vector rotation = rotated.getDirection();
+                        Location blockLocation = centerLocation.clone().add(rotation).subtract(0,3/2,0);
+                        rotation.multiply(-1);
+                        int initialX = blockLocation.getBlockX();
+                        int initialZ = blockLocation.getBlockZ();
+                        for (int y = 0; y < 3; y++) {
+                            for (int i = 0; i < 3; i++) {
+                                Block block = blockLocation.getBlock();
 
+                                block.setType(Material.DIRT);
 
+                                blockLocation.add(rotation);
+                            }
+
+                            blockLocation.add(0, 1, 0); // Increase the height by 1
+                            blockLocation.setX(initialX);
+                            blockLocation.setZ(initialZ);
+                        }
 
                         //ABILITY CODE END
                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -104,7 +129,7 @@ public class Earth {
 
         Player p = (Player) e.getPlayer();
         if (p.getInventory().getItemInMainHand().getItemMeta() != null) {
-            if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Become intangible and invisible for a short time")) {
+            if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Launches the player into the air, creating a damaging crater when landing and negates fall damage")) {
                 e.setCancelled(true);
                 if (ultimatePointsListeners.getUltPoints(p) >= ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId())) {
                     if (!ultimateCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (ultimateCooldown.get(p.getUniqueId())).longValue() > ultimateTimer * 1000)) {
@@ -114,6 +139,8 @@ public class Earth {
                             @Override
                             public void run() {
                                 // ULTIMATE CODE HERE
+
+                                // ULTIMATE CODE END HERE
                             }
                         }, ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId()) * 20);
 

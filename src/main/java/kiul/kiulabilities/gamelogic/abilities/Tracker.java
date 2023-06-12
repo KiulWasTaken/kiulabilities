@@ -74,7 +74,7 @@ public class Tracker implements Listener {
                         Arrays.sort(nearbyPlayers.toArray());
                         roger.setTarget(players.get(nearbyPlayers.get(0)));
                         roger.setVelocity((players.get(nearbyPlayers.get(0)).getLocation().add(0,1,0).toVector().subtract(roger.getLocation().toVector())).normalize().multiply(0.8));
-                        roger.setCustomName(p.getDisplayName() + "'s Bloodhound");
+                        roger.setCustomName(p.getDisplayName() + "'s Bloodhound Roger");
 
                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                             @Override

@@ -4,6 +4,7 @@ import kiul.kiulabilities.gamelogic.abilities.*;
 import kiul.kiulabilities.gamelogic.menuClickListener;
 import kiul.kiulabilities.gamelogic.ultimatePointsConfig;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
@@ -22,6 +23,7 @@ public final class Kiulabilities extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new menuClickListener(), this);
         getServer().getPluginManager().registerEvents(new Artificer(), this);
         getServer().getPluginManager().registerEvents(new Featherweight(), this);
+        getServer().getPluginManager().registerEvents(new Earth(), this);
     }
 
     @Override
