@@ -53,7 +53,7 @@ public class Artificer implements Listener {
                         e.setCancelled(true);
                         primaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
                         // ABILITY CODE START
-
+                        }
                         for (Player ap : Bukkit.getOnlinePlayers()){
                             ap.playSound(p.getLocation(),Sound.ENTITY_GENERIC_EXPLODE,1,1);
                             ap.spawnParticle(Particle.EXPLOSION_LARGE,p.getLocation(),1);
@@ -121,7 +121,7 @@ public class Artificer implements Listener {
                 }
             }
         }
-    }
+
 
     @EventHandler
     public void ultCheckActivate (PlayerSwapHandItemsEvent e) {

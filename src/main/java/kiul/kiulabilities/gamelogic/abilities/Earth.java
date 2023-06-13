@@ -43,17 +43,13 @@ public class Earth implements Listener {
         int secondaryTimer = 25;
 
         if (p.getInventory().getItemInMainHand().getItemMeta().getLore() != null) {
-            p.sendMessage("pre-test");
             if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + " » " + ChatColor.GRAY + "Launches the player into the air, creating a damaging crater when landing and negates fall damage")) {
-                p.sendMessage("test 1");
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     if (!primaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (primaryCooldown.get(p.getUniqueId())).longValue() > primaryTimer * 1000)) {
                         e.setCancelled(true);
                         primaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
-                        p.sendMessage("test 2");
                         // ABILITY CODE START
                         if (p.isOnGround()) {
-                            p.sendMessage("test 3");
                             primaryTrigger.add(p);
                             p.setVelocity(new Vector(0, 1, 0));
                             p.spawnParticle(Particle.BLOCK_DUST, p.getLocation(), 5);
@@ -84,12 +80,12 @@ public class Earth implements Listener {
                         rotated.setPitch(0);
                         rotated.setYaw(origin.getYaw() - 90);
                         Vector rotation = rotated.getDirection();
-                        Location blockLocation = centerLocation.clone().add(rotation).subtract(0,3/2,0);
+                        Location blockLocation = centerLocation.clone().add(rotation).subtract(0,7/13,0);
                         rotation.multiply(-1);
                         int initialX = blockLocation.getBlockX();
                         int initialZ = blockLocation.getBlockZ();
-                        for (int y = 0; y < 3; y++) {
-                            for (int i = 0; i < 3; i++) {
+                        for (int y = 0; y < 5; y++) {
+                            for (int i = 0; i < 5; i++) {
                                 Block block = blockLocation.getBlock();
 
                                 block.setType(Material.DIRT);

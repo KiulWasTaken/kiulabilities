@@ -170,7 +170,6 @@ public class Featherweight implements Listener {
             public void run() {
 
                 if (p.isSneaking() == true && p.getLocation().add(0, -1, 0).clone().getBlock().getType() == Material.AIR) {
-                    if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Fly up into the sky")) {
 
                         Location center = p.getLocation().add(0, -2, 0); // replace world, x, y, z with your desired values
                         double radius = 0.5;
@@ -190,7 +189,6 @@ public class Featherweight implements Listener {
                         cancel();
                     }
                 }
-            }
         }.runTaskTimer(plugin,0L,3L);
     }
 
