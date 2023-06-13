@@ -1,5 +1,6 @@
 package kiul.kiulabilities;
 
+import kiul.kiulabilities.gamelogic.AbilityItemNames;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -23,6 +24,9 @@ public class Commands implements CommandExecutor, Listener {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player p = (Player) sender;
         if (label.equalsIgnoreCase("test")) {
+
+
+
             ArrayList<String> lore = new ArrayList<>();
             switch (args[0]) {
                 case "stealth":
@@ -90,6 +94,13 @@ public class Commands implements CommandExecutor, Listener {
                     p.setMetadata("earth", new FixedMetadataValue(plugin, "pat"));
                     rockTrigger.setItemMeta(rockTriggerMeta);
                     p.getInventory().addItem(rockTrigger);
+                    break;
+                case "test":
+                    ItemStack testTrigger = new ItemStack(Material.PINK_DYE);
+                    ItemMeta testTriggerMeta = testTrigger.getItemMeta();
+                    testTriggerMeta.setDisplayName(ChatColor.WHITE + AbilityItemNames.UNNAMEDABILITY);
+                    testTrigger.setItemMeta(testTriggerMeta);
+                    p.getInventory().addItem(testTrigger);
                     break;
                 }
             } else if (label.equalsIgnoreCase("giveultpoint")) {

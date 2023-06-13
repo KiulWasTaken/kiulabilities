@@ -4,14 +4,20 @@ import kiul.kiulabilities.gamelogic.abilities.*;
 import kiul.kiulabilities.gamelogic.menuClickListener;
 import kiul.kiulabilities.gamelogic.ultimatePointsConfig;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 
 public final class Kiulabilities extends JavaPlugin {
 
+    public static List<UUID> ABILITYUSED = new ArrayList<>();
+
     @Override
     public void onEnable() {
+
         // Plugin startup logic
         ultimatePointsConfig.setup();
         ultimatePointsConfig.save();
@@ -23,7 +29,8 @@ public final class Kiulabilities extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new menuClickListener(), this);
         getServer().getPluginManager().registerEvents(new Artificer(), this);
         getServer().getPluginManager().registerEvents(new Featherweight(), this);
-        getServer().getPluginManager().registerEvents(new Earth(), this);
+
+        getServer().getPluginManager().registerEvents(new UNNAMEDABILITY(), this);
     }
 
     @Override

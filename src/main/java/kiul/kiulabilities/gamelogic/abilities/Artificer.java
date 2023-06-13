@@ -46,21 +46,22 @@ public class Artificer implements Listener {
         int primaryTimer = 1;
         int secondaryTimer = 1;
 
-        if (p.getInventory().getItemInMainHand().getItemMeta().getLore() != null) {
-            if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Creates a small, non-damaging explosion that boosts the player several blocks")) {
-                if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                    if (!primaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (primaryCooldown.get(p.getUniqueId())).longValue() > primaryTimer * 1000)) {
-                        e.setCancelled(true);
-                        primaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
-                        // ABILITY CODE START
+        if (p.getInventory().getItemInMainHand() != null && p.getInventory().getItemInMainHand().hasItemMeta()) {
+            if (p.getInventory().getItemInMainHand().getItemMeta().getLore() != null) {
+                if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Creates a small, non-damaging explosion that boosts the player several blocks")) {
+                    if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                        if (!primaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (primaryCooldown.get(p.getUniqueId())).longValue() > primaryTimer * 1000)) {
+                            e.setCancelled(true);
+                            primaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
+                            // ABILITY CODE START
                         }
-                        for (Player ap : Bukkit.getOnlinePlayers()){
-                            ap.playSound(p.getLocation(),Sound.ENTITY_GENERIC_EXPLODE,1,1);
-                            ap.spawnParticle(Particle.EXPLOSION_LARGE,p.getLocation(),1);
-                            ap.spawnParticle(Particle.EXPLOSION_NORMAL,p.getLocation(),1);
-                            ap.spawnParticle(Particle.SQUID_INK,p.getLocation(),5,0.1,0.1,0.1,0.001);
-                            ap.spawnParticle(Particle.LAVA,p.getLocation(),10,0.1,0.1,0.1,0.001);
-                            ap.spawnParticle(Particle.ASH,p.getLocation(),25,0.1,0.1,0.1, 0.5);
+                        for (Player ap : Bukkit.getOnlinePlayers()) {
+                            ap.playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
+                            ap.spawnParticle(Particle.EXPLOSION_LARGE, p.getLocation(), 1);
+                            ap.spawnParticle(Particle.EXPLOSION_NORMAL, p.getLocation(), 1);
+                            ap.spawnParticle(Particle.SQUID_INK, p.getLocation(), 5, 0.1, 0.1, 0.1, 0.001);
+                            ap.spawnParticle(Particle.LAVA, p.getLocation(), 10, 0.1, 0.1, 0.1, 0.001);
+                            ap.spawnParticle(Particle.ASH, p.getLocation(), 25, 0.1, 0.1, 0.1, 0.5);
                         }
                         p.setVelocity(p.getLocation().getDirection().multiply(1));
                         //ABILITY CODE END
@@ -82,13 +83,13 @@ public class Artificer implements Listener {
                         secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
                         // ABILITY CODE START
 
-                       List<Entity> nearbyEntities = p.getNearbyEntities(5,5,5);
-                       for (Entity q:nearbyEntities){
-                           q.setVelocity(q.getVelocity().multiply(-1));
-                           if (q instanceof Player){
-                                setVelocity(q,p);
-                           }
-                       }
+                        List<Entity> nearbyEntities = p.getNearbyEntities(5, 5, 5);
+                        for (Entity q : nearbyEntities) {
+                            q.setVelocity(q.getVelocity().multiply(-1));
+                            if (q instanceof Player) {
+                                setVelocity(q, p);
+                            }
+                        }
                         for (Player ap : Bukkit.getOnlinePlayers()) {
                             ap.playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
                             ap.spawnParticle(Particle.EXPLOSION_LARGE, p.getLocation(), 1, 0.1, 1, 0.1);
@@ -99,7 +100,7 @@ public class Artificer implements Listener {
                         }
 
                         TNTPrimed boom = p.getWorld().spawn(p.getLocation(), TNTPrimed.class);
-                        boom.setMetadata("boom",new FixedMetadataValue(plugin,"uruguay"));
+                        boom.setMetadata("boom", new FixedMetadataValue(plugin, "uruguay"));
                         boom.setYield(2);
                         boom.setFuseTicks(0);
 
@@ -121,7 +122,7 @@ public class Artificer implements Listener {
                 }
             }
         }
-
+    }
 
     @EventHandler
     public void ultCheckActivate (PlayerSwapHandItemsEvent e) {

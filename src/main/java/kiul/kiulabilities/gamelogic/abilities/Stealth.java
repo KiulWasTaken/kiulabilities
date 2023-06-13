@@ -50,114 +50,115 @@ public class Stealth implements Listener {
         int primaryTimer = 5;
         int secondaryTimer = 5;
 
-        if (p.getInventory().getItemInMainHand().getItemMeta().getLore() != null) {
-            if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Become intangible and invisible for a short time")) {
-                if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                    if (!primaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (primaryCooldown.get(p.getUniqueId())).longValue() > primaryTimer * 1000)) {
-                        e.setCancelled(true);
-                        primaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
-                        // ABILITY CODE START
+        if (p.getInventory().getItemInMainHand() != null && p.getInventory().getItemInMainHand().hasItemMeta()) {
+            if (p.getInventory().getItemInMainHand().getItemMeta().getLore() != null) {
+                if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Become intangible and invisible for a short time")) {
+                    if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                        if (!primaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (primaryCooldown.get(p.getUniqueId())).longValue() > primaryTimer * 1000)) {
+                            e.setCancelled(true);
+                            primaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
+                            // ABILITY CODE START
 
-                        for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
-                            onlinePlayers.hidePlayer(plugin, p);
-                            voidthing.add(p);
-                            onlinePlayers.spawnParticle(Particle.BLOCK_CRACK, p.getLocation().clone().add(0, 1, 0), 15, 0.1, 0.5, 0.1, Material.NETHER_PORTAL.createBlockData());
-                            onlinePlayers.playSound(p.getLocation(), Sound.BLOCK_GLASS_BREAK, 1, 0.5f);
-                        }
-                        p.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, 60, 5, true, false));
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                            @Override
-                            public void run() {
-
-                                for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
-                                    onlinePlayers.showPlayer(plugin, p);
-                                    voidthing.remove(p);
-                                    onlinePlayers.spawnParticle(Particle.BLOCK_CRACK, p.getLocation().clone().add(0, 1, 0), 15, 0.1, 0.5, 0.1, Material.NETHER_PORTAL.createBlockData());
-                                    onlinePlayers.playSound(p.getLocation(), Sound.BLOCK_GLASS_BREAK, 1, 0.5f);
-                                }
+                            for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
+                                onlinePlayers.hidePlayer(plugin, p);
+                                voidthing.add(p);
+                                onlinePlayers.spawnParticle(Particle.BLOCK_CRACK, p.getLocation().clone().add(0, 1, 0), 15, 0.1, 0.5, 0.1, Material.NETHER_PORTAL.createBlockData());
+                                onlinePlayers.playSound(p.getLocation(), Sound.BLOCK_GLASS_BREAK, 1, 0.5f);
                             }
-                        }, 40);
-                        //ABILITY CODE END
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                            @Override
-                            public void run() {
+                            p.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, 60, 5, true, false));
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                @Override
+                                public void run() {
 
-                                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.9f);
-                                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.DARK_AQUA + "Primary Ability Charged!"));
-                            }
-                        }, primaryTimer * 20);
-
-                    } else {
-                        DecimalFormat df = new DecimalFormat("0.00");
-                        String timer = df.format((double) (primaryTimer * 1000 - (System.currentTimeMillis() - ((Long) primaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
-                        p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.DARK_AQUA + " Primary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.DARK_AQUA + ChatColor.ITALIC + timer + "s!");
-                    }
-                } else if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
-                    if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
-                        e.setCancelled(true);
-                        secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
-                        // ABILITY CODE START
-                        Entity entity = p.getWorld().spawnEntity(p.getLocation(), EntityType.ARMOR_STAND);
-                        ArmorStand stand = (ArmorStand) entity;
-                        stand.setVisible(false);
-                        stand.setMetadata("blind", new FixedMetadataValue(plugin, "pat"));
-                        stand.setRotation(p.getLocation().getYaw(), p.getLocation().getPitch());
-
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                if (!stand.isDead()) {
-                                    p.getWorld().spawnParticle(Particle.BLOCK_CRACK, stand.getLocation().add(0, 1.5, 0), 10, 0.1, 0.3, 0.1, Material.PURPLE_WOOL.createBlockData());
-                                    stand.setVelocity(stand.getLocation().getDirection().multiply(0.5));
                                     for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
+                                        onlinePlayers.showPlayer(plugin, p);
+                                        voidthing.remove(p);
+                                        onlinePlayers.spawnParticle(Particle.BLOCK_CRACK, p.getLocation().clone().add(0, 1, 0), 15, 0.1, 0.5, 0.1, Material.NETHER_PORTAL.createBlockData());
+                                        onlinePlayers.playSound(p.getLocation(), Sound.BLOCK_GLASS_BREAK, 1, 0.5f);
+                                    }
+                                }
+                            }, 40);
+                            //ABILITY CODE END
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.9f);
+                                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.DARK_AQUA + "Primary Ability Charged!"));
+                                }
+                            }, primaryTimer * 20);
+
+                        } else {
+                            DecimalFormat df = new DecimalFormat("0.00");
+                            String timer = df.format((double) (primaryTimer * 1000 - (System.currentTimeMillis() - ((Long) primaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
+                            p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.DARK_AQUA + " Primary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.DARK_AQUA + ChatColor.ITALIC + timer + "s!");
+                        }
+                    } else if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
+                        if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
+                            e.setCancelled(true);
+                            secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
+                            // ABILITY CODE START
+                            Entity entity = p.getWorld().spawnEntity(p.getLocation(), EntityType.ARMOR_STAND);
+                            ArmorStand stand = (ArmorStand) entity;
+                            stand.setVisible(false);
+                            stand.setMetadata("blind", new FixedMetadataValue(plugin, "pat"));
+                            stand.setRotation(p.getLocation().getYaw(), p.getLocation().getPitch());
+
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    if (!stand.isDead()) {
+                                        p.getWorld().spawnParticle(Particle.BLOCK_CRACK, stand.getLocation().add(0, 1.5, 0), 10, 0.1, 0.3, 0.1, Material.PURPLE_WOOL.createBlockData());
+                                        stand.setVelocity(stand.getLocation().getDirection().multiply(0.5));
+                                        for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
 
                                             for (Entity nearby : onlinePlayers.getWorld().getNearbyEntities(onlinePlayers.getLocation(), 4, 4, 4)) {
                                                 if (nearby.hasMetadata("blind") && onlinePlayers != p) {
                                                     onlinePlayers.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 1, false, false));
 
+                                                }
                                             }
                                         }
+                                    } else {
+                                        cancel();
                                     }
-                                } else {
-                                    cancel();
                                 }
-                            }
-                        }.runTaskTimer(plugin, 0L, 1L);
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                if (!stand.isDead()) {
-                                    for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
-                                        onlinePlayers.playSound(stand.getLocation(), Sound.BLOCK_WOOL_BREAK, 0.9f, 0.7f);
+                            }.runTaskTimer(plugin, 0L, 1L);
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    if (!stand.isDead()) {
+                                        for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
+                                            onlinePlayers.playSound(stand.getLocation(), Sound.BLOCK_WOOL_BREAK, 0.9f, 0.7f);
+                                        }
+                                    } else {
+                                        cancel();
                                     }
-                                } else {
-                                    cancel();
                                 }
-                            }
-                        }.runTaskTimer(plugin, 0L, 5L);
+                            }.runTaskTimer(plugin, 0L, 5L);
 
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                            @Override
-                            public void run() {
-                                stand.remove();
-                            }
-                        }, 50);
-                        //ABILITY CODE END
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                            @Override
-                            public void run() {
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                @Override
+                                public void run() {
+                                    stand.remove();
+                                }
+                            }, 50);
+                            //ABILITY CODE END
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                @Override
+                                public void run() {
 
-                                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.8f);
-                                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.LIGHT_PURPLE + "Secondary Ability Charged!"));
-                            }
-                        }, secondaryTimer * 20);
+                                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.8f);
+                                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.LIGHT_PURPLE + "Secondary Ability Charged!"));
+                                }
+                            }, secondaryTimer * 20);
 
 
-                    } else {
-
-                        DecimalFormat df = new DecimalFormat("0.00");
-                        String timer = df.format((double) (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
-                        p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.LIGHT_PURPLE + " Secondary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.LIGHT_PURPLE + ChatColor.ITALIC + timer + "s!");
+                        } else {
+                            DecimalFormat df = new DecimalFormat("0.00");
+                            String timer = df.format((double) (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
+                            p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.LIGHT_PURPLE + " Secondary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.LIGHT_PURPLE + ChatColor.ITALIC + timer + "s!");
+                        }
                     }
                 }
             }

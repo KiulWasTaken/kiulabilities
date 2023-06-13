@@ -15,7 +15,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import sun.security.mscapi.CPublicKey;
 
 import java.util.HashMap;
 import java.util.UUID;
