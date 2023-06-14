@@ -56,13 +56,13 @@ public class Featherweight implements Listener {
                         if (!primaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (primaryCooldown.get(p.getUniqueId())).longValue() > primaryTimer * 1000)) {
                             e.setCancelled(true);
                             primaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
-                            // ABILITY CODE START
+                            /** ABILITY CODE START**/
                             p.setVelocity(new Vector(0, 1, 0));
                             for (Player ap : Bukkit.getOnlinePlayers()) {
                                 ap.spawnParticle(Particle.SPIT, p.getLocation(), 10);
                                 ap.spawnParticle(Particle.CLOUD, p.getLocation(), 10);
                             }
-                            //ABILITY CODE END
+                            /**ABILITY CODE END**/
                             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                                 @Override
                                 public void run() {
