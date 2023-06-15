@@ -30,6 +30,7 @@ public class Commands implements CommandExecutor, Listener {
             ArrayList<String> lore = new ArrayList<>();
             switch (args[0]) {
                 case "stealth":
+                    p.sendMessage("check");
                     ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
                     ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),2);
                     ItemStack stealthTrigger = new ItemStack(Material.PRISMARINE_CRYSTALS);

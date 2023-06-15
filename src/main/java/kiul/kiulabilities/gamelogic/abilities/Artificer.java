@@ -54,70 +54,72 @@ public class Artificer implements Listener {
                             e.setCancelled(true);
                             primaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
                             // ABILITY CODE START
-                        }
-                        for (Player ap : Bukkit.getOnlinePlayers()) {
-                            ap.playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
-                            ap.spawnParticle(Particle.EXPLOSION_LARGE, p.getLocation(), 1);
-                            ap.spawnParticle(Particle.EXPLOSION_NORMAL, p.getLocation(), 1);
-                            ap.spawnParticle(Particle.SQUID_INK, p.getLocation(), 5, 0.1, 0.1, 0.1, 0.001);
-                            ap.spawnParticle(Particle.LAVA, p.getLocation(), 10, 0.1, 0.1, 0.1, 0.001);
-                            ap.spawnParticle(Particle.ASH, p.getLocation(), 25, 0.1, 0.1, 0.1, 0.5);
-                        }
-                        p.setVelocity(p.getLocation().getDirection().multiply(1));
-                        //ABILITY CODE END
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                            @Override
-                            public void run() {
 
-                                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.9f);
-                                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.DARK_AQUA + "Primary Ability Charged!"));
+                            p.sendMessage("check");
+
+                            for (Player ap : Bukkit.getOnlinePlayers()) {
+                                ap.playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
+                                ap.spawnParticle(Particle.EXPLOSION_LARGE, p.getLocation(), 1);
+                                ap.spawnParticle(Particle.EXPLOSION_NORMAL, p.getLocation(), 1);
+                                ap.spawnParticle(Particle.SQUID_INK, p.getLocation(), 5, 0.1, 0.1, 0.1, 0.001);
+                                ap.spawnParticle(Particle.LAVA, p.getLocation(), 10, 0.1, 0.1, 0.1, 0.001);
+                                ap.spawnParticle(Particle.ASH, p.getLocation(), 25, 0.1, 0.1, 0.1, 0.5);
                             }
-                        }, primaryTimer * 20);
+                            p.setVelocity(p.getLocation().getDirection().multiply(1));
+                            //ABILITY CODE END
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                @Override
+                                public void run() {
 
-                    } else {
-                        p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.DARK_AQUA + " Primary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.DARK_AQUA + ChatColor.ITALIC + (primaryTimer * 1000 - (System.currentTimeMillis() - ((Long) primaryCooldown.get(p.getUniqueId())).longValue())) + "ms!");
-                    }
-                } else if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
-                    if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
-                        e.setCancelled(true);
-                        secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
-                        // ABILITY CODE START
-
-                        List<Entity> nearbyEntities = p.getNearbyEntities(5, 5, 5);
-                        for (Entity q : nearbyEntities) {
-                            q.setVelocity(q.getVelocity().multiply(-1));
-                            if (q instanceof Player) {
-                                setVelocity(q, p);
-                            }
+                                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.9f);
+                                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.DARK_AQUA + "Primary Ability Charged!"));
+                                }
+                            }, primaryTimer * 20);
+                        } else {
+                            p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.DARK_AQUA + " Primary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.DARK_AQUA + ChatColor.ITALIC + (primaryTimer * 1000 - (System.currentTimeMillis() - ((Long) primaryCooldown.get(p.getUniqueId())).longValue())) + "ms!");
                         }
-                        for (Player ap : Bukkit.getOnlinePlayers()) {
-                            ap.playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
-                            ap.spawnParticle(Particle.EXPLOSION_LARGE, p.getLocation(), 1, 0.1, 1, 0.1);
-                            ap.spawnParticle(Particle.EXPLOSION_NORMAL, p.getLocation(), 1);
-                            ap.spawnParticle(Particle.SQUID_INK, p.getLocation(), 5, 0.1, 0.1, 0.1, 0.001);
-                            ap.spawnParticle(Particle.LAVA, p.getLocation(), 10, 0.1, 0.1, 0.1, 0.001);
-                            ap.spawnParticle(Particle.ASH, p.getLocation(), 25, 0.1, 0.1, 0.1, 0.5);
-                        }
+                    } else if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
+                        if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
+                            e.setCancelled(true);
+                            secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
+                            // ABILITY CODE START
 
-                        TNTPrimed boom = p.getWorld().spawn(p.getLocation(), TNTPrimed.class);
-                        boom.setMetadata("boom", new FixedMetadataValue(plugin, "uruguay"));
-                        boom.setYield(2);
-                        boom.setFuseTicks(0);
-
-                        //ABILITY CODE END
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                            @Override
-                            public void run() {
-
-                                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.8f);
-                                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.LIGHT_PURPLE + "Secondary Ability Charged!"));
+                            List<Entity> nearbyEntities = p.getNearbyEntities(5, 5, 5);
+                            for (Entity q : nearbyEntities) {
+                                q.setVelocity(q.getVelocity().multiply(-1));
+                                if (q instanceof Player) {
+                                    setVelocity(q, p);
+                                }
                             }
-                        }, secondaryTimer * 20);
+                            for (Player ap : Bukkit.getOnlinePlayers()) {
+                                ap.playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
+                                ap.spawnParticle(Particle.EXPLOSION_LARGE, p.getLocation(), 1, 0.1, 1, 0.1);
+                                ap.spawnParticle(Particle.EXPLOSION_NORMAL, p.getLocation(), 1);
+                                ap.spawnParticle(Particle.SQUID_INK, p.getLocation(), 5, 0.1, 0.1, 0.1, 0.001);
+                                ap.spawnParticle(Particle.LAVA, p.getLocation(), 10, 0.1, 0.1, 0.1, 0.001);
+                                ap.spawnParticle(Particle.ASH, p.getLocation(), 25, 0.1, 0.1, 0.1, 0.5);
+                            }
+
+                            TNTPrimed boom = p.getWorld().spawn(p.getLocation(), TNTPrimed.class);
+                            boom.setMetadata("boom", new FixedMetadataValue(plugin, "uruguay"));
+                            boom.setYield(2);
+                            boom.setFuseTicks(0);
+
+                            //ABILITY CODE END
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.8f);
+                                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.LIGHT_PURPLE + "Secondary Ability Charged!"));
+                                }
+                            }, secondaryTimer * 20);
 
 
-                    } else {
+                        } else {
 
-                        p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.LIGHT_PURPLE + " Secondary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.LIGHT_PURPLE + ChatColor.ITALIC + (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())) + "ms!");
+                            p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.LIGHT_PURPLE + " Secondary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.LIGHT_PURPLE + ChatColor.ITALIC + (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())) + "ms!");
+                        }
                     }
                 }
             }
