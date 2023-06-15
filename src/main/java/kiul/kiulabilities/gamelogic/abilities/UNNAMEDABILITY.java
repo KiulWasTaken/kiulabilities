@@ -10,7 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -62,10 +64,10 @@ public class UNNAMEDABILITY implements Listener {
 
                         /** PRIMARY - CODE START >> */
 
-                        Vector direction = p.getEyeLocation().getDirection().multiply(2);
+                        Vector direction = p.getEyeLocation().getDirection().multiply(1.5);
 
-                        AtomicInteger DashAmount = new AtomicInteger(5);
-                        int Delay = 100; //millisecond
+                        AtomicInteger DashAmount = new AtomicInteger(400);
+                        int Delay = 1; //millisecond
 
                         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
@@ -75,10 +77,12 @@ public class UNNAMEDABILITY implements Listener {
                             for (Entity entity : p.getLocation().getChunk().getEntities()) {
                                 if (entity != p) {
                                     if (entity.getType() != EntityType.DROPPED_ITEM) {
-                                        if (entity.getLocation().add(0, 1, 0).distance(p.getLocation().add(0, 1, 0)) <= 1) {
+                                        if (entity.getLocation().add(0, 1, 0).distance(p.getLocation().add(0, 1, 0)) <= 1.5) {
                                             executor.shutdown();
-                                            entity.setVelocity(new Vector(0, 1, 0));
+                                            Vector vec = entity.getLocation().add(0,0.5,0).toVector().subtract(p.getLocation().toVector()).normalize();
+                                            entity.setVelocity(vec.multiply(1.5).add(new Vector(0,0.2,0)));
                                             p.sendMessage(entity.getLocation().add(0, 1, 0).distance(p.getLocation().add(0, 1, 0)) + "");
+                                            p.setVelocity(new Vector(0,0,0));
                                         }
                                     }
                                 }
@@ -109,22 +113,7 @@ public class UNNAMEDABILITY implements Listener {
 
                         /** SECONDARY - CODE START >> */
 
-                        Vector vec = p.getEyeLocation().getDirection().multiply(1.5);
 
-                        p.setVelocity(new Vector(0, 1, 0));
-
-                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                            @Override
-                            public void run() {
-                                p.setVelocity(vec.add(new Vector(0,1,0)));
-                            }
-                        }, 10L);
-                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                            @Override
-                            public void run() {
-                                p.setVelocity(new Vector(0,-3,0));
-                            }
-                        }, 25L);
 
                         /** CODE END << */
 
