@@ -210,13 +210,15 @@ public class Stealth implements Listener {
 
     @EventHandler
     public void noHurtinTheVoid (EntityDamageEvent e) {
-        Player p = (Player) e.getEntity();
-        if (voidthing.contains(p)) {
-            e.setCancelled(true);
-        }
-        if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
-            if (p.isSneaking() == true) {
-                e.setDamage(e.getDamage() / 2);
+        if (e.getEntity() instanceof Player) {
+            Player p = (Player) e.getEntity();
+            if (voidthing.contains(p)) {
+                e.setCancelled(true);
+            }
+            if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
+                if (p.isSneaking() == true && p.hasMetadata("stealth")) {
+                    e.setDamage(e.getDamage() / 2);
+                }
             }
         }
     }

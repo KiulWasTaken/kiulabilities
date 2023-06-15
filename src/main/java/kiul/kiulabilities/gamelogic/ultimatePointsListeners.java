@@ -29,10 +29,8 @@ public class ultimatePointsListeners implements Listener {
 
         if (ultimatePointsConfig.get().get(p.getUniqueId().toString()) == null) {
             ultimatePointsConfig.get().set(p.getUniqueId().toString(),1);
-            p.playSound(p.getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL,1,0.5f);
-            CheckUltPoints(p);
         }
-        int ultPoints = (Integer) ultimatePointsConfig.get().get(p.getUniqueId().toString());
+        int ultPoints = (int) ultimatePointsConfig.get().get(p.getUniqueId().toString());
         if (ultPoints < 6) {
             ultimatePointsConfig.get().set(p.getUniqueId().toString(), ultimatePointsConfig.get().get(p.getUniqueId().toString() + 1));
             ultPoints ++;
@@ -388,13 +386,13 @@ public class ultimatePointsListeners implements Listener {
         if (ultimatePointsConfig.get().get(p.getUniqueId().toString()) == null) {
             ultimatePointsConfig.get().set(p.getUniqueId().toString(), 0);
         }
-        int ultPoints = (Integer) ultimatePointsConfig.get().get(p.getUniqueId().toString());
-        return ultPoints; }
+        return (int) ultimatePointsConfig.get().get(p.getUniqueId().toString()); }
 
     @EventHandler
     public void onKill (PlayerDeathEvent e) {
         Player killed = e.getEntity();
         Player p = e.getEntity().getKiller();
+        if (killed != null) {
             if (getUltPoints(p) < maximumUltPoints.get(p.getUniqueId())) {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(Kiulabilities.getPlugin(Kiulabilities.class), new Runnable() {
                     @Override
@@ -402,7 +400,7 @@ public class ultimatePointsListeners implements Listener {
                         addUltPoint(p);
                     }
                 }, 10);
-
+            }
         }
     }
 }

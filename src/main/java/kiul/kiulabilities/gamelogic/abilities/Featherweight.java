@@ -159,7 +159,7 @@ public class Featherweight implements Listener {
         Player p = e.getPlayer();
         new BukkitRunnable() {
             public void run() {
-                if (p.isSneaking() == true) {
+                if (p.isSneaking() == true && p.hasMetadata("featherweight")) {
                     if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Fly up into the sky")) {
                         p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 10, 1, false, false));
                     } else {
@@ -171,7 +171,7 @@ public class Featherweight implements Listener {
         new BukkitRunnable() {
             public void run() {
 
-                if (p.isSneaking() == true && p.getLocation().add(0, -1, 0).clone().getBlock().getType() == Material.AIR) {
+                if (p.isSneaking() == true && p.getLocation().add(0, -1, 0).clone().getBlock().getType() == Material.AIR && p.hasMetadata("featherweight")) {
 
                         Location center = p.getLocation().add(0, -2, 0); // replace world, x, y, z with your desired values
                         double radius = 0.5;

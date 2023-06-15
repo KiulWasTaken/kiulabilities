@@ -35,7 +35,7 @@ public class Artificer implements Listener {
     @EventHandler
     public void blockPlaceEvent(BlockPlaceEvent e){
         Player p = e.getPlayer();
-        if(p.getInventory().getItemInMainHand().getItemMeta().getLore().get(0) == (ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Creates a small, non-damaging explosion that boosts the player several blocks"));
+        if(p.getInventory().getItemInMainHand().getItemMeta() != null && p.getInventory().getItemInMainHand().getItemMeta().getLore().get(0) == (ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Creates a small, non-damaging explosion that boosts the player several blocks"));
             e.setCancelled(true);
     }
 
