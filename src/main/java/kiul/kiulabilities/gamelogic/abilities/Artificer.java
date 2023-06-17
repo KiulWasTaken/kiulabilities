@@ -1,6 +1,7 @@
 package kiul.kiulabilities.gamelogic.abilities;
 
 import kiul.kiulabilities.Kiulabilities;
+import kiul.kiulabilities.gamelogic.AbilityExtras;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -53,7 +54,8 @@ public class Artificer implements Listener {
                         if (!primaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (primaryCooldown.get(p.getUniqueId())).longValue() > primaryTimer * 1000)) {
                             e.setCancelled(true);
                             primaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
-                            // ABILITY CODE START
+
+                            /** PRIMARY - CODE START >> */
 
                             p.sendMessage("check");
 
@@ -66,15 +68,18 @@ public class Artificer implements Listener {
                                 ap.spawnParticle(Particle.ASH, p.getLocation(), 25, 0.1, 0.1, 0.1, 0.5);
                             }
                             p.setVelocity(p.getLocation().getDirection().multiply(1));
-                            //ABILITY CODE END
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                                @Override
-                                public void run() {
 
-                                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.9f);
-                                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.DARK_AQUA + "Primary Ability Charged!"));
-                                }
-                            }, primaryTimer * 20);
+                            /** CODE END << */
+
+                            if (secondaryCooldown.isEmpty()) {
+                                secondaryCooldown.put(p.getUniqueId(), (long) 0);
+                            }
+                            primaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
+
+                            if (!Kiulabilities.ABILITYUSED.contains(p.getUniqueId())) {
+                                Kiulabilities.ABILITYUSED.add(p.getUniqueId());
+                                AbilityExtras.TimerTask(p, primaryTimer, primaryCooldown, secondaryTimer, secondaryCooldown);
+                            }
                         } else {
                             p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.DARK_AQUA + " Primary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.DARK_AQUA + ChatColor.ITALIC + (primaryTimer * 1000 - (System.currentTimeMillis() - ((Long) primaryCooldown.get(p.getUniqueId())).longValue())) + "ms!");
                         }
@@ -82,7 +87,8 @@ public class Artificer implements Listener {
                         if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
                             e.setCancelled(true);
                             secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
-                            // ABILITY CODE START
+
+                            /** SECONDARY - CODE START >> */
 
                             List<Entity> nearbyEntities = p.getNearbyEntities(5, 5, 5);
                             for (Entity q : nearbyEntities) {
@@ -105,16 +111,17 @@ public class Artificer implements Listener {
                             boom.setYield(2);
                             boom.setFuseTicks(0);
 
-                            //ABILITY CODE END
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                                @Override
-                                public void run() {
+                            /** CODE END << */
 
-                                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.8f);
-                                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.LIGHT_PURPLE + "Secondary Ability Charged!"));
-                                }
-                            }, secondaryTimer * 20);
+                            if (primaryCooldown.isEmpty()) {
+                                primaryCooldown.put(p.getUniqueId(), (long) 0);
+                            }
+                            secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
 
+                            if (!Kiulabilities.ABILITYUSED.contains(p.getUniqueId())) {
+                                Kiulabilities.ABILITYUSED.add(p.getUniqueId());
+                                AbilityExtras.TimerTask(p, primaryTimer, primaryCooldown, secondaryTimer, secondaryCooldown);
+                            }
 
                         } else {
 

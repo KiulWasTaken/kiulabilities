@@ -97,9 +97,11 @@ public class Commands implements CommandExecutor, Listener {
                     p.getInventory().addItem(rockTrigger);
                     break;
                 case "test":
+                    ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
+                    ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),3);
                     ItemStack testTrigger = new ItemStack(Material.PINK_DYE);
                     ItemMeta testTriggerMeta = testTrigger.getItemMeta();
-                    testTriggerMeta.setDisplayName(ChatColor.WHITE + AbilityItemNames.UNNAMEDABILITY);
+                    testTriggerMeta.setDisplayName(ChatColor.WHITE + AbilityItemNames.UNNAMED);
                     testTrigger.setItemMeta(testTriggerMeta);
                     p.getInventory().addItem(testTrigger);
                     break;

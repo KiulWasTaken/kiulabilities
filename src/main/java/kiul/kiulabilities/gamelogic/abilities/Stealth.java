@@ -197,18 +197,6 @@ public class Stealth implements Listener {
     }
 
     @EventHandler
-    public void noDropItem (PlayerDropItemEvent e) {
-
-        Player p = (Player) e.getPlayer();
-        if (e.getItemDrop().getItemStack().getType() == Material.PRISMARINE_CRYSTALS) {
-            e.setCancelled(true);
-        }
-
-
-
-    }
-
-    @EventHandler
     public void noHurtinTheVoid (EntityDamageEvent e) {
         if (e.getEntity() instanceof Player) {
             Player p = (Player) e.getEntity();

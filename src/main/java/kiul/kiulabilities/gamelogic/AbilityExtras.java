@@ -25,15 +25,21 @@ public class AbilityExtras {
                 double nnum1 = 20 * (nnum / (primaryTimer * 1000));
                 int nnum2 = 20 - (int) nnum1;
 
-                String str1 = AbilityExtras.progress(nnum2);
+                String primary = AbilityExtras.progress(nnum2);
 
                 double num = ((double) (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())));
                 double num1 = 20 * (num / (secondaryTimer * 1000));
                 int num2 = 20 - (int) num1;
 
-                String str2 = AbilityExtras.progress(num2);
+                String secondary = AbilityExtras.progress(num2);
 
-                AbilityExtras.TimerActionBar(p, str1, str2);
+                int ultpoints = ultimatePointsListeners.getUltPoints(p);
+                int requiredpoints = ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId());
+                int maximumpoints = ultimatePointsListeners.maximumUltPoints.get(p.getUniqueId());
+
+                String ultimate = progressultimate(ultpoints, requiredpoints, maximumpoints);
+
+                AbilityExtras.TimerActionBar(p, primary, ultimate, secondary);
 
             }
         }.runTaskTimer(plugin, 0L, 3L);
@@ -53,6 +59,26 @@ public class AbilityExtras {
         }
     }
 
+    public static String progressultimate (Integer ultpoints, Integer requiredpoints, Integer maximumpoints) {
+
+        if (maximumpoints <= requiredpoints) {
+
+            String ultimate = ChatColor.translateAlternateColorCodes('&', "■".repeat(ultpoints) + "□".repeat(maximumpoints - ultpoints));
+            return ultimate;
+
+        } else {
+
+            if (ultpoints > requiredpoints) {
+                String ultimate = ChatColor.translateAlternateColorCodes('&', "■".repeat(requiredpoints) + "&8&l▏&7" + "■".repeat(ultpoints - requiredpoints) + "□".repeat(maximumpoints - ultpoints));
+                return ultimate;
+            } else {
+                String ultimate = ChatColor.translateAlternateColorCodes('&', "■".repeat(ultpoints) + "□".repeat(requiredpoints - ultpoints) + "&8&l▏&7" + "□".repeat(maximumpoints - requiredpoints));
+                return ultimate;
+            }
+
+        }
+    }
+
     public static boolean itemcheck (Player p, String itemname) {
 
         for (ItemStack is : p.getInventory().getContents()) {
@@ -65,10 +91,10 @@ public class AbilityExtras {
         return false;
     }
 
-    public static void TimerActionBar (Player p, String primary, String secondary) {
+    public static void TimerActionBar (Player p, String primary, String ultimate, String secondary) {
 
         p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.translateAlternateColorCodes('&',
-                "|" + primary + "&f| &6« &8[&2&lP&8] &6- &8[&3&lS&8] &6» &f|" + secondary + "&f|")));
+                "|" + primary + "&f| &6« &8[&2&lP&8] &6<&7" + ultimate + "&6> &8[&3&lS&8] &6» &f|" + secondary + "&f|")));
 
     }
 

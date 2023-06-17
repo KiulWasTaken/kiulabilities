@@ -1,10 +1,7 @@
 package kiul.kiulabilities;
 
-import kiul.kiulabilities.gamelogic.DroppingAbilitys;
+import kiul.kiulabilities.gamelogic.*;
 import kiul.kiulabilities.gamelogic.abilities.*;
-import kiul.kiulabilities.gamelogic.menuClickListener;
-import kiul.kiulabilities.gamelogic.ultimatePointsConfig;
-import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -18,6 +15,8 @@ public final class Kiulabilities extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+        AbilityItemNames.allnames();
 
         // Plugin startup logic
         ultimatePointsConfig.setup();

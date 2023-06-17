@@ -11,9 +11,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
@@ -40,7 +46,7 @@ public class UNNAMEDABILITY implements Listener {
     private int primaryTimer = 1;
     private int secondaryTimer = 1;
 
-    String itemname = AbilityItemNames.UNNAMEDABILITY;
+    String itemname = AbilityItemNames.UNNAMED;
 
     @EventHandler
     public void onClick(PlayerInteractEvent e) throws InterruptedException {
@@ -129,7 +135,7 @@ public class UNNAMEDABILITY implements Listener {
 
                         /** SECONDARY - CODE START >> */
 
-
+                        doublejump(p);
 
                         /** CODE END << */
 
@@ -146,6 +152,115 @@ public class UNNAMEDABILITY implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void onDeath(PlayerToggleFlightEvent e) {
+        Player p = e.getPlayer();
+
+        if (AbilityExtras.itemcheck(p, itemname) == true) {
+            if (p.getGameMode() != GameMode.CREATIVE) {
+
+                e.setCancelled(true);
+
+                if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
+
+                    if (primaryCooldown.isEmpty()) {
+                        primaryCooldown.put(p.getUniqueId(), (long) 0);
+                    }
+                    secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
+
+                    if (!Kiulabilities.ABILITYUSED.contains(p.getUniqueId())) {
+                        Kiulabilities.ABILITYUSED.add(p.getUniqueId());
+                        AbilityExtras.TimerTask(p, primaryTimer, primaryCooldown, secondaryTimer, secondaryCooldown);
+                    }
+
+                    /** CODE >> */
+
+                    doublejump(p);
+
+                    /** END << */
+
+                } else {
+                    DecimalFormat df = new DecimalFormat("0.00");
+                    String timer = df.format((double) (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
+                    p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.LIGHT_PURPLE + " Secondary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.LIGHT_PURPLE + ChatColor.ITALIC + timer + "s!");
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onDeath(PlayerMoveEvent e) {
+
+        Player p = e.getPlayer();
+
+        p.sendMessage(p.getVelocity() + "");
+
+        if (AbilityExtras.itemcheck(p, itemname) == true) {
+            if (p.getGameMode() != GameMode.CREATIVE) {
+
+                if (p.getVelocity().getY() < -0.7) {
+                    p.setAllowFlight(false);
+                } else {
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            p.setAllowFlight(true);
+                        }
+                    }.runTaskLater(plugin, 1);
+                }
+
+            }
+        }
+    }
+
+    /** PASSIVE ABILITY >> */
+
+    @EventHandler
+    public void onDeath(PlayerDeathEvent e) {
+
+        if (e.getEntity().getKiller() instanceof Player) {
+
+            Player p = e.getEntity();
+            Player killer = e.getEntity().getKiller();
+
+            if (AbilityExtras.itemcheck(killer, itemname) == true) {
+                killer.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING,160,1,true,false));
+            }
+
+        }
+    }
+
+    /** << */
+
+    public void doublejump (Player p) {
+
+        if (p.getLocation().getPitch() > -35 && p.getLocation().getPitch() < 20) {
+            p.setVelocity(new Vector(0,0.8,0));
+            Vector direction = p.getEyeLocation().getDirection().multiply(0.6);
+            p.setVelocity(p.getVelocity().add(direction));
+        } else {
+            p.setVelocity(new Vector(0,1,0));
+        }
+
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 0.2F, 0.5F);
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 0.2F, 1F);
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 0.2F, 2F);
+
+        p.getWorld().spawnParticle(Particle.CLOUD, p.getLocation().add(0, -0.5, 0), 10, 1, 0, 1, 0);
+
+
+        p.setAllowFlight(false);
+        p.setFlying(false);
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                p.setAllowFlight(true);
+            }
+        }.runTaskLater(plugin, secondaryTimer * 20);
+
     }
 }
 

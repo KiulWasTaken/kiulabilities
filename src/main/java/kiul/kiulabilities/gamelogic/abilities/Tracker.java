@@ -208,18 +208,6 @@ public class Tracker implements Listener {
     }
 
     @EventHandler
-    public void noDropItem(PlayerDropItemEvent e) {
-
-        Player p = (Player) e.getPlayer();
-        if (e.getItemDrop().getItemStack().getType() == Material.SWEET_BERRIES) {
-            e.setCancelled(true);
-        }
-
-
-    }
-
-
-    @EventHandler
     public void dontEatIt(PlayerItemConsumeEvent e) {
 
         Player p = (Player) e.getPlayer();
