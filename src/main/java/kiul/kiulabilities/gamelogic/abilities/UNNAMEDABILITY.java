@@ -19,7 +19,9 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -66,35 +68,49 @@ public class UNNAMEDABILITY implements Listener {
 
                         Vector direction = p.getEyeLocation().getDirection().multiply(1.5);
 
-                        AtomicInteger DashAmount = new AtomicInteger(400);
-                        int Delay = 1; //millisecond
+                        AtomicInteger DashAmount = new AtomicInteger(7);
 
-                        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                p.setVelocity(direction);
 
-                        Runnable task = () -> {
-                            p.setVelocity(direction);
+                                for (Entity entity : p.getLocation().getWorld().getNearbyEntities(p.getLocation(), 5, 5, 5)) {
+                                    if (entity != p) {
+                                        if (entity.getType() != EntityType.DROPPED_ITEM) {
+                                            if (entity.getLocation().add(0, 1, 0).distance(p.getLocation().add(0, 1, 0)) <= 1.5) {
+                                                Vector vec = entity.getLocation().add(0, 0.5, 0).toVector().subtract(p.getLocation().toVector()).normalize();
+                                                entity.setVelocity(vec.multiply(1.5).add(new Vector(0, 0.05, 0)));
+                                                p.sendMessage(entity.getLocation().add(0, 1, 0).distance(p.getLocation().add(0, 1, 0)) + "");
+                                                p.setVelocity(new Vector(0, 0, 0));
 
-                            for (Entity entity : p.getLocation().getChunk().getEntities()) {
-                                if (entity != p) {
-                                    if (entity.getType() != EntityType.DROPPED_ITEM) {
-                                        if (entity.getLocation().add(0, 1, 0).distance(p.getLocation().add(0, 1, 0)) <= 1.5) {
-                                            executor.shutdown();
-                                            Vector vec = entity.getLocation().add(0,0.5,0).toVector().subtract(p.getLocation().toVector()).normalize();
-                                            entity.setVelocity(vec.multiply(1.5).add(new Vector(0,0.2,0)));
-                                            p.sendMessage(entity.getLocation().add(0, 1, 0).distance(p.getLocation().add(0, 1, 0)) + "");
-                                            p.setVelocity(new Vector(0,0,0));
+                                                for (Entity entity1 : p.getLocation().getWorld().getNearbyEntities(p.getLocation(), 5, 10, 5)) {
+                                                    if (entity1 != p) {
+                                                        if (entity1 != entity) {
+                                                            if (entity1.getType() != EntityType.DROPPED_ITEM) {
+                                                                if (entity1.getLocation().add(0, 1, 0).distance(p.getLocation().add(0, 1, 0)) <= 3) {
+                                                                    Vector vec1 = entity1.getLocation().add(0, 0.5, 0).toVector().subtract(p.getLocation().toVector()).normalize();
+                                                                    entity1.setVelocity(vec1.multiply(1.5).add(new Vector(0, 0.2, 0)));
+                                                                    p.sendMessage(ChatColor.GRAY + "" + entity.getLocation().add(0, 1, 0).distance(p.getLocation().add(0, 1, 0)) + "");
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                cancel();
+                                            }
                                         }
                                     }
                                 }
-                            }
+                                DashAmount.getAndDecrement();
 
-                            DashAmount.getAndDecrement();
-                            if (DashAmount.get() <= 0) {
-                                executor.shutdown();
-                            }
-                        };
+                                if (DashAmount.get() <= 0) {
+                                    cancel();
+                                }
 
-                        executor.scheduleAtFixedRate(task, 0, Delay, TimeUnit.MILLISECONDS);
+                            }
+                            }.runTaskTimer(plugin, 0L, 0L);
 
                         /** CODE END << */
 
