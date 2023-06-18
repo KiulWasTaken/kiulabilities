@@ -6,6 +6,7 @@ kiul\kiulabilities\gamelogic\abilities\Tracker$1.class
 kiul\kiulabilities\gamelogic\abilities\Earth$3.class
 kiul\kiulabilities\gamelogic\abilities\Stealth$1.class
 kiul\kiulabilities\gamelogic\abilities\UNNAMEDABILITY$1.class
+kiul\kiulabilities\gamelogic\abilities\UNNAMEDABILITY$4.class
 kiul\kiulabilities\gamelogic\DroppingAbilitys.class
 kiul\kiulabilities\gamelogic\abilities\Tracker$4.class
 kiul\kiulabilities\gamelogic\abilities\Featherweight$2.class
@@ -22,6 +23,7 @@ kiul\kiulabilities\gamelogic\abilities\Tracker$2.class
 kiul\kiulabilities\gamelogic\menuClickListener.class
 kiul\kiulabilities\gamelogic\abilities\Featherweight$5.class
 kiul\kiulabilities\gamelogic\ultimatePointsListeners.class
+kiul\kiulabilities\gamelogic\abilities\UNNAMEDABILITY$5.class
 kiul\kiulabilities\gamelogic\AbilityItemNames.class
 kiul\kiulabilities\gamelogic\abilities\Featherweight.class
 kiul\kiulabilities\gamelogic\AbilityExtras$1.class

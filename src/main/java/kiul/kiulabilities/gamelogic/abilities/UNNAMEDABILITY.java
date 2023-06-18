@@ -3,6 +3,7 @@ package kiul.kiulabilities.gamelogic.abilities;
 import kiul.kiulabilities.Kiulabilities;
 import kiul.kiulabilities.gamelogic.AbilityExtras;
 import kiul.kiulabilities.gamelogic.AbilityItemNames;
+import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -14,6 +15,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -34,7 +36,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
 public class UNNAMEDABILITY implements Listener {
 
     public Plugin plugin = Kiulabilities.getPlugin(Kiulabilities.class);
@@ -43,8 +44,12 @@ public class UNNAMEDABILITY implements Listener {
 
     private final HashMap<UUID, Long> secondaryCooldown = new HashMap<>();
 
+    private final HashMap<UUID, Long> ultimateCooldown = new HashMap<>();
+
     private int primaryTimer = 1;
     private int secondaryTimer = 1;
+
+    private int ultimateTimer = 1;
 
     String itemname = AbilityItemNames.UNNAMED;
 
@@ -72,6 +77,9 @@ public class UNNAMEDABILITY implements Listener {
 
                         /** PRIMARY - CODE START >> */
 
+                        List<Entity> hitplayers = new ArrayList<>();
+                        List<Entity> AnyPlayersCheck = new ArrayList<>();
+
                         Vector direction = p.getEyeLocation().getDirection().multiply(1.5);
 
                         AtomicInteger DashAmount = new AtomicInteger(7);
@@ -81,30 +89,43 @@ public class UNNAMEDABILITY implements Listener {
                             public void run() {
                                 p.setVelocity(direction);
 
+                                Particle.DustTransition dustTransition = new Particle.DustTransition(Color.fromRGB(255, 0, 0), Color.fromRGB(255, 255, 255), 3.0F);
+                                p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation().add(0,1,0), 15, 0.3, 0.5, 0.3, dustTransition);
+
                                 for (Entity entity : p.getLocation().getWorld().getNearbyEntities(p.getLocation(), 5, 5, 5)) {
                                     if (entity != p) {
-                                        if (entity.getType() != EntityType.DROPPED_ITEM) {
+                                        if (entity.getType() != EntityType.DROPPED_ITEM && entity.getType() != EntityType.ARMOR_STAND) {
                                             if (entity.getLocation().add(0, 1, 0).distance(p.getLocation().add(0, 1, 0)) <= 1.5) {
                                                 Vector vec = entity.getLocation().add(0, 0.5, 0).toVector().subtract(p.getLocation().toVector()).normalize();
                                                 entity.setVelocity(vec.multiply(1.5).add(new Vector(0, 0.05, 0)));
-                                                p.sendMessage(entity.getLocation().add(0, 1, 0).distance(p.getLocation().add(0, 1, 0)) + "");
-                                                p.setVelocity(new Vector(0, 0, 0));
+
+                                                p.setVelocity(p.getVelocity().add(direction.multiply(-0.2)));
+
+                                                p.getWorld().playSound(entity.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.2F, 0.3F);
+
+                                                Particle.DustTransition dustTransition1 = new Particle.DustTransition(Color.fromRGB(0, 0, 0), Color.fromRGB(180, 180, 180), 10.0F);
+                                                p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation().add(0,1,0), 25, 1, 1, 1, dustTransition1);
+
+                                                hitplayers.add(entity);
 
                                                 for (Entity entity1 : p.getLocation().getWorld().getNearbyEntities(p.getLocation(), 5, 10, 5)) {
                                                     if (entity1 != p) {
                                                         if (entity1 != entity) {
-                                                            if (entity1.getType() != EntityType.DROPPED_ITEM) {
+                                                            if (entity1.getType() != EntityType.DROPPED_ITEM && entity1.getType() != EntityType.ARMOR_STAND) {
                                                                 if (entity1.getLocation().add(0, 1, 0).distance(p.getLocation().add(0, 1, 0)) <= 3) {
                                                                     Vector vec1 = entity1.getLocation().add(0, 0.5, 0).toVector().subtract(p.getLocation().toVector()).normalize();
                                                                     entity1.setVelocity(vec1.multiply(1.5).add(new Vector(0, 0.2, 0)));
-                                                                    p.sendMessage(ChatColor.GRAY + "" + entity.getLocation().add(0, 1, 0).distance(p.getLocation().add(0, 1, 0)) + "");
+
+                                                                    p.getWorld().playSound(entity1.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.4F, 0.3F);
+
+                                                                    hitplayers.add(entity1);
                                                                 }
                                                             }
                                                         }
                                                     }
                                                 }
-
                                                 cancel();
+                                                break;
                                             }
                                         }
                                     }
@@ -112,11 +133,60 @@ public class UNNAMEDABILITY implements Listener {
                                 DashAmount.getAndDecrement();
 
                                 if (DashAmount.get() <= 0) {
+                                    p.setVelocity(p.getVelocity().add(direction.multiply(-0.5)));
+
+                                    Particle.DustTransition dustTransition1 = new Particle.DustTransition(Color.fromRGB(0, 0, 0), Color.fromRGB(180, 180, 180), 10.0F);
+                                    p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation().add(0,1,0), 25, 1, 1, 1, dustTransition1);
+
+                                    for (Entity entity1 : p.getLocation().getWorld().getNearbyEntities(p.getLocation(), 5, 10, 5)) {
+                                        if (entity1 != p) {
+                                            if (entity1.getType() != EntityType.DROPPED_ITEM && entity1.getType() != EntityType.ARMOR_STAND) {
+                                                if (entity1.getLocation().add(0, 1, 0).distance(p.getLocation().add(0, 1, 0)) <= 3) {
+                                                    AnyPlayersCheck.add(entity1);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    if (AnyPlayersCheck.size() > 0) {
+                                        for (Entity entity1 : AnyPlayersCheck) {
+                                            Vector vec1 = entity1.getLocation().add(0, 0.5, 0).toVector().subtract(p.getLocation().toVector()).normalize();
+                                            entity1.setVelocity(vec1.multiply(1.5).add(new Vector(0, 0.2, 0)));
+
+                                            p.getWorld().playSound(entity1.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.4F, 0.3F);
+
+                                            hitplayers.add(entity1);
+                                        }
+                                    } else {
+                                        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW,60,2,true,false,false));
+                                    }
                                     cancel();
                                 }
 
                             }
                             }.runTaskTimer(plugin, 0L, 0L);
+
+                        AtomicInteger HitParticleLength = new AtomicInteger(20);
+
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+
+                                for (Entity entity : hitplayers) {
+                                    if (entity.getVelocity().getY() < -0.08 || entity.getVelocity().getY() > -0.06) {
+                                        Particle.DustTransition dustTransition1 = new Particle.DustTransition(Color.fromRGB(200, 170, 0), Color.fromRGB(0, 0, 0), 2.0F);
+                                        p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, entity.getLocation().add(0, 1, 0), 5, 0.3, 0.5, 0.3, dustTransition1);
+                                    }
+                                }
+
+                                HitParticleLength.getAndDecrement();
+
+                                if (HitParticleLength.get() <= 0) {
+                                    cancel();
+                                }
+
+                            }
+                        }.runTaskTimer(plugin, 0L, 0L);
 
                         /** CODE END << */
 
@@ -195,8 +265,6 @@ public class UNNAMEDABILITY implements Listener {
 
         Player p = e.getPlayer();
 
-        p.sendMessage(p.getVelocity() + "");
-
         if (AbilityExtras.itemcheck(p, itemname) == true) {
             if (p.getGameMode() != GameMode.CREATIVE) {
 
@@ -234,12 +302,49 @@ public class UNNAMEDABILITY implements Listener {
 
     /** << */
 
+    @EventHandler
+    public void ultCheckActivate (PlayerSwapHandItemsEvent e) {
+
+        Player p = e.getPlayer();
+
+        if (p.getInventory().getItemInMainHand().getItemMeta() != null) {
+            if (AbilityExtras.itemcheck(p, itemname) == true) {
+                e.setCancelled(true);
+                if (ultimatePointsListeners.getUltPoints(p) >= ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId())) {
+                    if (!ultimateCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (ultimateCooldown.get(p.getUniqueId())).longValue() > ultimateTimer * 1000)) {
+                        ultimateCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
+                        ultimatePointsListeners.useUltPoints(p, ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId()));
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                            @Override
+                            public void run() {
+
+                                /** ULTIMATE - CODE START >> */
+
+
+
+                                /** CODE END << */
+
+                            }
+                        }, ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId()) * 20);
+
+                    } else {
+                        DecimalFormat df = new DecimalFormat("0.00");
+                        String timer = df.format((double) (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
+                        p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.RED + " Ultimate ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.RED + ChatColor.ITALIC + timer + "s!");
+                    }
+                } else {
+                    ultimatePointsListeners.CheckUltPoints(p);
+                }
+            }
+        }
+    }
+
     public void doublejump (Player p) {
 
         if (p.getLocation().getPitch() > -35 && p.getLocation().getPitch() < 20) {
             p.setVelocity(new Vector(0,0.8,0));
-            Vector direction = p.getEyeLocation().getDirection().multiply(0.6);
-            p.setVelocity(p.getVelocity().add(direction));
+           Vector direction = p.getEyeLocation().getDirection().multiply(0.6);
+           p.setVelocity(p.getVelocity().add(direction));
         } else {
             p.setVelocity(new Vector(0,1,0));
         }
@@ -248,7 +353,8 @@ public class UNNAMEDABILITY implements Listener {
         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 0.2F, 1F);
         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 0.2F, 2F);
 
-        p.getWorld().spawnParticle(Particle.CLOUD, p.getLocation().add(0, -0.5, 0), 10, 1, 0, 1, 0);
+        Particle.DustTransition dustTransition = new Particle.DustTransition(Color.fromRGB(122, 122, 122), Color.fromRGB(255, 255, 255), 3.0F);
+        p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation().add(0,-0.5,0), 20, 0.7, 0, 0.7, dustTransition);
 
 
         p.setAllowFlight(false);
@@ -260,6 +366,23 @@ public class UNNAMEDABILITY implements Listener {
                 p.setAllowFlight(true);
             }
         }.runTaskLater(plugin, secondaryTimer * 20);
+
+        AtomicInteger ParticleLength = new AtomicInteger(15);
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+
+                p.getWorld().spawnParticle(Particle.TOTEM,p.getLocation(),1,0.5,0,0.5,0);
+
+                ParticleLength.getAndDecrement();
+
+                if (ParticleLength.get() <= 0) {
+                    cancel();
+                }
+
+            }
+        }.runTaskTimer(plugin, 0L, 0L);
 
     }
 }

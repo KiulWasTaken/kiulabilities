@@ -57,8 +57,6 @@ public class Artificer implements Listener {
 
                             /** PRIMARY - CODE START >> */
 
-                            p.sendMessage("check");
-
                             for (Player ap : Bukkit.getOnlinePlayers()) {
                                 ap.playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
                                 ap.spawnParticle(Particle.EXPLOSION_LARGE, p.getLocation(), 1);
