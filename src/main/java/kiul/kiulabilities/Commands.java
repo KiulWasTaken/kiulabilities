@@ -105,6 +105,15 @@ public class Commands implements CommandExecutor, Listener {
                     testTrigger.setItemMeta(testTriggerMeta);
                     p.getInventory().addItem(testTrigger);
                     break;
+                case "catalyst":
+                    ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
+                    ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),3);
+                    ItemStack catalystTrigger = new ItemStack(Material.CYAN_DYE);
+                    ItemMeta catalystTriggerMeta = catalystTrigger.getItemMeta();
+                    catalystTriggerMeta.setDisplayName(ChatColor.WHITE + AbilityItemNames.CATALYST);
+                    catalystTrigger.setItemMeta(catalystTriggerMeta);
+                    p.getInventory().addItem(catalystTrigger);
+                    break;
                 }
             } else if (label.equalsIgnoreCase("giveultpoint")) {
             ultimatePointsListeners.addUltPoint(p);

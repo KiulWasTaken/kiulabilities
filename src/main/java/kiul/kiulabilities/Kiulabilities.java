@@ -30,7 +30,7 @@ public final class Kiulabilities extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Artificer(), this);
         getServer().getPluginManager().registerEvents(new Featherweight(), this);
         getServer().getPluginManager().registerEvents(new DroppingAbilitys(), this);
-
+        getServer().getPluginManager().registerEvents(new Catalyst(), this);
         getServer().getPluginManager().registerEvents(new UNNAMEDABILITY(), this);
     }
 

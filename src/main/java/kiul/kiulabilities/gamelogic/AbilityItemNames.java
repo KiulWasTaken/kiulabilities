@@ -22,7 +22,7 @@ public class AbilityItemNames {
         abilitys.add("featherweight ability item");
         abilitys.add("tracker ability item");
         abilitys.add("stealth ability item");
-        abilitys.add("");
+        abilitys.add("catalyst ability item");
         abilitys.add("");
     }
 
@@ -35,5 +35,6 @@ public class AbilityItemNames {
     public static String FEATHERWEIGHT = "featherweight ability item";
     public static String TRACKER = "tracker ability item";
     public static String STEALTH = "stealth ability item";
+    public static String CATALYST  = "catalyst ability item";
 
 }
