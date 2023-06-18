@@ -101,17 +101,17 @@ public class Commands implements CommandExecutor, Listener {
                     ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),3);
                     ItemStack testTrigger = new ItemStack(Material.PINK_DYE);
                     ItemMeta testTriggerMeta = testTrigger.getItemMeta();
-                    testTriggerMeta.setDisplayName(ChatColor.WHITE + AbilityItemNames.UNNAMED);
+                    testTriggerMeta.setDisplayName(ChatColor.WHITE + AbilityItemNames.UNNAMED.name());
                     testTrigger.setItemMeta(testTriggerMeta);
                     p.getInventory().addItem(testTrigger);
                     break;
                 case "catalyst":
                     ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
-                    ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),3);
-                    ItemStack catalystTrigger = new ItemStack(Material.CYAN_DYE);
-                    ItemMeta catalystTriggerMeta = catalystTrigger.getItemMeta();
-                    catalystTriggerMeta.setDisplayName(ChatColor.WHITE + AbilityItemNames.CATALYST);
-                    catalystTrigger.setItemMeta(catalystTriggerMeta);
+                    ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),4);
+                    ItemStack catalystTrigger = new ItemStack(Material.ECHO_SHARD);
+                    ItemMeta catalystMeta = catalystTrigger.getItemMeta();
+                    catalystMeta.setDisplayName(ChatColor.WHITE + "Catalyst Ability Item");
+                    catalystTrigger.setItemMeta(catalystMeta);
                     p.getInventory().addItem(catalystTrigger);
                     break;
                 }

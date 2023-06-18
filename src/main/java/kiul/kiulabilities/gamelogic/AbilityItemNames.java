@@ -6,35 +6,22 @@ import org.bukkit.event.Listener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AbilityItemNames {
-    //Capital Letters don't matter
+    public enum AbilityItemNames {
+        UNNAMED("unnamed"),
+        ARTIFICER("artificer ability item"),
+        EARTH("earth ability item"),
+        FEATHERWEIGHT("featherweight ability item"),
+        TRACKER("tracker ability item"),
+        STEALTH("stealth ability item"),
+        CATALYST("catalyst ability item");
 
-    public static List<String> abilitys = new ArrayList<>();
+        private String label;
 
-    /**
-     * ADD ALL ABILTIY NAMES BELOW
-     */
+        AbilityItemNames(String label) {
+            this.label = label;
+        }
 
-    public static void allnames () {
-            abilitys.add("unnamed");
-        abilitys.add("artificer ability item");
-        abilitys.add("earth ability item");
-        abilitys.add("featherweight ability item");
-        abilitys.add("tracker ability item");
-        abilitys.add("stealth ability item");
-        abilitys.add("catalyst ability item");
-        abilitys.add("");
+        public String getLabel() {
+            return label;
+        }
     }
-
-    /**
-     * ADD ALL ABILTIY NAMES BELOW
-     */
-    public static String UNNAMED = "unnamed";
-    public static String ARTIFICER = "artificer ability item";
-    public static String EARTH = "earth ability item";
-    public static String FEATHERWEIGHT = "featherweight ability item";
-    public static String TRACKER = "tracker ability item";
-    public static String STEALTH = "stealth ability item";
-    public static String CATALYST  = "catalyst ability item";
-
-}

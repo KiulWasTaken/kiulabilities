@@ -69,7 +69,7 @@ public class AbilityExtras {
         } else {
 
             if (ultpoints > requiredpoints) {
-                String ultimate = ChatColor.translateAlternateColorCodes('&', "■".repeat(requiredpoints) + "&8&l▏&7" + "■".repeat(ultpoints - requiredpoints) + "□".repeat(maximumpoints - ultpoints));
+                String ultimate = ChatColor.translateAlternateColorCodes('&', "■".repeat(requiredpoints) + "&8l▏&7" + "■".repeat(ultpoints - requiredpoints) + "□".repeat(maximumpoints - ultpoints));
                 return ultimate;
             } else {
                 String ultimate = ChatColor.translateAlternateColorCodes('&', "■".repeat(ultpoints) + "□".repeat(requiredpoints - ultpoints) + "&8&l▏&7" + "□".repeat(maximumpoints - requiredpoints));

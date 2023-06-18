@@ -16,8 +16,6 @@ public final class Kiulabilities extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        AbilityItemNames.allnames();
-
         // Plugin startup logic
         ultimatePointsConfig.setup();
         ultimatePointsConfig.save();
@@ -31,6 +29,7 @@ public final class Kiulabilities extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Featherweight(), this);
         getServer().getPluginManager().registerEvents(new DroppingAbilitys(), this);
         getServer().getPluginManager().registerEvents(new Catalyst(), this);
+
         getServer().getPluginManager().registerEvents(new UNNAMEDABILITY(), this);
     }
 

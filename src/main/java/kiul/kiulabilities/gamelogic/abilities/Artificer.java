@@ -2,6 +2,7 @@ package kiul.kiulabilities.gamelogic.abilities;
 
 import kiul.kiulabilities.Kiulabilities;
 import kiul.kiulabilities.gamelogic.AbilityExtras;
+import kiul.kiulabilities.gamelogic.AbilityItemNames;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -23,6 +24,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class Artificer implements Listener {
@@ -33,27 +35,22 @@ public class Artificer implements Listener {
     private final HashMap<UUID, Long> ultimateCooldown = new HashMap<>();
     private final ArrayList<Player> voidthing = new ArrayList<>();
 
-    @EventHandler
-    public void blockPlaceEvent(BlockPlaceEvent e){
-        Player p = e.getPlayer();
-        if(p.getInventory().getItemInMainHand().getItemMeta() != null && p.getInventory().getItemInMainHand().getItemMeta().getLore().get(0) == (ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Creates a small, non-damaging explosion that boosts the player several blocks"));
-            e.setCancelled(true);
-    }
+    int primaryTimer = 1;
+    int secondaryTimer = 1;
+    private int ultimateTimer = 1;
+
+    String itemname = AbilityItemNames.ARTIFICER.getLabel();
 
     @EventHandler
     public void onClick(PlayerInteractEvent e) {
 
         Player p = e.getPlayer();
-        int primaryTimer = 1;
-        int secondaryTimer = 1;
 
         if (p.getInventory().getItemInMainHand() != null && p.getInventory().getItemInMainHand().hasItemMeta()) {
             if (p.getInventory().getItemInMainHand().getItemMeta().getLore() != null) {
-                if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Creates a small, non-damaging explosion that boosts the player several blocks")) {
-                    if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                if (ChatColor.stripColor(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName()).equalsIgnoreCase(itemname)) {                    if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                         if (!primaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (primaryCooldown.get(p.getUniqueId())).longValue() > primaryTimer * 1000)) {
                             e.setCancelled(true);
-                            primaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
 
                             /** PRIMARY - CODE START >> */
 
@@ -79,12 +76,12 @@ public class Artificer implements Listener {
                                 AbilityExtras.TimerTask(p, primaryTimer, primaryCooldown, secondaryTimer, secondaryCooldown);
                             }
                         } else {
-                            p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.DARK_AQUA + " Primary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.DARK_AQUA + ChatColor.ITALIC + (primaryTimer * 1000 - (System.currentTimeMillis() - ((Long) primaryCooldown.get(p.getUniqueId())).longValue())) + "ms!");
-                        }
+                            DecimalFormat df = new DecimalFormat("0.00");
+                            String timer = df.format((double) (primaryTimer * 1000 - (System.currentTimeMillis() - ((Long) primaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
+                            p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.DARK_AQUA + " Primary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.DARK_AQUA + ChatColor.ITALIC + timer + "s!");                        }
                     } else if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
                         if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
                             e.setCancelled(true);
-                            secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
 
                             /** SECONDARY - CODE START >> */
 
@@ -120,10 +117,10 @@ public class Artificer implements Listener {
                                 Kiulabilities.ABILITYUSED.add(p.getUniqueId());
                                 AbilityExtras.TimerTask(p, primaryTimer, primaryCooldown, secondaryTimer, secondaryCooldown);
                             }
-
                         } else {
-
-                            p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.LIGHT_PURPLE + " Secondary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.LIGHT_PURPLE + ChatColor.ITALIC + (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())) + "ms!");
+                            DecimalFormat df = new DecimalFormat("0.00");
+                            String timer = df.format((double) (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
+                            p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.LIGHT_PURPLE + " Secondary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.LIGHT_PURPLE + ChatColor.ITALIC + timer + "s!");
                         }
                     }
                 }
@@ -134,12 +131,11 @@ public class Artificer implements Listener {
     @EventHandler
     public void ultCheckActivate (PlayerSwapHandItemsEvent e) {
         // wee woo woo woo
-        int ultimateTimer = 10;
 
         Player p = (Player) e.getPlayer();
 
         if (p.getInventory().getItemInMainHand().getItemMeta() != null) {
-            if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Creates a small, non-damaging explosion that boosts the player several blocks")) {
+            if (ChatColor.stripColor(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName()).equalsIgnoreCase(itemname)) {
                 e.setCancelled(true);
                 if (ultimatePointsListeners.getUltPoints(p) >= ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId())) {
                     if (!ultimateCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (ultimateCooldown.get(p.getUniqueId())).longValue() > ultimateTimer * 1000)) {
@@ -162,8 +158,9 @@ public class Artificer implements Listener {
                         }, ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId()) * 20);
 
                     } else {
-                        p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.RED + " Ultimate ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.RED + ChatColor.ITALIC + (ultimateTimer * 1000 - (System.currentTimeMillis() - ((Long) ultimateCooldown.get(p.getUniqueId())).longValue())) + "ms!");
-                    }
+                        DecimalFormat df = new DecimalFormat("0.00");
+                        String timer = df.format((double) (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
+                        p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.RED + " Ultimate ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.RED + ChatColor.ITALIC + timer + "s!");                    }
                 } else {
                     ultimatePointsListeners.CheckUltPoints(p);
                 }

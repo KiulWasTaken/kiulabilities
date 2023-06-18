@@ -1,6 +1,8 @@
 package kiul.kiulabilities.gamelogic.abilities;
 
 import kiul.kiulabilities.Kiulabilities;
+import kiul.kiulabilities.gamelogic.AbilityExtras;
+import kiul.kiulabilities.gamelogic.AbilityItemNames;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -27,6 +29,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class Tracker implements Listener {
@@ -37,22 +40,25 @@ public class Tracker implements Listener {
 
     private final HashMap<UUID, Long> ultimateCooldown = new HashMap<>();
 
+    private int primaryTimer = 1;
+    private int secondaryTimer = 1;
+    private int ultimateTimer = 1;
+
+    String itemname = AbilityItemNames.TRACKER.getLabel();
 
     @EventHandler
     public void onClick(PlayerInteractEvent e) {
 
 
         Player p = e.getPlayer();
-        int primaryTimer = 5;
-        int secondaryTimer = 5;
 
         if (p.getInventory().getItemInMainHand() != null && p.getInventory().getItemInMainHand().hasItemMeta()) {
             if (p.getInventory().getItemInMainHand().getItemMeta().getLore() != null) {
-                if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Summon a wolf that hunts down and stuns the nearest player")) {
+                if (ChatColor.stripColor(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName()).equalsIgnoreCase(itemname)) {
                     if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                         if (!primaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (primaryCooldown.get(p.getUniqueId())).longValue() > primaryTimer * 1000)) {
                             e.setCancelled(true);
-                            primaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
+
                             // ABILITY CODE START
 
                             Wolf roger = (Wolf) p.getWorld().spawnEntity(p.getLocation().add(0, 1, 0), EntityType.WOLF);
@@ -87,22 +93,24 @@ public class Tracker implements Listener {
                             }, 200);
 
                             //ABILITY CODE END
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                                @Override
-                                public void run() {
 
-                                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.9f);
-                                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.DARK_AQUA + "Primary Ability Charged!"));
-                                }
-                            }, primaryTimer * 20);
+                            if (secondaryCooldown.isEmpty()) {
+                                secondaryCooldown.put(p.getUniqueId(), (long) 0);
+                            }
+                            primaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
 
+                            if (!Kiulabilities.ABILITYUSED.contains(p.getUniqueId())) {
+                                Kiulabilities.ABILITYUSED.add(p.getUniqueId());
+                                AbilityExtras.TimerTask(p, primaryTimer, primaryCooldown, secondaryTimer, secondaryCooldown);
+                            }
                         } else {
-                            p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.DARK_AQUA + " Primary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.DARK_AQUA + ChatColor.ITALIC + (primaryTimer * 1000 - (System.currentTimeMillis() - ((Long) primaryCooldown.get(p.getUniqueId())).longValue())) + "ms!");
-                        }
+                            DecimalFormat df = new DecimalFormat("0.00");
+                            String timer = df.format((double) (primaryTimer * 1000 - (System.currentTimeMillis() - ((Long) primaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
+                            p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.DARK_AQUA + " Primary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.DARK_AQUA + ChatColor.ITALIC + timer + "s!");                        }
                     } else if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
                         if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
                             e.setCancelled(true);
-                            secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
+
                             // ABILITY CODE START
 
                             for (Block nearbyBlocks : getBlocks(p.getLocation().getBlock(), 2)) {
@@ -157,16 +165,15 @@ public class Tracker implements Listener {
 
 
                             //ABILITY CODE END
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                                @Override
-                                public void run() {
 
-                                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.8f);
-                                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.LIGHT_PURPLE + "Secondary Ability Charged!"));
-                                }
-                            }, secondaryTimer * 20);
-
-
+                            if (primaryCooldown.isEmpty()) {
+                                primaryCooldown.put(p.getUniqueId(), (long) 0);
+                            }
+                            secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
+                            if (!Kiulabilities.ABILITYUSED.contains(p.getUniqueId())) {
+                                Kiulabilities.ABILITYUSED.add(p.getUniqueId());
+                                AbilityExtras.TimerTask(p, primaryTimer, primaryCooldown, secondaryTimer, secondaryCooldown);
+                            }
                         } else {
 
                             p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.LIGHT_PURPLE + " Secondary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.LIGHT_PURPLE + ChatColor.ITALIC + (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())) + "ms!");
@@ -180,11 +187,9 @@ public class Tracker implements Listener {
     @EventHandler
     public void ultCheckActivate(PlayerSwapHandItemsEvent e) {
 
-        int ultimateTimer = 10;
-
         Player p = (Player) e.getPlayer();
         if (p.getInventory().getItemInMainHand().getItemMeta() != null) {
-            if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Summon a wolf that hunts down and stuns the nearest player")) {
+            if (ChatColor.stripColor(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName()).equalsIgnoreCase(itemname)) {
                 e.setCancelled(true);
                 if (ultimatePointsListeners.getUltPoints(p) >= ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId())) {
                     if (!ultimateCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (ultimateCooldown.get(p.getUniqueId())).longValue() > ultimateTimer * 1000)) {
@@ -198,8 +203,9 @@ public class Tracker implements Listener {
                         }, ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId()) * 20);
 
                     } else {
-                        p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.RED + " Ultimate ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.RED + ChatColor.ITALIC + (ultimateTimer * 1000 - (System.currentTimeMillis() - ((Long) ultimateCooldown.get(p.getUniqueId())).longValue())) + "ms!");
-                    }
+                        DecimalFormat df = new DecimalFormat("0.00");
+                        String timer = df.format((double) (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
+                        p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.RED + " Ultimate ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.RED + ChatColor.ITALIC + timer + "s!");                    }
                 } else {
                     ultimatePointsListeners.CheckUltPoints(p);
                 }

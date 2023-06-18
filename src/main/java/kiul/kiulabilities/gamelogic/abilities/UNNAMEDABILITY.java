@@ -48,10 +48,9 @@ public class UNNAMEDABILITY implements Listener {
 
     private int primaryTimer = 1;
     private int secondaryTimer = 1;
-
     private int ultimateTimer = 1;
 
-    String itemname = AbilityItemNames.UNNAMED;
+    String itemname = AbilityItemNames.UNNAMED.getLabel();
 
     @EventHandler
     public void onClick(PlayerInteractEvent e) throws InterruptedException {
@@ -64,16 +63,6 @@ public class UNNAMEDABILITY implements Listener {
                     if (!primaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (primaryCooldown.get(p.getUniqueId())).longValue() > primaryTimer * 1000)) {
 
                         e.setCancelled(true);
-
-                        if (secondaryCooldown.isEmpty()) {
-                            secondaryCooldown.put(p.getUniqueId(), (long) 0);
-                        }
-                        primaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
-
-                        if (!Kiulabilities.ABILITYUSED.contains(p.getUniqueId())) {
-                            Kiulabilities.ABILITYUSED.add(p.getUniqueId());
-                            AbilityExtras.TimerTask(p, primaryTimer, primaryCooldown, secondaryTimer, secondaryCooldown);
-                        }
 
                         /** PRIMARY - CODE START >> */
 
@@ -190,6 +179,15 @@ public class UNNAMEDABILITY implements Listener {
 
                         /** CODE END << */
 
+                        if (secondaryCooldown.isEmpty()) {
+                            secondaryCooldown.put(p.getUniqueId(), (long) 0);
+                        }
+                        primaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
+
+                        if (!Kiulabilities.ABILITYUSED.contains(p.getUniqueId())) {
+                            Kiulabilities.ABILITYUSED.add(p.getUniqueId());
+                            AbilityExtras.TimerTask(p, primaryTimer, primaryCooldown, secondaryTimer, secondaryCooldown);
+                        }
                     } else {
                         DecimalFormat df = new DecimalFormat("0.00");
                         String timer = df.format((double) (primaryTimer * 1000 - (System.currentTimeMillis() - ((Long) primaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
@@ -198,22 +196,20 @@ public class UNNAMEDABILITY implements Listener {
                 } else if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
                     if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
 
-                        if (primaryCooldown.isEmpty()) {
-                            primaryCooldown.put(p.getUniqueId(), (long) 0);
-                        }
-                        secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
-
                         /** SECONDARY - CODE START >> */
 
                         doublejump(p);
 
                         /** CODE END << */
 
+                        if (primaryCooldown.isEmpty()) {
+                            primaryCooldown.put(p.getUniqueId(), (long) 0);
+                        }
+                        secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
                         if (!Kiulabilities.ABILITYUSED.contains(p.getUniqueId())) {
                             Kiulabilities.ABILITYUSED.add(p.getUniqueId());
                             AbilityExtras.TimerTask(p, primaryTimer, primaryCooldown, secondaryTimer, secondaryCooldown);
                         }
-
                     } else {
                         DecimalFormat df = new DecimalFormat("0.00");
                         String timer = df.format((double) (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
@@ -308,7 +304,7 @@ public class UNNAMEDABILITY implements Listener {
         Player p = e.getPlayer();
 
         if (p.getInventory().getItemInMainHand().getItemMeta() != null) {
-            if (AbilityExtras.itemcheck(p, itemname) == true) {
+            if (ChatColor.stripColor(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName()).equalsIgnoreCase(itemname)) {
                 e.setCancelled(true);
                 if (ultimatePointsListeners.getUltPoints(p) >= ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId())) {
                     if (!ultimateCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (ultimateCooldown.get(p.getUniqueId())).longValue() > ultimateTimer * 1000)) {
@@ -341,12 +337,19 @@ public class UNNAMEDABILITY implements Listener {
 
     public void doublejump (Player p) {
 
-        if (p.getLocation().getPitch() > -35 && p.getLocation().getPitch() < 20) {
-            p.setVelocity(new Vector(0,0.8,0));
-           Vector direction = p.getEyeLocation().getDirection().multiply(0.6);
-           p.setVelocity(p.getVelocity().add(direction));
+        if (p.getLocation().getPitch() != -90) {
+            Location playerLocation = p.getLocation();
+            Vector direction = playerLocation.getDirection();
+
+            double deltaX = direction.getX() * 2;
+            double deltaZ = direction.getZ() * 2;
+
+            Location blockLocation = playerLocation.clone().add(deltaX, 0, deltaZ);
+            Vector vec1 = blockLocation.toVector().subtract(p.getLocation().toVector()).normalize();
+
+            p.setVelocity(vec1.multiply(0.5).add(new Vector(0, 0.5, 0)));
         } else {
-            p.setVelocity(new Vector(0,1,0));
+            p.setVelocity(new Vector(0,0.8,0));
         }
 
         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 0.2F, 0.5F);

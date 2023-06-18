@@ -5,23 +5,31 @@ import kiul.kiulabilities.gamelogic.AbilityExtras;
 import kiul.kiulabilities.gamelogic.AbilityItemNames;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
 import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class Catalyst implements Listener {
+public class ABILITY_TEMPLATE implements Listener {
 
     public Plugin plugin = Kiulabilities.getPlugin(Kiulabilities.class);
 
@@ -33,11 +41,10 @@ public class Catalyst implements Listener {
 
     private int primaryTimer = 1;
     private int secondaryTimer = 1;
+
     private int ultimateTimer = 1;
 
-    private int primaryMode = 0;
-
-    String itemname = AbilityItemNames.CATALYST.getLabel(); /**ITEM NAME */
+    String itemname = "sped"; /**ITEM NAME */
 
     @EventHandler
     public void onClick(PlayerInteractEvent e) throws InterruptedException {
@@ -53,36 +60,9 @@ public class Catalyst implements Listener {
 
                         /** PRIMARY - CODE START >> */
 
-                        World world = p.getWorld();
-                        Location inFront = p.getLocation().add(p.getLocation().getDirection().normalize().multiply(2));
-                        inFront.setY(p.getLocation().add(0,-1,0).getY());
-                        Block spreadCenter = inFront.getBlock();
 
-                        spreadCenter.setType(Material.SCULK_CATALYST);
-                        if ( spreadCenter.getRelative(BlockFace.NORTH).getType() != Material.AIR) {
-                            spreadCenter.getRelative(BlockFace.NORTH).setType(Material.SCULK);
-                        }
-                        if ( spreadCenter.getRelative(BlockFace.EAST).getType() != Material.AIR) {
-                            spreadCenter.getRelative(BlockFace.EAST).setType(Material.SCULK);
-                        }
-                        if ( spreadCenter.getRelative(BlockFace.SOUTH).getType() != Material.AIR) {
-                            spreadCenter.getRelative(BlockFace.SOUTH).setType(Material.SCULK);
-                        }
-                        if ( spreadCenter.getRelative(BlockFace.WEST).getType() != Material.AIR) {
-                            spreadCenter.getRelative(BlockFace.WEST).setType(Material.SCULK);
-                        }
-                            Zombie triggerSpread = (Zombie) world.spawnEntity(inFront, EntityType.ZOMBIE);
-                            triggerSpread.setBaby();
-                            triggerSpread.setInvisible(true);
-                            triggerSpread.setGravity(false);
-                            triggerSpread.setSilent(true);
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(Kiulabilities.getPlugin(Kiulabilities.class), new Runnable() {
-                                @Override
-                                public void run() {
-                                    triggerSpread.damage(20, p);
-                                    spreadCenter.getState().update();
-                                }
-                            }, 10);
+
+                        /** CODE END << */
 
                         if (secondaryCooldown.isEmpty()) {
                             secondaryCooldown.put(p.getUniqueId(), (long) 0);
@@ -93,8 +73,6 @@ public class Catalyst implements Listener {
                             Kiulabilities.ABILITYUSED.add(p.getUniqueId());
                             AbilityExtras.TimerTask(p, primaryTimer, primaryCooldown, secondaryTimer, secondaryCooldown);
                         }
-                        /** CODE END << */
-
                     } else {
                         DecimalFormat df = new DecimalFormat("0.00");
                         String timer = df.format((double) (primaryTimer * 1000 - (System.currentTimeMillis() - ((Long) primaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
@@ -117,6 +95,7 @@ public class Catalyst implements Listener {
                             Kiulabilities.ABILITYUSED.add(p.getUniqueId());
                             AbilityExtras.TimerTask(p, primaryTimer, primaryCooldown, secondaryTimer, secondaryCooldown);
                         }
+
                     } else {
                         DecimalFormat df = new DecimalFormat("0.00");
                         String timer = df.format((double) (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
