@@ -18,12 +18,14 @@ kiul\kiulabilities\gamelogic\abilities\Featherweight$3.class
 kiul\kiulabilities\gamelogic\abilities\Artificer.class
 kiul\kiulabilities\gamelogic\ultimatePointsListeners$1.class
 kiul\kiulabilities\Commands.class
+kiul\kiulabilities\gamelogic\abilities\UNNAMEDABILITY$7.class
 kiul\kiulabilities\gamelogic\abilities\Catalyst$1.class
 kiul\kiulabilities\gamelogic\abilities\Tracker$2.class
 kiul\kiulabilities\gamelogic\menuClickListener.class
 kiul\kiulabilities\gamelogic\ultimatePointsListeners.class
 kiul\kiulabilities\gamelogic\abilities\UNNAMEDABILITY$5.class
 kiul\kiulabilities\gamelogic\AbilityItemNames.class
+kiul\kiulabilities\gamelogic\ColoredText.class
 kiul\kiulabilities\gamelogic\abilities\Featherweight.class
 kiul\kiulabilities\gamelogic\AbilityExtras$1.class
 kiul\kiulabilities\gamelogic\abilities\Earth.class

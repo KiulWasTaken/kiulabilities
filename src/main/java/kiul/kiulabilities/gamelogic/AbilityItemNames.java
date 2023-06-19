@@ -1,19 +1,22 @@
 package kiul.kiulabilities.gamelogic;
 
+import kiul.kiulabilities.Kiulabilities;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
 
     public enum AbilityItemNames {
-        UNNAMED("unnamed"),
-        ARTIFICER("artificer ability item"),
-        EARTH("earth ability item"),
-        FEATHERWEIGHT("featherweight ability item"),
-        TRACKER("tracker ability item"),
-        STEALTH("stealth ability item"),
-        CATALYST("catalyst ability item");
+        UNNAMED(AbilityExtras.displayname("UNNAMED.DisplayName")),
+        ARTIFICER(AbilityExtras.displayname("ARTIFICER.DisplayName")),
+        EARTH(AbilityExtras.displayname("EARTH.DisplayName")),
+        FEATHERWEIGHT(AbilityExtras.displayname("FEATHERWEIGHT.DisplayName")),
+        TRACKER(AbilityExtras.displayname("TRACKER.DisplayName")),
+        STEALTH(AbilityExtras.displayname("STEALTH.DisplayName")),
+        CATALYST(AbilityExtras.displayname("CATALYST.DisplayName"));
 
         private String label;
 
@@ -24,4 +27,5 @@ import java.util.List;
         public String getLabel() {
             return label;
         }
+
     }

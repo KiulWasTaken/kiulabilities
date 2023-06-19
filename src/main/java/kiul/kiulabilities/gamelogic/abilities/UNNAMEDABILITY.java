@@ -3,6 +3,7 @@ package kiul.kiulabilities.gamelogic.abilities;
 import kiul.kiulabilities.Kiulabilities;
 import kiul.kiulabilities.gamelogic.AbilityExtras;
 import kiul.kiulabilities.gamelogic.AbilityItemNames;
+import kiul.kiulabilities.gamelogic.ColoredText;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
@@ -46,11 +47,13 @@ public class UNNAMEDABILITY implements Listener {
 
     private final HashMap<UUID, Long> ultimateCooldown = new HashMap<>();
 
-    private int primaryTimer = 1;
-    private int secondaryTimer = 1;
-    private int ultimateTimer = 1;
+    String configname = AbilityItemNames.UNNAMED.name();
 
-    String itemname = AbilityItemNames.UNNAMED.getLabel();
+    private int primaryTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Primary");
+    private int secondaryTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Secondary");
+    private int ultimateTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Ultimate");
+
+    String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.UNNAMED.getLabel()));
 
     @EventHandler
     public void onClick(PlayerInteractEvent e) throws InterruptedException {
@@ -78,37 +81,35 @@ public class UNNAMEDABILITY implements Listener {
                             public void run() {
                                 p.setVelocity(direction);
 
-                                Particle.DustTransition dustTransition = new Particle.DustTransition(Color.fromRGB(255, 0, 0), Color.fromRGB(255, 255, 255), 3.0F);
+                                Particle.DustTransition dustTransition = new Particle.DustTransition(Color.fromRGB(255 - DashAmount.get() * 20, 0, (7 - DashAmount.get()) * 30), Color.fromRGB(255, 255, 255), 1.5F);
                                 p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation().add(0,1,0), 15, 0.3, 0.5, 0.3, dustTransition);
 
                                 for (Entity entity : p.getLocation().getWorld().getNearbyEntities(p.getLocation(), 5, 5, 5)) {
                                     if (entity != p) {
                                         if (entity.getType() != EntityType.DROPPED_ITEM && entity.getType() != EntityType.ARMOR_STAND) {
                                             if (entity.getLocation().add(0, 1, 0).distance(p.getLocation().add(0, 1, 0)) <= 1.5) {
-                                                Vector vec = entity.getLocation().add(0, 0.5, 0).toVector().subtract(p.getLocation().toVector()).normalize();
-                                                entity.setVelocity(vec.multiply(1.5).add(new Vector(0, 0.05, 0)));
 
                                                 p.setVelocity(p.getVelocity().add(direction.multiply(-0.2)));
 
-                                                p.getWorld().playSound(entity.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.2F, 0.3F);
-
                                                 Particle.DustTransition dustTransition1 = new Particle.DustTransition(Color.fromRGB(0, 0, 0), Color.fromRGB(180, 180, 180), 10.0F);
-                                                p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation().add(0,1,0), 25, 1, 1, 1, dustTransition1);
+                                                p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation().add(0,1,0), 25, 0.5, 0.7, 0.5, dustTransition1);
 
                                                 hitplayers.add(entity);
 
                                                 for (Entity entity1 : p.getLocation().getWorld().getNearbyEntities(p.getLocation(), 5, 10, 5)) {
                                                     if (entity1 != p) {
-                                                        if (entity1 != entity) {
-                                                            if (entity1.getType() != EntityType.DROPPED_ITEM && entity1.getType() != EntityType.ARMOR_STAND) {
-                                                                if (entity1.getLocation().add(0, 1, 0).distance(p.getLocation().add(0, 1, 0)) <= 3) {
-                                                                    Vector vec1 = entity1.getLocation().add(0, 0.5, 0).toVector().subtract(p.getLocation().toVector()).normalize();
-                                                                    entity1.setVelocity(vec1.multiply(1.5).add(new Vector(0, 0.2, 0)));
+                                                        if (entity1.getType() != EntityType.DROPPED_ITEM && entity1.getType() != EntityType.ARMOR_STAND) {
+                                                            if (entity1.getLocation().add(0, 1, 0).distance(p.getLocation().add(0, 1, 0)) <= 3) {
 
-                                                                    p.getWorld().playSound(entity1.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.4F, 0.3F);
+                                                                repulseplayer(p, entity1);
 
-                                                                    hitplayers.add(entity1);
-                                                                }
+                                                                Vector vec1 = entity1.getLocation().add(0, 0.5, 0).toVector().subtract(p.getLocation().toVector()).normalize();
+                                                                //entity1.setVelocity(vec1.add(new Vector(0, 0.2, 0)));
+
+                                                                p.getWorld().playSound(entity1.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.4F, 0.3F);
+
+                                                                hitplayers.add(entity1);
+
                                                             }
                                                         }
                                                     }
@@ -125,7 +126,7 @@ public class UNNAMEDABILITY implements Listener {
                                     p.setVelocity(p.getVelocity().add(direction.multiply(-0.5)));
 
                                     Particle.DustTransition dustTransition1 = new Particle.DustTransition(Color.fromRGB(0, 0, 0), Color.fromRGB(180, 180, 180), 10.0F);
-                                    p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation().add(0,1,0), 25, 1, 1, 1, dustTransition1);
+                                    p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation().add(0,1,0), 25, 0.5, 0.7, 0.5, dustTransition1);
 
                                     for (Entity entity1 : p.getLocation().getWorld().getNearbyEntities(p.getLocation(), 5, 10, 5)) {
                                         if (entity1 != p) {
@@ -139,15 +140,16 @@ public class UNNAMEDABILITY implements Listener {
 
                                     if (AnyPlayersCheck.size() > 0) {
                                         for (Entity entity1 : AnyPlayersCheck) {
-                                            Vector vec1 = entity1.getLocation().add(0, 0.5, 0).toVector().subtract(p.getLocation().toVector()).normalize();
-                                            entity1.setVelocity(vec1.multiply(1.5).add(new Vector(0, 0.2, 0)));
+
+                                            repulseplayer(p, entity1);
 
                                             p.getWorld().playSound(entity1.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.4F, 0.3F);
 
                                             hitplayers.add(entity1);
+
                                         }
                                     } else {
-                                        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW,60,2,true,false,false));
+                                        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW,60,3,true,false,false));
                                     }
                                     cancel();
                                 }
@@ -155,7 +157,7 @@ public class UNNAMEDABILITY implements Listener {
                             }
                             }.runTaskTimer(plugin, 0L, 0L);
 
-                        AtomicInteger HitParticleLength = new AtomicInteger(20);
+                        AtomicInteger HitParticleLength = new AtomicInteger(30);
 
                         new BukkitRunnable() {
                             @Override
@@ -163,8 +165,8 @@ public class UNNAMEDABILITY implements Listener {
 
                                 for (Entity entity : hitplayers) {
                                     if (entity.getVelocity().getY() < -0.08 || entity.getVelocity().getY() > -0.06) {
-                                        Particle.DustTransition dustTransition1 = new Particle.DustTransition(Color.fromRGB(200, 170, 0), Color.fromRGB(0, 0, 0), 2.0F);
-                                        p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, entity.getLocation().add(0, 1, 0), 5, 0.3, 0.5, 0.3, dustTransition1);
+                                        Particle.DustTransition dustTransition1 = new Particle.DustTransition(Color.fromRGB((int) (230 - (30 - HitParticleLength.get()) * 7.5), (int) (220 - (30 - HitParticleLength.get()) * 3.75), (int) (0 + (30 - HitParticleLength.get()) * 7.5)), Color.fromRGB(255, 255, 255), 1.5F);
+                                        p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, entity.getLocation().add(0, 1, 0), 2, 0.3, 0.5, 0.3, dustTransition1);
                                     }
                                 }
 
@@ -222,12 +224,17 @@ public class UNNAMEDABILITY implements Listener {
 
     @EventHandler
     public void onDeath(PlayerToggleFlightEvent e) {
+
         Player p = e.getPlayer();
+
+        float flyspeed = p.getFlySpeed();
 
         if (AbilityExtras.itemcheck(p, itemname) == true) {
             if (p.getGameMode() != GameMode.CREATIVE) {
 
                 e.setCancelled(true);
+
+                p.setFlySpeed(0);
 
                 if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
 
@@ -242,6 +249,17 @@ public class UNNAMEDABILITY implements Listener {
                     }
 
                     /** CODE >> */
+
+                    p.setAllowFlight(false);
+                    p.setFlying(false);
+
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            p.setAllowFlight(true);
+                            p.setFlySpeed(flyspeed);
+                        }
+                    }.runTaskLater(plugin, secondaryTimer * 20);
 
                     doublejump(p);
 
@@ -263,6 +281,10 @@ public class UNNAMEDABILITY implements Listener {
 
         if (AbilityExtras.itemcheck(p, itemname) == true) {
             if (p.getGameMode() != GameMode.CREATIVE) {
+
+                if (secondaryCooldown.containsKey(p.getUniqueId())) {
+                    p.setAllowFlight(false);
+                }
 
                 if (p.getVelocity().getY() < -0.7) {
                     p.setAllowFlight(false);
@@ -290,7 +312,30 @@ public class UNNAMEDABILITY implements Listener {
             Player killer = e.getEntity().getKiller();
 
             if (AbilityExtras.itemcheck(killer, itemname) == true) {
-                killer.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING,160,1,true,false));
+                killer.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING,100,1,true,false));
+                killer.addPotionEffect(new PotionEffect(PotionEffectType.SPEED,100,0,true,false));
+                killer.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY,100,0,true,false));
+
+                p.getWorld().spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, killer.getLocation().add(0, 1, 0), 20, 0.6, 0.8, 0.6, 0);
+
+                AtomicInteger KillParticleLength = new AtomicInteger(80);
+
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+
+                                Particle.DustTransition dustTransition1 = new Particle.DustTransition(Color.fromRGB(200, (int) (200 - (80 - KillParticleLength.get()) * 1.25), (int) (0 + (80 - KillParticleLength.get()) * 2.5)), Color.fromRGB(255, 255, 255), 1.5F);
+                                p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, killer.getLocation().add(0, 1, 0), 2, 0.3, 0.5, 0.3, dustTransition1);
+
+                        KillParticleLength.getAndDecrement();
+
+                        if (KillParticleLength.get() <= 0) {
+                            p.getWorld().spawnParticle(Particle.SMOKE_NORMAL, killer.getLocation().add(0, 1, 0), 20, 0.6, 0.8, 0.6, 0);
+                            cancel();
+                        }
+
+                    }
+                }.runTaskTimer(plugin, 0L, 0L);
             }
 
         }
@@ -325,7 +370,7 @@ public class UNNAMEDABILITY implements Listener {
 
                     } else {
                         DecimalFormat df = new DecimalFormat("0.00");
-                        String timer = df.format((double) (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
+                        String timer = df.format((double) (ultimateTimer * 1000 - (System.currentTimeMillis() - ((Long) ultimateCooldown.get(p.getUniqueId())).longValue())) / 1000);
                         p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.RED + " Ultimate ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.RED + ChatColor.ITALIC + timer + "s!");
                     }
                 } else {
@@ -347,7 +392,7 @@ public class UNNAMEDABILITY implements Listener {
             Location blockLocation = playerLocation.clone().add(deltaX, 0, deltaZ);
             Vector vec1 = blockLocation.toVector().subtract(p.getLocation().toVector()).normalize();
 
-            p.setVelocity(vec1.multiply(0.5).add(new Vector(0, 0.5, 0)));
+            p.setVelocity(vec1.multiply(0.6).add(new Vector(0, 0.4, 0)));
         } else {
             p.setVelocity(new Vector(0,0.8,0));
         }
@@ -358,17 +403,6 @@ public class UNNAMEDABILITY implements Listener {
 
         Particle.DustTransition dustTransition = new Particle.DustTransition(Color.fromRGB(122, 122, 122), Color.fromRGB(255, 255, 255), 3.0F);
         p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation().add(0,-0.5,0), 20, 0.7, 0, 0.7, dustTransition);
-
-
-        p.setAllowFlight(false);
-        p.setFlying(false);
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                p.setAllowFlight(true);
-            }
-        }.runTaskLater(plugin, secondaryTimer * 20);
 
         AtomicInteger ParticleLength = new AtomicInteger(15);
 
@@ -386,6 +420,66 @@ public class UNNAMEDABILITY implements Listener {
 
             }
         }.runTaskTimer(plugin, 0L, 0L);
+
+    }
+
+    public void repulseplayer (Player p, Entity entity1) {
+
+        double deltaX = entity1.getLocation().add(0.5,0,0.5).getX() - p.getLocation().add(0.5,0,0.5).getX();
+        double deltaZ = entity1.getLocation().add(0.5,0,0.5).getZ() - p.getLocation().add(0.5,0,0.5).getZ();
+
+        double yaw = Math.atan2(-deltaX, deltaZ);
+
+        float yawDegrees = (float) Math.toDegrees(yaw);
+        yawDegrees = (yawDegrees < 0) ? yawDegrees + 360 : yawDegrees;
+
+        if (yawDegrees > 180) {
+            yawDegrees = 180 - yawDegrees;
+            yawDegrees = -160 - yawDegrees;
+
+            float yaw1 = yawDegrees;
+
+            double yawRadians = Math.toRadians(yaw1);
+
+            double x = Math.sin(yawRadians);
+            double z = -Math.cos(yawRadians);
+
+            x *= -2;
+            z *= -2;
+
+            double newX = entity1.getLocation().getX() + x;
+            double newY = entity1.getLocation().getY();
+            double newZ = entity1.getLocation().getZ() + z;
+
+            Location newLocation = new Location(p.getLocation().getWorld(), newX, newY, newZ);
+
+            Vector vec1 = newLocation.toVector().subtract(entity1.getLocation().toVector()).normalize();
+
+            entity1.setVelocity(vec1.add(new Vector(0, 1, 0)));
+
+        } else {
+
+            float yaw1 = yawDegrees;
+
+            double yawRadians = Math.toRadians(yaw1);
+
+            double x = Math.sin(yawRadians);
+            double z = -Math.cos(yawRadians);
+
+            x *= -2;
+            z *= -2;
+
+            double newX = entity1.getLocation().getX() + x;
+            double newY = entity1.getLocation().getY();
+            double newZ = entity1.getLocation().getZ() + z;
+
+            Location newLocation = new Location(p.getLocation().getWorld(), newX, newY, newZ);
+
+            Vector vec1 = newLocation.toVector().subtract(entity1.getLocation().toVector()).normalize();
+
+            entity1.setVelocity(vec1.add(new Vector(0, 1, 0)));
+
+        }
 
     }
 }

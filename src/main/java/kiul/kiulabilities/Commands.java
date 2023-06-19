@@ -1,6 +1,7 @@
 package kiul.kiulabilities;
 
 import kiul.kiulabilities.gamelogic.AbilityItemNames;
+import kiul.kiulabilities.gamelogic.ColoredText;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -38,7 +39,7 @@ public class Commands implements CommandExecutor, Listener {
                     lore.add(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Become intangible and invisible for a short time");
                     lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Shortsight players in a radius directly in front of you for a short time");
                     stealthTriggerMeta.setLore(lore);
-                    stealthTriggerMeta.setDisplayName(ChatColor.WHITE + "Stealth Ability Item");
+                    stealthTriggerMeta.setDisplayName(ColoredText.translateHexCodes(AbilityItemNames.STEALTH.getLabel()));
                     p.setMetadata("stealth", new FixedMetadataValue(plugin, "pat"));
                     stealthTrigger.setItemMeta(stealthTriggerMeta);
                     p.getInventory().addItem(stealthTrigger);
@@ -51,7 +52,7 @@ public class Commands implements CommandExecutor, Listener {
                     lore.add(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Summon a wolf that hunts down and stuns the nearest player");
                     lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Grow a defensive cluster of sweet berry bushes in nearby grass");
                     trackerTriggerMeta.setLore(lore);
-                    trackerTriggerMeta.setDisplayName(ChatColor.WHITE + "Tracker Ability Item");
+                    trackerTriggerMeta.setDisplayName(ColoredText.translateHexCodes(AbilityItemNames.TRACKER.getLabel()));
                     p.setMetadata("tracker", new FixedMetadataValue(plugin, "pat"));
                     trackerTrigger.setItemMeta(trackerTriggerMeta);
                     p.getInventory().addItem(trackerTrigger);
@@ -64,7 +65,7 @@ public class Commands implements CommandExecutor, Listener {
                     lore.add(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Fly up into the sky");
                     lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "----");
                     flyTriggerMeta.setLore(lore);
-                    flyTriggerMeta.setDisplayName(ChatColor.WHITE + "Featherweight Ability Item");
+                    flyTriggerMeta.setDisplayName(ColoredText.translateHexCodes(AbilityItemNames.FEATHERWEIGHT.getLabel()));
                     p.setMetadata("featherweight", new FixedMetadataValue(plugin, "pat"));
                     flyTrigger.setItemMeta(flyTriggerMeta);
                     p.getInventory().addItem(flyTrigger);
@@ -78,7 +79,7 @@ public class Commands implements CommandExecutor, Listener {
                     lore.add(ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Creates a small, non-damaging explosion that boosts the player several blocks");
                     lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Create a medium explosion at your feet, throwing nearby players back and dealing damage");
                     boomTriggerMeta.setLore(lore);
-                    boomTriggerMeta.setDisplayName(ChatColor.WHITE + "Artificer Ability Item");
+                    boomTriggerMeta.setDisplayName(ColoredText.translateHexCodes(AbilityItemNames.ARTIFICER.getLabel()));
                     p.setMetadata("artificer", new FixedMetadataValue(plugin, "pat"));
                     boomTrigger.setItemMeta(boomTriggerMeta);
                     p.getInventory().addItem(boomTrigger);
@@ -91,7 +92,7 @@ public class Commands implements CommandExecutor, Listener {
                     lore.add(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + " » " + ChatColor.GRAY + "Launches the player into the air, creating a damaging crater when landing and negates fall damage");
                     lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + " » " + ChatColor.GRAY + "-");
                     rockTriggerMeta.setLore(lore);
-                    rockTriggerMeta.setDisplayName(ChatColor.WHITE + "Earth Ability Item");
+                    rockTriggerMeta.setDisplayName(ColoredText.translateHexCodes(AbilityItemNames.EARTH.getLabel()));
                     p.setMetadata("earth", new FixedMetadataValue(plugin, "pat"));
                     rockTrigger.setItemMeta(rockTriggerMeta);
                     p.getInventory().addItem(rockTrigger);
@@ -101,7 +102,7 @@ public class Commands implements CommandExecutor, Listener {
                     ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),3);
                     ItemStack testTrigger = new ItemStack(Material.PINK_DYE);
                     ItemMeta testTriggerMeta = testTrigger.getItemMeta();
-                    testTriggerMeta.setDisplayName(ChatColor.WHITE + AbilityItemNames.UNNAMED.name());
+                    testTriggerMeta.setDisplayName(ColoredText.translateHexCodes(AbilityItemNames.UNNAMED.getLabel()));
                     testTrigger.setItemMeta(testTriggerMeta);
                     p.getInventory().addItem(testTrigger);
                     break;
@@ -110,7 +111,7 @@ public class Commands implements CommandExecutor, Listener {
                     ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),4);
                     ItemStack catalystTrigger = new ItemStack(Material.ECHO_SHARD);
                     ItemMeta catalystMeta = catalystTrigger.getItemMeta();
-                    catalystMeta.setDisplayName(ChatColor.WHITE + "Catalyst Ability Item");
+                    catalystMeta.setDisplayName(ColoredText.translateHexCodes(AbilityItemNames.CATALYST.getLabel()));
                     catalystTrigger.setItemMeta(catalystMeta);
                     p.getInventory().addItem(catalystTrigger);
                     break;

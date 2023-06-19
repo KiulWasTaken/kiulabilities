@@ -98,4 +98,12 @@ public class AbilityExtras {
 
     }
 
+    /***/
+
+    public static String displayname (String configname) {
+
+        String name = Kiulabilities.getPlugin(Kiulabilities.class).getConfig().getString("Abilities." + configname);
+
+        return name;
+    }
 }

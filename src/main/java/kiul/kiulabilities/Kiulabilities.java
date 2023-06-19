@@ -16,9 +16,11 @@ public final class Kiulabilities extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        // Plugin startup logic
         ultimatePointsConfig.setup();
         ultimatePointsConfig.save();
+
+        this.saveDefaultConfig();
+
         getCommand("test").setExecutor(new Commands());
         getServer().getPluginManager().registerEvents(new Stealth(), this);
         getServer().getPluginManager().registerEvents(new Tracker(), this);

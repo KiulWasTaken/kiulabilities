@@ -28,11 +28,9 @@ public class ultimatePointsListeners implements Listener {
 
         int ultPoints = ultimatePointsConfig.get().getInt(p.getUniqueId().toString());
         if (ultPoints < 6) {
-            p.sendMessage(ultPoints + "");
             ultimatePointsConfig.get().set(p.getUniqueId().toString(), ultimatePointsConfig.get().getInt(p.getUniqueId().toString()) + 1);
             p.playSound(p.getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL,1,0.5f);
             ultimatePointsConfig.save();
-            p.sendMessage(ultimatePointsConfig.get().getInt(p.getUniqueId().toString()) + "");
         }
     }
     public static void useUltPoints (Player p, final int amount) {
@@ -76,13 +74,11 @@ public class ultimatePointsListeners implements Listener {
         Player killed = e.getEntity();
         Player p = e.getEntity().getKiller();
         if (killed != null) {
-            p.sendMessage("check");
             if (getUltPoints(p) < maximumUltPoints.get(p.getUniqueId())) {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(Kiulabilities.getPlugin(Kiulabilities.class), new Runnable() {
                     @Override
                     public void run() {
                         addUltPoint(p);
-                        p.sendMessage("check1");
                     }
                 }, 10);
             }

@@ -3,6 +3,7 @@ package kiul.kiulabilities.gamelogic.abilities;
 import kiul.kiulabilities.Kiulabilities;
 import kiul.kiulabilities.gamelogic.AbilityExtras;
 import kiul.kiulabilities.gamelogic.AbilityItemNames;
+import kiul.kiulabilities.gamelogic.ColoredText;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -40,11 +41,13 @@ public class Tracker implements Listener {
 
     private final HashMap<UUID, Long> ultimateCooldown = new HashMap<>();
 
-    private int primaryTimer = 1;
-    private int secondaryTimer = 1;
-    private int ultimateTimer = 1;
+    String configname = AbilityItemNames.TRACKER.name();
 
-    String itemname = AbilityItemNames.TRACKER.getLabel();
+    private int primaryTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Primary");
+    private int secondaryTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Secondary");
+    private int ultimateTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Ultimate");
+
+    String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.TRACKER.getLabel()));
 
     @EventHandler
     public void onClick(PlayerInteractEvent e) {
@@ -204,7 +207,7 @@ public class Tracker implements Listener {
 
                     } else {
                         DecimalFormat df = new DecimalFormat("0.00");
-                        String timer = df.format((double) (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
+                        String timer = df.format((double) (ultimateTimer * 1000 - (System.currentTimeMillis() - ((Long) ultimateCooldown.get(p.getUniqueId())).longValue())) / 1000);
                         p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.RED + " Ultimate ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.RED + ChatColor.ITALIC + timer + "s!");                    }
                 } else {
                     ultimatePointsListeners.CheckUltPoints(p);

@@ -17,8 +17,8 @@ public class DroppingAbilitys implements Listener {
 
         if (e.getItemDrop().getItemStack().hasItemMeta()) {
             for (AbilityItemNames names : AbilityItemNames.values()) {
-                names.toString().replace("_", " ");
-                if (ChatColor.stripColor(e.getItemDrop().getItemStack().getItemMeta().getDisplayName()).equalsIgnoreCase(names.toString())) {
+                String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(names.getLabel()));
+                if (ChatColor.stripColor(e.getItemDrop().getItemStack().getItemMeta().getDisplayName()).equalsIgnoreCase(itemname)) {
                     e.setCancelled(true);
                     break;
                 }

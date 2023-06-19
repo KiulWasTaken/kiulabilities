@@ -1,0 +1,54 @@
+#DISPLAY-NAME IS ALSO NAME USED FOR THE EVENT TRIGGER
+
+Abilities:
+  UNNAMED:
+    Cooldowns:
+      Primary: 1
+      Secondary: 1
+      Ultimate: 1
+    Class: "&f&lMOVEMENT"
+    DisplayName: "&f&lUnnamed Ability"
+  ARTIFICER:
+    Cooldowns:
+      Primary: 1
+      Secondary: 1
+      Ultimate: 1
+    Class: ""
+    DisplayName: "&f&lArtificer Ability"
+  CATALYST:
+    Cooldowns:
+      Primary: 1
+      Secondary: 1
+      Ultimate: 1
+    Class: ""
+    DisplayName: "&f&lCatalyst Ability"
+  EARTH:
+    Cooldowns:
+      Primary: 1
+      Secondary: 1
+      Ultimate: 1
+    Class: ""
+    DisplayName: "&f&lEarth Ability"
+  FEATHERWEIGHT:
+    Cooldowns:
+      Primary: 1
+      Secondary: 1
+      Ultimate: 1
+    Class: ""
+    DisplayName: "&f&lFeatherweight Ability"
+  STEALTH:
+    Cooldowns:
+      Primary: 1
+      Secondary: 1
+      Ultimate: 1
+    Class: ""
+    DisplayName: "&f&lStealth Ability"
+  TRACKER:
+    Cooldowns:
+      Primary: 1
+      Secondary: 1
+      Ultimate: 1
+    Class: ""
+    DisplayName: "&f&lTracker Ability"
+
+
