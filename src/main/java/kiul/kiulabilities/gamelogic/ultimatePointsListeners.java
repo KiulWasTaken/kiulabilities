@@ -71,16 +71,19 @@ public class ultimatePointsListeners implements Listener {
 
     @EventHandler
     public void onKill (PlayerDeathEvent e) {
-        Player killed = e.getEntity();
-        Player p = e.getEntity().getKiller();
-        if (killed != null) {
-            if (getUltPoints(p) < maximumUltPoints.get(p.getUniqueId())) {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(Kiulabilities.getPlugin(Kiulabilities.class), new Runnable() {
-                    @Override
-                    public void run() {
-                        addUltPoint(p);
-                    }
-                }, 10);
+
+        if (e.getEntity() instanceof Player && e.getEntity().getKiller() instanceof Player) {
+            Player killed = e.getEntity();
+            Player p = e.getEntity().getKiller();
+            if (killed != null) {
+                if (getUltPoints(p) < maximumUltPoints.get(p.getUniqueId())) {
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(Kiulabilities.getPlugin(Kiulabilities.class), new Runnable() {
+                        @Override
+                        public void run() {
+                            addUltPoint(p);
+                        }
+                    }, 10);
+                }
             }
         }
     }

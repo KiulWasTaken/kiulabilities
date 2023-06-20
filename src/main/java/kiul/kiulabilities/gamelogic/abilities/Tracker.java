@@ -65,6 +65,7 @@ public class Tracker implements Listener {
                             // ABILITY CODE START
 
                             Wolf roger = (Wolf) p.getWorld().spawnEntity(p.getLocation().add(0, 1, 0), EntityType.WOLF);
+                            roger.setOwner(p);
                             roger.setAngry(true);
                             roger.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 99999, 2, false, false));
                             roger.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(6);
@@ -81,10 +82,12 @@ public class Tracker implements Listener {
                                 }
                             }
 
-                            Arrays.sort(nearbyPlayers.toArray());
-                            roger.setTarget(players.get(nearbyPlayers.get(0)));
-                            roger.setVelocity((players.get(nearbyPlayers.get(0)).getLocation().add(0, 1, 0).toVector().subtract(roger.getLocation().toVector())).normalize().multiply(0.8));
-                            roger.setCustomName(p.getDisplayName() + "'s Bloodhound Roger");
+                            if (players.size() > 0) {
+                                Arrays.sort(nearbyPlayers.toArray());
+                                roger.setTarget(players.get(nearbyPlayers.get(0)));
+                                roger.setVelocity((players.get(nearbyPlayers.get(0)).getLocation().add(0, 1, 0).toVector().subtract(roger.getLocation().toVector())).normalize().multiply(0.8));
+                                roger.setCustomName(p.getDisplayName() + "'s Bloodhound Roger");
+                            }
 
                             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                                 @Override

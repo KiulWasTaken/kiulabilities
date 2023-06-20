@@ -87,7 +87,7 @@ public class UNNAMEDABILITY implements Listener {
                                 for (Entity entity : p.getLocation().getWorld().getNearbyEntities(p.getLocation(), 5, 5, 5)) {
                                     if (entity != p) {
                                         if (entity.getType() != EntityType.DROPPED_ITEM && entity.getType() != EntityType.ARMOR_STAND) {
-                                            if (entity.getLocation().add(0, 1, 0).distance(p.getLocation().add(0, 1, 0)) <= 1.5) {
+                                            if (entity.getLocation().add(0.5, 1, 0.5).distance(p.getLocation().add(0.5, 1, 0.5)) <= 1.5) {
 
                                                 p.setVelocity(p.getVelocity().add(direction.multiply(-0.2)));
 
@@ -99,12 +99,9 @@ public class UNNAMEDABILITY implements Listener {
                                                 for (Entity entity1 : p.getLocation().getWorld().getNearbyEntities(p.getLocation(), 5, 10, 5)) {
                                                     if (entity1 != p) {
                                                         if (entity1.getType() != EntityType.DROPPED_ITEM && entity1.getType() != EntityType.ARMOR_STAND) {
-                                                            if (entity1.getLocation().add(0, 1, 0).distance(p.getLocation().add(0, 1, 0)) <= 3) {
+                                                            if (entity1.getLocation().add(0.5, 1, 0.5).distance(p.getLocation().add(0.5, 1, 0.5)) <= 3) {
 
                                                                 repulseplayer(p, entity1);
-
-                                                                Vector vec1 = entity1.getLocation().add(0, 0.5, 0).toVector().subtract(p.getLocation().toVector()).normalize();
-                                                                //entity1.setVelocity(vec1.add(new Vector(0, 0.2, 0)));
 
                                                                 p.getWorld().playSound(entity1.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.4F, 0.3F);
 
@@ -131,7 +128,7 @@ public class UNNAMEDABILITY implements Listener {
                                     for (Entity entity1 : p.getLocation().getWorld().getNearbyEntities(p.getLocation(), 5, 10, 5)) {
                                         if (entity1 != p) {
                                             if (entity1.getType() != EntityType.DROPPED_ITEM && entity1.getType() != EntityType.ARMOR_STAND) {
-                                                if (entity1.getLocation().add(0, 1, 0).distance(p.getLocation().add(0, 1, 0)) <= 3) {
+                                                if (entity1.getLocation().add(0.5, 1, 0.5).distance(p.getLocation().add(0.5, 1, 0.5)) <= 3) {
                                                     AnyPlayersCheck.add(entity1);
                                                 }
                                             }

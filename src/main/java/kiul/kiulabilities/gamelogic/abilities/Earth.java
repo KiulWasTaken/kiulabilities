@@ -65,7 +65,6 @@ public class Earth implements Listener {
                                 p.setVelocity(new Vector(0, 1, 0));
                                 p.spawnParticle(Particle.BLOCK_DUST, p.getLocation(), 5);
                             }
-
                             //ABILITY CODE END
 
                             if (secondaryCooldown.isEmpty()) {
@@ -110,7 +109,6 @@ public class Earth implements Listener {
                                 blockLocation.setX(initialX);
                                 blockLocation.setZ(initialZ);
                             }
-
                             //ABILITY CODE END
 
                             if (primaryCooldown.isEmpty()) {

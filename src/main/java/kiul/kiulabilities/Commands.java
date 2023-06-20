@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
@@ -16,8 +17,9 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class Commands implements CommandExecutor, Listener {
+public class Commands implements TabExecutor, Listener {
 
     public Plugin plugin = Kiulabilities.getPlugin(Kiulabilities.class);
 
@@ -119,5 +121,26 @@ public class Commands implements CommandExecutor, Listener {
             } else if (label.equalsIgnoreCase("giveultpoint")) {
             ultimatePointsListeners.addUltPoint(p);
         }
-    return false;}
+    return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+
+        if (command.getName().equals("test")) {
+            if (args.length < 2) {
+                List<String> arguments = new ArrayList<>();
+                arguments.add("test");
+                arguments.add("stealth");
+                arguments.add("tracker");
+                arguments.add("featherweight");
+                arguments.add("earth");
+                arguments.add("tracker");
+                arguments.add("catalyst");
+
+                return arguments;
+            }
+        }
+        return null;
+    }
 }
