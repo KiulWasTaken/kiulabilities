@@ -50,5 +50,12 @@ Abilities:
       Ultimate: 1
     Class: ""
     DisplayName: "&f&lTracker Ability"
+  DISCHARGE:
+    Cooldowns:
+      Primary: 1
+      Secondary: 1
+      Ultimate: 1
+    Class: ""
+    DisplayName: "&f&lDischarge Ability"
 
 
