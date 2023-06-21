@@ -36,7 +36,7 @@ public class Commands implements TabExecutor, Listener {
                     p.sendMessage("check");
                     ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
                     ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),2);
-                    ItemStack stealthTrigger = new ItemStack(Material.PRISMARINE_CRYSTALS);
+                    ItemStack stealthTrigger = new ItemStack(Material.LIGHT_GRAY_DYE);
                     ItemMeta stealthTriggerMeta = stealthTrigger.getItemMeta();
                     lore.add(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Become intangible and invisible for a short time");
                     lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Shortsight players in a radius directly in front of you for a short time");
@@ -49,7 +49,7 @@ public class Commands implements TabExecutor, Listener {
                 case "tracker":
                     ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),3);
                     ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),3);
-                    ItemStack trackerTrigger = new ItemStack(Material.SWEET_BERRIES);
+                    ItemStack trackerTrigger = new ItemStack(Material.LIME_DYE);
                     ItemMeta trackerTriggerMeta = trackerTrigger.getItemMeta();
                     lore.add(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Summon a wolf that hunts down and stuns the nearest player");
                     lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Grow a defensive cluster of sweet berry bushes in nearby grass");
@@ -62,7 +62,7 @@ public class Commands implements TabExecutor, Listener {
                 case "featherweight":
                     ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),3);
                     ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),3);
-                    ItemStack flyTrigger = new ItemStack(Material.FEATHER);
+                    ItemStack flyTrigger = new ItemStack(Material.WHITE_DYE);
                     ItemMeta flyTriggerMeta = flyTrigger.getItemMeta();
                     lore.add(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Fly up into the sky");
                     lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "----");
@@ -76,7 +76,7 @@ public class Commands implements TabExecutor, Listener {
                 case "artificer":
                     ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
                     ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),2);
-                    ItemStack boomTrigger = new ItemStack(Material.REDSTONE);
+                    ItemStack boomTrigger = new ItemStack(Material.RED_DYE);
                     ItemMeta boomTriggerMeta = boomTrigger.getItemMeta();
                     lore.add(ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Creates a small, non-damaging explosion that boosts the player several blocks");
                     lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Create a medium explosion at your feet, throwing nearby players back and dealing damage");
@@ -89,7 +89,7 @@ public class Commands implements TabExecutor, Listener {
                 case "earth":
                     ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
                     ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),2);
-                    ItemStack rockTrigger = new ItemStack(Material.STONE);
+                    ItemStack rockTrigger = new ItemStack(Material.BROWN_DYE);
                     ItemMeta rockTriggerMeta = rockTrigger.getItemMeta();
                     lore.add(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + " » " + ChatColor.GRAY + "Launches the player into the air, creating a damaging crater when landing and negates fall damage");
                     lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + " » " + ChatColor.GRAY + "-");
@@ -111,11 +111,20 @@ public class Commands implements TabExecutor, Listener {
                 case "catalyst":
                     ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
                     ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),4);
-                    ItemStack catalystTrigger = new ItemStack(Material.ECHO_SHARD);
+                    ItemStack catalystTrigger = new ItemStack(Material.CYAN_DYE);
                     ItemMeta catalystMeta = catalystTrigger.getItemMeta();
                     catalystMeta.setDisplayName(ColoredText.translateHexCodes(AbilityItemNames.CATALYST.getLabel()));
                     catalystTrigger.setItemMeta(catalystMeta);
                     p.getInventory().addItem(catalystTrigger);
+                    break;
+                case "discharge":
+                    ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
+                    ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),4);
+                    ItemStack dischargeTrigger = new ItemStack(Material.LIGHT_BLUE_DYE);
+                    ItemMeta dischargeMeta = dischargeTrigger.getItemMeta();
+                    dischargeMeta.setDisplayName(ColoredText.translateHexCodes(AbilityItemNames.DISCHARGE.getLabel()));
+                    dischargeTrigger.setItemMeta(dischargeMeta);
+                    p.getInventory().addItem(dischargeTrigger);
                     break;
                 }
             } else if (label.equalsIgnoreCase("giveultpoint")) {
@@ -137,6 +146,7 @@ public class Commands implements TabExecutor, Listener {
                 arguments.add("earth");
                 arguments.add("tracker");
                 arguments.add("catalyst");
+                arguments.add("discharge");
 
                 return arguments;
             }

@@ -149,7 +149,7 @@ public class Artificer implements Listener {
                             public void run() {
                                 // ULTIMATE CODE HERE
                                 for (Player ap : Bukkit.getOnlinePlayers()) {
-                                    if (ap != p);
+                                    if (ap != p)
                                     {
                                         ap.getWorld().spawnEntity(ap.getLocation().add(2, 7, 2), EntityType.PRIMED_TNT);
                                         ap.getWorld().spawnEntity(ap.getLocation().add(-2, 7, -2), EntityType.PRIMED_TNT);

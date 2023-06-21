@@ -16,7 +16,8 @@ import java.util.List;
         FEATHERWEIGHT(AbilityExtras.displayname("FEATHERWEIGHT.DisplayName")),
         TRACKER(AbilityExtras.displayname("TRACKER.DisplayName")),
         STEALTH(AbilityExtras.displayname("STEALTH.DisplayName")),
-        CATALYST(AbilityExtras.displayname("CATALYST.DisplayName"));
+        CATALYST(AbilityExtras.displayname("CATALYST.DisplayName")),
+        DISCHARGE(AbilityExtras.displayname("DISCHARGE.DisplayName"));
 
         private String label;
 
