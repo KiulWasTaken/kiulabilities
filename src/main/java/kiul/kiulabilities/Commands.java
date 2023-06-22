@@ -123,6 +123,7 @@ public class Commands implements TabExecutor, Listener {
                     ItemStack dischargeTrigger = new ItemStack(Material.LIGHT_BLUE_DYE);
                     ItemMeta dischargeMeta = dischargeTrigger.getItemMeta();
                     dischargeMeta.setDisplayName(ColoredText.translateHexCodes(AbilityItemNames.DISCHARGE.getLabel()));
+                    p.setMetadata("discharge", new FixedMetadataValue(plugin, "pat"));
                     dischargeTrigger.setItemMeta(dischargeMeta);
                     p.getInventory().addItem(dischargeTrigger);
                     break;
