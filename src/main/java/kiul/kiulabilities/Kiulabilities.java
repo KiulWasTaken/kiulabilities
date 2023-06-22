@@ -22,6 +22,7 @@ public final class Kiulabilities extends JavaPlugin {
         this.saveDefaultConfig();
 
         getCommand("test").setExecutor(new Commands());
+        getCommand("giveultpoint").setExecutor(new Commands());
         getServer().getPluginManager().registerEvents(new Stealth(), this);
         getServer().getPluginManager().registerEvents(new Tracker(), this);
         getServer().getPluginManager().registerEvents(new Commands(), this);

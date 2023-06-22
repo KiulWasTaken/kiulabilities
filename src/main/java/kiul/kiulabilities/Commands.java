@@ -28,8 +28,6 @@ public class Commands implements TabExecutor, Listener {
         Player p = (Player) sender;
         if (label.equalsIgnoreCase("test")) {
 
-
-
             ArrayList<String> lore = new ArrayList<>();
             switch (args[0]) {
                 case "stealth":
