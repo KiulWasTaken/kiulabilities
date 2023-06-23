@@ -2,8 +2,12 @@ package kiul.kiulabilities;
 
 import kiul.kiulabilities.gamelogic.*;
 import kiul.kiulabilities.gamelogic.abilities.*;
+import org.bukkit.NamespacedKey;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +19,8 @@ public final class Kiulabilities extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+        registerGlow();
 
         ultimatePointsConfig.setup();
         ultimatePointsConfig.save();
@@ -39,5 +45,25 @@ public final class Kiulabilities extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+    }
+
+    public void registerGlow() {
+        try {
+            Field f = Enchantment.class.getDeclaredField("acceptingNew");
+            f.setAccessible(true);
+            f.set(null, true);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            GlintEnchantment glow = new GlintEnchantment(new NamespacedKey(this, "glow"));
+            Enchantment.registerEnchantment(glow);
+        }
+        catch (IllegalArgumentException e){
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }

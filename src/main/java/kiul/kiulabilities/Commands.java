@@ -2,19 +2,23 @@ package kiul.kiulabilities;
 
 import kiul.kiulabilities.gamelogic.AbilityItemNames;
 import kiul.kiulabilities.gamelogic.ColoredText;
+import kiul.kiulabilities.gamelogic.GlintEnchantment;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,106 +34,146 @@ public class Commands implements TabExecutor, Listener {
 
             ArrayList<String> lore = new ArrayList<>();
             switch (args[0]) {
-                case "stealth":
-                    p.sendMessage("check");
-                    ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
-                    ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),2);
-                    ItemStack stealthTrigger = new ItemStack(Material.LIGHT_GRAY_DYE);
-                    ItemMeta stealthTriggerMeta = stealthTrigger.getItemMeta();
+                case "stealth": {
+                    int maxUltimatePoints = 6;
+                    int requiredUltimatePoints = 2;
+                    Material material = Material.LIGHT_GRAY_DYE;
+                    String displayName = ColoredText.translateHexCodes(AbilityItemNames.STEALTH.getLabel());
+                    String metaData = "stealth";
+
+                    //
                     lore.add(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Become intangible and invisible for a short time");
                     lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Shortsight players in a radius directly in front of you for a short time");
-                    stealthTriggerMeta.setLore(lore);
-                    stealthTriggerMeta.setDisplayName(ColoredText.translateHexCodes(AbilityItemNames.STEALTH.getLabel()));
-                    p.setMetadata("stealth", new FixedMetadataValue(plugin, "pat"));
-                    stealthTrigger.setItemMeta(stealthTriggerMeta);
-                    p.getInventory().addItem(stealthTrigger);
+                    //
+
+                    spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
+                }
                 break;
-                case "tracker":
-                    ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),3);
-                    ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),3);
-                    ItemStack trackerTrigger = new ItemStack(Material.LIME_DYE);
-                    ItemMeta trackerTriggerMeta = trackerTrigger.getItemMeta();
+                case "tracker": {
+                    int maxUltimatePoints = 3;
+                    int requiredUltimatePoints = 3;
+                    Material material = Material.LIME_DYE;
+                    String displayName = ColoredText.translateHexCodes(AbilityItemNames.TRACKER.getLabel());
+                    String metaData = "tracker";
+
+                    //
                     lore.add(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Summon a wolf that hunts down and stuns the nearest player");
                     lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Grow a defensive cluster of sweet berry bushes in nearby grass");
-                    trackerTriggerMeta.setLore(lore);
-                    trackerTriggerMeta.setDisplayName(ColoredText.translateHexCodes(AbilityItemNames.TRACKER.getLabel()));
-                    p.setMetadata("tracker", new FixedMetadataValue(plugin, "pat"));
-                    trackerTrigger.setItemMeta(trackerTriggerMeta);
-                    p.getInventory().addItem(trackerTrigger);
+                    //
+
+                    spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
+                }
                     break;
-                case "featherweight":
-                    ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),3);
-                    ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),3);
-                    ItemStack flyTrigger = new ItemStack(Material.WHITE_DYE);
-                    ItemMeta flyTriggerMeta = flyTrigger.getItemMeta();
+                case "featherweight": {
+                    int maxUltimatePoints = 3;
+                    int requiredUltimatePoints = 3;
+                    Material material = Material.WHITE_DYE;
+                    String displayName = ColoredText.translateHexCodes(AbilityItemNames.FEATHERWEIGHT.getLabel());
+                    String metaData = "featherweight";
+
+                    //
                     lore.add(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Fly up into the sky");
                     lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "----");
-                    flyTriggerMeta.setLore(lore);
-                    flyTriggerMeta.setDisplayName(ColoredText.translateHexCodes(AbilityItemNames.FEATHERWEIGHT.getLabel()));
-                    p.setMetadata("featherweight", new FixedMetadataValue(plugin, "pat"));
-                    flyTrigger.setItemMeta(flyTriggerMeta);
-                    p.getInventory().addItem(flyTrigger);
-                    lore.clear();
+                    //
+
+                    spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
+                }
                     break;
-                case "artificer":
-                    ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
-                    ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),2);
-                    ItemStack boomTrigger = new ItemStack(Material.RED_DYE);
-                    ItemMeta boomTriggerMeta = boomTrigger.getItemMeta();
+                case "artificer": {
+                    int maxUltimatePoints = 6;
+                    int requiredUltimatePoints = 2;
+                    Material material = Material.RED_DYE;
+                    String displayName = ColoredText.translateHexCodes(AbilityItemNames.ARTIFICER.getLabel());
+                    String metaData = "artificer";
+
+                    //
                     lore.add(ChatColor.WHITE + "Right-Click" + ChatColor.GOLD + " » " + ChatColor.GRAY + "Creates a small, non-damaging explosion that boosts the player several blocks");
                     lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Create a medium explosion at your feet, throwing nearby players back and dealing damage");
-                    boomTriggerMeta.setLore(lore);
-                    boomTriggerMeta.setDisplayName(ColoredText.translateHexCodes(AbilityItemNames.ARTIFICER.getLabel()));
-                    p.setMetadata("artificer", new FixedMetadataValue(plugin, "pat"));
-                    boomTrigger.setItemMeta(boomTriggerMeta);
-                    p.getInventory().addItem(boomTrigger);
+                    //
+
+                    spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
+                }
                     break;
-                case "earth":
-                    ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
-                    ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),2);
-                    ItemStack rockTrigger = new ItemStack(Material.BROWN_DYE);
-                    ItemMeta rockTriggerMeta = rockTrigger.getItemMeta();
+                case "earth": {
+                    int maxUltimatePoints = 6;
+                    int requiredUltimatePoints = 2;
+                    Material material = Material.BROWN_DYE;
+                    String displayName = ColoredText.translateHexCodes(AbilityItemNames.EARTH.getLabel());
+                    String metaData = "earth";
+
+                    //
                     lore.add(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + " » " + ChatColor.GRAY + "Launches the player into the air, creating a damaging crater when landing and negates fall damage");
                     lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + " » " + ChatColor.GRAY + "-");
-                    rockTriggerMeta.setLore(lore);
-                    rockTriggerMeta.setDisplayName(ColoredText.translateHexCodes(AbilityItemNames.EARTH.getLabel()));
-                    p.setMetadata("earth", new FixedMetadataValue(plugin, "pat"));
-                    rockTrigger.setItemMeta(rockTriggerMeta);
-                    p.getInventory().addItem(rockTrigger);
+                    //
+
+                    spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
+                }
                     break;
-                case "test":
-                    ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
-                    ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),3);
-                    ItemStack testTrigger = new ItemStack(Material.PINK_DYE);
-                    ItemMeta testTriggerMeta = testTrigger.getItemMeta();
-                    testTriggerMeta.setDisplayName(ColoredText.translateHexCodes(AbilityItemNames.UNNAMED.getLabel()));
-                    testTrigger.setItemMeta(testTriggerMeta);
-                    p.getInventory().addItem(testTrigger);
+                case "unnamed": {
+                    int maxUltimatePoints = 6;
+                    int requiredUltimatePoints = 4;
+                    Material material = Material.PINK_DYE;
+                    String displayName = ColoredText.translateHexCodes(AbilityItemNames.UNNAMED.getLabel());
+                    String metaData = null;
+
+                    //
+                    lore.add(ColoredText.translateHexCodes("&#d8d8d8&lRight-Click &6» &#d8d8d8" + "Zoom forward, repulsing players away if hit. (Not hitting anyone will debuff you!)"));
+                    lore.add(ColoredText.translateHexCodes("&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "Double jump forward, doesn't work while falling. (attempting to fly will work to)"));
+                    lore.add(ColoredText.translateHexCodes("&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "EVERY player gets repulsed in a direction away from the player."));
+                    lore.add(ColoredText.translateHexCodes(" "));
+                    lore.add(ColoredText.translateHexCodes("&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.UNNAMED.Class")));
+                    //
+
+                    spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
+                }
                     break;
-                case "catalyst":
-                    ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
-                    ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),4);
-                    ItemStack catalystTrigger = new ItemStack(Material.CYAN_DYE);
-                    ItemMeta catalystMeta = catalystTrigger.getItemMeta();
-                    catalystMeta.setDisplayName(ColoredText.translateHexCodes(AbilityItemNames.CATALYST.getLabel()));
-                    catalystTrigger.setItemMeta(catalystMeta);
-                    p.getInventory().addItem(catalystTrigger);
+                case "catalyst": {
+                    int maxUltimatePoints = 6;
+                    int requiredUltimatePoints = 4;
+                    Material material = Material.CYAN_DYE;
+                    String displayName = ColoredText.translateHexCodes(AbilityItemNames.CATALYST.getLabel());
+                    String metaData = null;
+
+                    //
+                    //
+
+                    spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
+                }
                     break;
-                case "discharge":
-                    ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
-                    ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),4);
-                    ItemStack dischargeTrigger = new ItemStack(Material.LIGHT_BLUE_DYE);
-                    ItemMeta dischargeMeta = dischargeTrigger.getItemMeta();
-                    dischargeMeta.setDisplayName(ColoredText.translateHexCodes(AbilityItemNames.DISCHARGE.getLabel()));
-                    p.setMetadata("discharge", new FixedMetadataValue(plugin, "pat"));
-                    dischargeTrigger.setItemMeta(dischargeMeta);
-                    p.getInventory().addItem(dischargeTrigger);
+                case "discharge": {
+                    int maxUltimatePoints = 6;
+                    int requiredUltimatePoints = 4;
+                    Material material = Material.LIGHT_BLUE_DYE;
+                    String displayName = ColoredText.translateHexCodes(AbilityItemNames.DISCHARGE.getLabel());
+                    String metaData = null;
+
+                    //
+                    //
+
+                    spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
+                }
                     break;
                 }
-            } else if (label.equalsIgnoreCase("giveultpoint")) {
+            } else if (label.equalsIgnoreCase("giveultpoint")) { /** /giveultpoint */
             ultimatePointsListeners.addUltPoint(p);
         }
     return false;
+    }
+
+    public void spawnAbilityItem (Player p, Integer maxUltPoints, Integer requiredUltPoints, Material material, List<String> lore, String displayName, String metaData) {
+        ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),maxUltPoints);
+        ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),requiredUltPoints);
+        ItemStack abilityTrigger = new ItemStack(material);
+        ItemMeta abilityTriggerMeta = abilityTrigger.getItemMeta();
+        abilityTriggerMeta.setLore(lore);
+        abilityTriggerMeta.setDisplayName(displayName);
+        GlintEnchantment glow = new GlintEnchantment(new NamespacedKey(plugin, "glow"));
+        abilityTriggerMeta.addEnchant(glow, 1, true);
+        if (metaData != null) {
+            p.setMetadata(metaData, new FixedMetadataValue(plugin, "pat"));
+        }
+        abilityTrigger.setItemMeta(abilityTriggerMeta);
+        p.getInventory().addItem(abilityTrigger);
     }
 
     @Override
@@ -138,14 +182,10 @@ public class Commands implements TabExecutor, Listener {
         if (command.getName().equals("test")) {
             if (args.length < 2) {
                 List<String> arguments = new ArrayList<>();
-                arguments.add("test");
-                arguments.add("stealth");
-                arguments.add("tracker");
-                arguments.add("featherweight");
-                arguments.add("earth");
-                arguments.add("tracker");
-                arguments.add("catalyst");
-                arguments.add("discharge");
+
+                for (AbilityItemNames names : AbilityItemNames.values()) {
+                    arguments.add(names.name().toLowerCase());
+                }
 
                 return arguments;
             }
