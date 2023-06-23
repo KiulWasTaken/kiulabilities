@@ -6,6 +6,7 @@ import kiul.kiulabilities.gamelogic.AbilityItemNames;
 import kiul.kiulabilities.gamelogic.ColoredText;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
 import org.bukkit.*;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -13,10 +14,16 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -59,7 +66,11 @@ public class Discharge implements Listener {
                         e.setCancelled(true);
 
                         /** PRIMARY - CODE START >> */
-
+                        ItemStack t = new ItemStack(Material.TRIDENT);
+                        ItemMeta tm = t.getItemMeta();
+                        tm.setDisplayName("Discharge Trident");
+                        t.setItemMeta(tm);
+                        p.getInventory().setItemInOffHand(t);
 
 
                         /** CODE END << */
@@ -83,17 +94,17 @@ public class Discharge implements Listener {
 
                         /** SECONDARY - CODE START >> */
                         if (p.getLocation().getBlock().getType() == Material.WATER) {
-                            for (Entity ap : p.getNearbyEntities(13,13,13)) {
+                            for (Entity ap : p.getNearbyEntities(13, 13, 13)) {
                                 if (ap instanceof Player) {
                                     if (ap.getLocation().getBlock().getType() == Material.WATER) {
+                                        ((Player) ap).damage(4, p); //make static methods for debuffs
+                                        spawnParticleTrail(p.getLocation(), ap.getLocation(), Particle.BLOCK_CRACK, p, 50, 0);
 
-                                        spawnParticleTrail(p.getLocation(),ap.getLocation(),Particle.ELECTRIC_SPARK,p,6,2);
-                                        ((Player) ap).damage(4,p); //make static methods for debuffs
 
                                     }
                                 }
-                                }
                             }
+                        }
 
                         /** CODE END << */
 
@@ -158,16 +169,53 @@ public class Discharge implements Listener {
         double step = distance / PARTICLE_COUNT;
 
         for (double i = 0; i < distance; i += step) {
-            double offsetX = random.nextDouble() * VARIANCE * 2 - VARIANCE;
-            double offsetY = random.nextDouble() * VARIANCE * 2 - VARIANCE;
-            double offsetZ = random.nextDouble() * VARIANCE * 2 - VARIANCE;
+            double offsetX = random.nextDouble() * VARIANCE * 1 - VARIANCE;
+            double offsetY = random.nextDouble() * VARIANCE * 1 - VARIANCE;
+            double offsetZ = random.nextDouble() * VARIANCE * 1 - VARIANCE;
 
             Location particleLocation = from.clone().add(to.clone().subtract(from).multiply(i));
             particleLocation.add(offsetX, offsetY, offsetZ);
 
-            player.getWorld().spawnParticle(particleType, particleLocation, 1);
+            player.getWorld().spawnParticle(particleType, particleLocation, 1, Material.YELLOW_WOOL.createBlockData());
         }
     }
+    @EventHandler
+    public void tridentThrow (ProjectileLaunchEvent e) {
+        if (e.getEntity().getType() == EntityType.TRIDENT && e.getEntity().getShooter() instanceof Player && ((Player) e.getEntity().getShooter()).hasMetadata("discharge")) {
+            e.getEntity().setMetadata("discharge", new FixedMetadataValue(plugin, "pat"));
+            ItemStack s = new ItemStack(Material.SHIELD);
+            ItemMeta sm = s.getItemMeta();
+            sm.setUnbreakable(true);
+            s.setItemMeta(sm);
+            ((Player) e.getEntity().getShooter()).getInventory().setItemInOffHand(s);
+        }
+    }
+    @EventHandler
+    public void tridentHit (ProjectileHitEvent e) {
+        if (e.getEntity().hasMetadata("discharge") && e.getHitEntity() != null) {
+            e.getHitEntity().getWorld().spawnEntity(e.getHitEntity().getLocation(),EntityType.LIGHTNING);
+            //root
+            e.getEntity().remove();
+            if (e.getHitEntity().getLocation().getBlock().getType() == Material.WATER) {
+                for (Entity ap : e.getHitEntity().getNearbyEntities(13,13,13)) {
+                    if (ap instanceof Player && e.getEntity().getShooter() instanceof Player) {
+                        if (ap.getLocation().getBlock().getType() == Material.WATER) {
+                            ((Player) ap).damage(4, (Player) e.getEntity().getShooter()); //make static methods for debuffs
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void tridentClick (InventoryClickEvent e) {
+        if (e.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("discharge trident")) {
+            e.setCancelled(true);
+        }
+    }
+
 }
 
 

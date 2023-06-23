@@ -28,10 +28,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -101,7 +98,7 @@ public class UNNAMEDABILITY implements Listener {
                                                         if (entity1.getType() != EntityType.DROPPED_ITEM && entity1.getType() != EntityType.ARMOR_STAND) {
                                                             if (entity1.getLocation().add(0.5, 1, 0.5).distance(p.getLocation().add(0.5, 1, 0.5)) <= 3) {
 
-                                                                repulseplayer(p, entity1);
+                                                                repulseplayer(p, entity1, -2, 1);
 
                                                                 p.getWorld().playSound(entity1.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.4F, 0.3F);
 
@@ -138,7 +135,7 @@ public class UNNAMEDABILITY implements Listener {
                                     if (AnyPlayersCheck.size() > 0) {
                                         for (Entity entity1 : AnyPlayersCheck) {
 
-                                            repulseplayer(p, entity1);
+                                            repulseplayer(p, entity1, -2, 1);
 
                                             p.getWorld().playSound(entity1.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.4F, 0.3F);
 
@@ -195,19 +192,22 @@ public class UNNAMEDABILITY implements Listener {
                 } else if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
                     if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
 
-                        /** SECONDARY - CODE START >> */
+                        if (p.getAllowFlight() == true) {
 
-                        doublejump(p);
+                            /** SECONDARY - CODE START >> */
 
-                        /** CODE END << */
+                            doublejump(p);
 
-                        if (primaryCooldown.isEmpty()) {
-                            primaryCooldown.put(p.getUniqueId(), (long) 0);
-                        }
-                        secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
-                        if (!Kiulabilities.ABILITYUSED.contains(p.getUniqueId())) {
-                            Kiulabilities.ABILITYUSED.add(p.getUniqueId());
-                            AbilityExtras.TimerTask(p, primaryTimer, primaryCooldown, secondaryTimer, secondaryCooldown);
+                            /** CODE END << */
+
+                            if (primaryCooldown.isEmpty()) {
+                                primaryCooldown.put(p.getUniqueId(), (long) 0);
+                            }
+                            secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
+                            if (!Kiulabilities.ABILITYUSED.contains(p.getUniqueId())) {
+                                Kiulabilities.ABILITYUSED.add(p.getUniqueId());
+                                AbilityExtras.TimerTask(p, primaryTimer, primaryCooldown, secondaryTimer, secondaryCooldown);
+                            }
                         }
                     } else {
                         DecimalFormat df = new DecimalFormat("0.00");
@@ -358,7 +358,43 @@ public class UNNAMEDABILITY implements Listener {
 
                                 /** ULTIMATE - CODE START >> */
 
+                                List<Entity> hitplayers = new ArrayList<>();
 
+                                for (Entity entity1 : p.getLocation().getWorld().getNearbyEntities(p.getLocation(), 300, 400, 300)) {
+                                    if (entity1 != p) {
+                                        if (entity1.getType() != EntityType.ARMOR_STAND) {
+
+                                        repulseplayer(p, entity1, -6, 2);
+
+                                        hitplayers.add(entity1);
+
+                                        }
+                                    }
+                                }
+
+                                AtomicInteger HitParticleLength = new AtomicInteger(40);
+
+                                new BukkitRunnable() {
+                                    @Override
+                                    public void run() {
+
+                                        for (Entity entity : hitplayers) {
+                                            if (entity.getVelocity().getY() < -0.08 || entity.getVelocity().getY() > -0.06) {
+                                                Particle.DustTransition dustTransition1 = new Particle.DustTransition(Color.fromRGB((int) (230 - (HitParticleLength.get()) * 5), (int) (220 - (HitParticleLength.get()) * 2.5), (int) (0 + (HitParticleLength.get()) * 5)), Color.fromRGB(255, 255, 255), 1.5F);
+                                                p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, entity.getLocation().add(0, 1, 0), 2, 0.3, 0.5, 0.3, dustTransition1);
+                                            }
+                                        }
+
+                                        HitParticleLength.getAndDecrement();
+
+                                        if (HitParticleLength.get() <= 0) {
+                                            cancel();
+                                        }
+
+                                    }
+                                }.runTaskTimer(plugin, 0L, 0L);
+
+                                p.getWorld().playSound(p.getLocation(), Sound.ENTITY_WITHER_SHOOT, 1000F, 1F);
 
                                 /** CODE END << */
 
@@ -420,7 +456,7 @@ public class UNNAMEDABILITY implements Listener {
 
     }
 
-    public void repulseplayer (Player p, Entity entity1) {
+    public void repulseplayer (Player p, Entity entity1, double Strength, double Y) {
 
         double deltaX = entity1.getLocation().add(0.5,0,0.5).getX() - p.getLocation().add(0.5,0,0.5).getX();
         double deltaZ = entity1.getLocation().add(0.5,0,0.5).getZ() - p.getLocation().add(0.5,0,0.5).getZ();
@@ -441,8 +477,8 @@ public class UNNAMEDABILITY implements Listener {
             double x = Math.sin(yawRadians);
             double z = -Math.cos(yawRadians);
 
-            x *= -2;
-            z *= -2;
+            x *= Strength;
+            z *= Strength;
 
             double newX = entity1.getLocation().getX() + x;
             double newY = entity1.getLocation().getY();
@@ -452,7 +488,7 @@ public class UNNAMEDABILITY implements Listener {
 
             Vector vec1 = newLocation.toVector().subtract(entity1.getLocation().toVector()).normalize();
 
-            entity1.setVelocity(vec1.add(new Vector(0, 1, 0)));
+            entity1.setVelocity(vec1.add(new Vector(0, Y, 0)));
 
         } else {
 
@@ -463,8 +499,8 @@ public class UNNAMEDABILITY implements Listener {
             double x = Math.sin(yawRadians);
             double z = -Math.cos(yawRadians);
 
-            x *= -2;
-            z *= -2;
+            x *= Strength;
+            z *= Strength;
 
             double newX = entity1.getLocation().getX() + x;
             double newY = entity1.getLocation().getY();
@@ -474,7 +510,7 @@ public class UNNAMEDABILITY implements Listener {
 
             Vector vec1 = newLocation.toVector().subtract(entity1.getLocation().toVector()).normalize();
 
-            entity1.setVelocity(vec1.add(new Vector(0, 1, 0)));
+            entity1.setVelocity(vec1.add(new Vector(0, Y, 0)));
 
         }
 
