@@ -10,6 +10,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
@@ -21,6 +22,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
@@ -85,30 +87,7 @@ public class Earth implements Listener {
                             e.setCancelled(true);
 
                             // ABILITY CODE START
-                            Location origin = p.getEyeLocation();
-                            Vector direction = origin.getDirection();
-                            Location centerLocation = origin.clone().add(direction);
-                            Location rotated = origin.clone();
-                            rotated.setPitch(0);
-                            rotated.setYaw(origin.getYaw() - 90);
-                            Vector rotation = rotated.getDirection();
-                            Location blockLocation = centerLocation.clone().add(rotation).subtract(0, 7 / 13, 0);
-                            rotation.multiply(-1);
-                            int initialX = blockLocation.getBlockX();
-                            int initialZ = blockLocation.getBlockZ();
-                            for (int y = 0; y < 5; y++) {
-                                for (int i = 0; i < 5; i++) {
-                                    Block block = blockLocation.getBlock();
 
-                                    block.setType(Material.DIRT);
-
-                                    blockLocation.add(rotation);
-                                }
-
-                                blockLocation.add(0, 1, 0); // Increase the height by 1
-                                blockLocation.setX(initialX);
-                                blockLocation.setZ(initialZ);
-                            }
                             //ABILITY CODE END
 
                             if (primaryCooldown.isEmpty()) {
@@ -141,11 +120,30 @@ public class Earth implements Listener {
                     if (!ultimateCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (ultimateCooldown.get(p.getUniqueId())).longValue() > ultimateTimer * 1000)) {
                         ultimateCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
                         ultimatePointsListeners.useUltPoints(p, ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId()));
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new BukkitRunnable() {
                             @Override
                             public void run() {
                                 // ULTIMATE CODE HERE
+                                Location centerLoc = p.getLocation();
+                                int radius = 2;
+                                int interval = 4;
+                                World world = centerLoc.getWorld();
+                                double x = centerLoc.getX();
+                                double y = centerLoc.getY();
+                                double z = centerLoc.getZ();
 
+                                for (double theta = 0; theta <= 2 * Math.PI; theta += interval) {
+                                    double dx = radius * Math.cos(theta);
+                                    double dz = radius * Math.sin(theta);
+
+                                    world.spawnFallingBlock(new Location(p.getWorld(),x+dx,y,z+dz),Material.DIRT.createBlockData());
+
+                                }
+
+                                radius += interval;
+                                if (radius > 10) { // Adjust the maximum radius as needed
+                                    cancel(); // Stop the ripple effect
+                                }
                                 // ULTIMATE CODE END HERE
                             }
                         }, ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId()) * 20);

@@ -1,6 +1,7 @@
 package kiul.kiulabilities.gamelogic.abilities;
 
 import kiul.kiulabilities.Kiulabilities;
+import kiul.kiulabilities.StatusEffects;
 import kiul.kiulabilities.gamelogic.AbilityExtras;
 import kiul.kiulabilities.gamelogic.AbilityItemNames;
 import kiul.kiulabilities.gamelogic.ColoredText;
@@ -13,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -44,6 +46,8 @@ public class Discharge implements Listener {
 
     private final HashMap<UUID, Long> ultimateCooldown = new HashMap<>();
 
+    static boolean isUltActive = false;
+
     String configname = AbilityItemNames.DISCHARGE.name(); /** CHANGE 'ARTIFICER'*/
 
     private int primaryTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Primary");
@@ -66,12 +70,17 @@ public class Discharge implements Listener {
                         e.setCancelled(true);
 
                         /** PRIMARY - CODE START >> */
-                        ItemStack t = new ItemStack(Material.TRIDENT);
-                        ItemMeta tm = t.getItemMeta();
-                        tm.setDisplayName("Discharge Trident");
-                        t.setItemMeta(tm);
-                        p.getInventory().setItemInOffHand(t);
-
+                        if (isUltActive == false) {
+                            ItemStack t = new ItemStack(Material.TRIDENT);
+                            ItemMeta tm = t.getItemMeta();
+                            tm.setDisplayName("Discharge Trident");
+                            t.setItemMeta(tm);
+                            p.getInventory().setItemInOffHand(t);
+                        } else {
+                            for (Entity ap : p.getNearbyEntities(13, 13, 13)) {
+                                    ap.getWorld().spawnEntity(ap.getLocation(),EntityType.LIGHTNING);
+                            }
+                        }
 
                         /** CODE END << */
 
@@ -93,12 +102,13 @@ public class Discharge implements Listener {
                     if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
 
                         /** SECONDARY - CODE START >> */
-                        if (p.getLocation().getBlock().getType() == Material.WATER) {
+                        if (p.getLocation().getBlock().getType() == Material.WATER && isUltActive == false) {
                             for (Entity ap : p.getNearbyEntities(13, 13, 13)) {
                                 if (ap instanceof Player) {
                                     if (ap.getLocation().getBlock().getType() == Material.WATER) {
                                         ((Player) ap).damage(4, p); //make static methods for debuffs
                                         spawnParticleTrail(p.getLocation(), ap.getLocation(), Particle.BLOCK_CRACK, p, 50, 0);
+
 
 
                                     }
@@ -144,9 +154,19 @@ public class Discharge implements Listener {
                             public void run() {
 
                                 /** ULTIMATE - CODE START >> */
+                                p.getWorld().setThundering(true);
+                                p.getWorld().setThunderDuration(999999999);
+
+                                ItemStack ut = new ItemStack(Material.TRIDENT);
+                                ItemMeta utm = ut.getItemMeta();
+                                utm.setDisplayName("Discharge Ultimate Trident");
+                                utm.setUnbreakable(true);
+                                utm.addEnchant(Enchantment.RIPTIDE,1,false);
+                                ut.setItemMeta(utm);
+                                p.getInventory().setItemInOffHand(ut);
 
 
-
+                                isUltActive = true;
                                 /** CODE END << */
 
                             }
@@ -194,13 +214,14 @@ public class Discharge implements Listener {
     public void tridentHit (ProjectileHitEvent e) {
         if (e.getEntity().hasMetadata("discharge") && e.getHitEntity() != null) {
             e.getHitEntity().getWorld().spawnEntity(e.getHitEntity().getLocation(),EntityType.LIGHTNING);
-            //root
+            StatusEffects.root((Player) e.getHitEntity(),1);
             e.getEntity().remove();
             if (e.getHitEntity().getLocation().getBlock().getType() == Material.WATER) {
                 for (Entity ap : e.getHitEntity().getNearbyEntities(13,13,13)) {
                     if (ap instanceof Player && e.getEntity().getShooter() instanceof Player) {
                         if (ap.getLocation().getBlock().getType() == Material.WATER) {
-                            ((Player) ap).damage(4, (Player) e.getEntity().getShooter()); //make static methods for debuffs
+                            ((Player) ap).damage(4, (Player) e.getEntity().getShooter());
+                            StatusEffects.stun(((Player) ap).getPlayer(), 3);
 
                         }
                     }
@@ -215,7 +236,12 @@ public class Discharge implements Listener {
             e.setCancelled(true);
         }
     }
-
+    @EventHandler
+    public void lightningDamage (EntityDamageEvent e) {
+        if (e.getCause() == EntityDamageEvent.DamageCause.LIGHTNING && e.getEntity() instanceof Player && e.getEntity().hasMetadata("discharge")) {
+            e.setCancelled(true);
+        }
+    }
 }
 
 

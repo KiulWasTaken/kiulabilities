@@ -20,7 +20,7 @@ public class StatusEffects implements Listener {
     public static ArrayList<Player> preventMove = new ArrayList<>();
 
 
-    static void stun(Player p, int time) {
+    public static void stun(Player p, int time) {
         Plugin plugin = Kiulabilities.getPlugin(Kiulabilities.class);
         p.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, time, 1, true, false));
         p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, time, 1, true, false));
@@ -44,7 +44,7 @@ public class StatusEffects implements Listener {
         }, 0L, 10);
     }
 
-    static void root(Player p, int time) {
+    public static void root(Player p, int time) {
         Plugin plugin = Kiulabilities.getPlugin(Kiulabilities.class);
 
         preventMove.add(p);
@@ -73,7 +73,7 @@ public class StatusEffects implements Listener {
         }, time * 20);
     }
 
-    static void shield(Player p, int level, int time) {
+    public static void shield(Player p, int level, int time) {
         Plugin plugin = Kiulabilities.getPlugin(Kiulabilities.class);
         Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new BukkitRunnable() {
             int i = time * 2;
@@ -97,7 +97,7 @@ public class StatusEffects implements Listener {
 
     }
 
-    static void bleed(Player p, int time) {
+    public static void bleed(Player p, int time) {
         Plugin plugin = Kiulabilities.getPlugin(Kiulabilities.class);
 
         p.setSaturatedRegenRate(-1);

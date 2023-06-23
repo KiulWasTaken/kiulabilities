@@ -10,12 +10,8 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.entity.Arrow;
+import org.bukkit.entity.*;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -32,10 +28,9 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.lang.reflect.Array;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 public class Featherweight implements Listener {
     public Plugin plugin = Kiulabilities.getPlugin(Kiulabilities.class);
@@ -91,16 +86,20 @@ public class Featherweight implements Listener {
                             e.setCancelled(true);
 
                             // ABILITY CODE START
-                            ArmorStand stand = (ArmorStand) p.getWorld().spawnEntity(p.getLocation(), EntityType.ARMOR_STAND);
-                            stand.setVisible(false);
-
-                            for (Entity ne : stand.getNearbyEntities(7, 10, 7)) {
-                                double distance = getDistanceToCenter(ne.getLocation().getX(), ne.getLocation().getY(), stand.getLocation().getX(), stand.getLocation().getY());
-                                if (ne != p) {
-                                    ne.setVelocity(ne.getLocation().toVector().subtract(stand.getLocation().toVector()).normalize().multiply(-distance).add(new Vector(0, 0.15, 0)));
-
+                            List<Entity> nearbyPlayers = p.getNearbyEntities(15,15,15);
+                            for (int i = 0; i < nearbyPlayers.size(); i++) {
+                                if (nearbyPlayers.get(i) == p || !(nearbyPlayers.get(i) instanceof Player)) {
+                                    nearbyPlayers.remove(i);
                                 }
                             }
+
+                            for (int i = 0; i < 3; i++) {
+                                ShulkerBullet sb = (ShulkerBullet) p.getWorld().spawnEntity(p.getLocation().add(0,3,0),EntityType.SHULKER_BULLET);
+                                Random random = new Random();
+                                sb.setTarget(nearbyPlayers.get(random.nextInt(0,nearbyPlayers.size() + 1)));
+                            }
+
+
 
                             //ABILITY CODE END
 
