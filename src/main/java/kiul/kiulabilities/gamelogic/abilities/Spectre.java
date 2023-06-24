@@ -37,13 +37,13 @@ public class Spectre implements Listener {
 
     private final HashMap<UUID, Long> ultimateCooldown = new HashMap<>();
 
-    String configname = AbilityItemNames.UNNAMED.name();
+    String configname = AbilityItemNames.SPECTRE.name();
 
     private int primaryTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Primary");
     private int secondaryTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Secondary");
     private int ultimateTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Ultimate");
 
-    String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.UNNAMED.getLabel()));
+    String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.SPECTRE.getLabel()));
 
     @EventHandler
     public void onClick(PlayerInteractEvent e) throws InterruptedException {
@@ -220,7 +220,7 @@ public class Spectre implements Listener {
         float flyspeed = p.getFlySpeed();
 
         if (AbilityExtras.itemcheck(p, itemname) == true) {
-            if (p.getGameMode() != GameMode.CREATIVE) {
+            if (p.getGameMode() == GameMode.SURVIVAL) {
 
                 e.setCancelled(true);
 

@@ -1,7 +1,7 @@
 #DISPLAY-NAME IS ALSO NAME USED FOR THE EVENT TRIGGER
 
 Abilities:
-  UNNAMED:
+  SPECTRE:
     Cooldowns:
       Primary: 1
       Secondary: 1
@@ -57,5 +57,13 @@ Abilities:
       Ultimate: 1
     Class: ""
     DisplayName: "&f&lDischarge Ability"
+  IGNITION:
+    Cooldowns:
+      Primary: 1
+      Secondary: 1
+      Ultimate: 1
+    Class: ""
+    DisplayName: "&f&lIgnition Ability"
+
 
 
