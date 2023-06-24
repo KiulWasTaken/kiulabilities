@@ -63,7 +63,7 @@ public class Commands implements TabExecutor, Listener {
 
                     spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
                 }
-                    break;
+                break;
                 case "featherweight": {
                     int maxUltimatePoints = 3;
                     int requiredUltimatePoints = 3;
@@ -78,7 +78,7 @@ public class Commands implements TabExecutor, Listener {
 
                     spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
                 }
-                    break;
+                break;
                 case "artificer": {
                     int maxUltimatePoints = 6;
                     int requiredUltimatePoints = 2;
@@ -93,7 +93,7 @@ public class Commands implements TabExecutor, Listener {
 
                     spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
                 }
-                    break;
+                break;
                 case "earth": {
                     int maxUltimatePoints = 6;
                     int requiredUltimatePoints = 2;
@@ -108,7 +108,7 @@ public class Commands implements TabExecutor, Listener {
 
                     spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
                 }
-                    break;
+                break;
                 case "unnamed": {
                     int maxUltimatePoints = 6;
                     int requiredUltimatePoints = 4;
@@ -126,7 +126,7 @@ public class Commands implements TabExecutor, Listener {
 
                     spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
                 }
-                    break;
+                break;
                 case "catalyst": {
                     int maxUltimatePoints = 6;
                     int requiredUltimatePoints = 4;
@@ -139,7 +139,7 @@ public class Commands implements TabExecutor, Listener {
 
                     spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
                 }
-                    break;
+                break;
                 case "discharge": {
                     int maxUltimatePoints = 6;
                     int requiredUltimatePoints = 4;
@@ -152,12 +152,25 @@ public class Commands implements TabExecutor, Listener {
 
                     spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
                 }
-                    break;
+                break;
+                case "ignition": {
+                    int maxUltimatePoints = 6;
+                    int requiredUltimatePoints = 2;
+                    Material material = Material.ORANGE_DYE;
+                    String displayName = ColoredText.translateHexCodes(AbilityItemNames.IGNITION.getLabel());
+                    String metaData = null;
+
+                    //
+                    //
+
+                    spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
                 }
-            } else if (label.equalsIgnoreCase("giveultpoint")) { /** /giveultpoint */
+                break;
+            }
+        } else if (label.equalsIgnoreCase("giveultpoint")) { /** /giveultpoint */
             ultimatePointsListeners.addUltPoint(p);
         }
-    return false;
+        return false;
     }
 
     public void spawnAbilityItem (Player p, Integer maxUltPoints, Integer requiredUltPoints, Material material, List<String> lore, String displayName, String metaData) {

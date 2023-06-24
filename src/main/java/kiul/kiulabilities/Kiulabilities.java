@@ -4,7 +4,6 @@ import kiul.kiulabilities.gamelogic.*;
 import kiul.kiulabilities.gamelogic.abilities.*;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
@@ -39,7 +38,8 @@ public final class Kiulabilities extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DroppingAbilitys(), this);
         getServer().getPluginManager().registerEvents(new Catalyst(), this);
         getServer().getPluginManager().registerEvents(new Discharge(),this);
-        getServer().getPluginManager().registerEvents(new UNNAMEDABILITY(), this);
+        getServer().getPluginManager().registerEvents(new Spectre(), this);
+        getServer().getPluginManager().registerEvents(new Ignition(), this);
     }
 
     @Override
