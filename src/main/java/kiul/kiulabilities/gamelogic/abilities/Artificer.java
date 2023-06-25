@@ -190,7 +190,7 @@ public class Artificer implements Listener {
 
     @EventHandler
     public void noDamage (EntityDamageByEntityEvent e) {
-        if (e.getDamager().hasMetadata("boom")) {
+        if (e.getDamager().hasMetadata("boom") && e.getEntity().hasMetadata("artificer")) {
             e.setCancelled(true);
         }
     }

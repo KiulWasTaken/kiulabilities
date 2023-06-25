@@ -222,10 +222,10 @@ public class Tracker implements Listener {
                                         int distanceBetween = (int) p.getEyeLocation().distance(onlinePlayers.getEyeLocation());
                                         if (distanceBetween / 10 >= 1) {
                                             int scaledValue = 255 / (distanceBetween / 10);
-                                            p.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 3, new Particle.DustOptions(Color.fromRGB(scaledValue, 0, 0), 1));
+                                            p.spawnParticle(Particle.REDSTONE, particleLocation, 3, new Particle.DustOptions(Color.fromRGB(scaledValue, 0, 0), 1));
                                         } else {
                                             int scaledValue = 255;
-                                            p.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 3, new Particle.DustOptions(Color.fromRGB(scaledValue, 0, 0), 1));
+                                            p.spawnParticle(Particle.REDSTONE, particleLocation, 3, new Particle.DustOptions(Color.fromRGB(scaledValue, 0, 0), 1));
                                         }
 
                                     }
