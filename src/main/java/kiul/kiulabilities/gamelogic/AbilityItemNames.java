@@ -17,7 +17,8 @@ import java.util.List;
         TRACKER(AbilityExtras.displayname("TRACKER.DisplayName")),
         STEALTH(AbilityExtras.displayname("STEALTH.DisplayName")),
         CATALYST(AbilityExtras.displayname("CATALYST.DisplayName")),
-        DISCHARGE(AbilityExtras.displayname("DISCHARGE.DisplayName"));
+        DISCHARGE(AbilityExtras.displayname("DISCHARGE.DisplayName")),
+        IGNITION(AbilityExtras.displayname("IGNITION.DisplayName"));
 
         private String label;
 

@@ -2,7 +2,7 @@ name: Kiul-Abilities-V2
 version: '1.0-SNAPSHOT'
 main: kiul.kiulabilities.Kiulabilities
 api-version: 1.19
-authors: [ kiul, neko ]
+authors: [ kiul, neko, Patty ]
 description: kiul's abilities for pat events
 commands:
   test:
