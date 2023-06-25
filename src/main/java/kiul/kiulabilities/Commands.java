@@ -109,11 +109,11 @@ public class Commands implements TabExecutor, Listener {
                     spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
                 }
                 break;
-                case "unnamed": {
+                case "spectre": {
                     int maxUltimatePoints = 6;
                     int requiredUltimatePoints = 4;
                     Material material = Material.PINK_DYE;
-                    String displayName = ColoredText.translateHexCodes(AbilityItemNames.UNNAMED.getLabel());
+                    String displayName = ColoredText.translateHexCodes(AbilityItemNames.SPECTRE.getLabel());
                     String metaData = null;
 
                     //

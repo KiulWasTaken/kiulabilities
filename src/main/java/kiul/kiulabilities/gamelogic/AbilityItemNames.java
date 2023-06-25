@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
     public enum AbilityItemNames {
-        UNNAMED(AbilityExtras.displayname("UNNAMED.DisplayName")),
+        SPECTRE(AbilityExtras.displayname("SPECTRE.DisplayName")),
         ARTIFICER(AbilityExtras.displayname("ARTIFICER.DisplayName")),
         EARTH(AbilityExtras.displayname("EARTH.DisplayName")),
         FEATHERWEIGHT(AbilityExtras.displayname("FEATHERWEIGHT.DisplayName")),
