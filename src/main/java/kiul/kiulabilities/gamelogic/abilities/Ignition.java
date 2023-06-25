@@ -175,7 +175,7 @@ public class Ignition implements Listener {
 
         Entity damagedentity = e.getEntity();
 
-        if (e.getDamager() instanceof Player  p) {
+        if (e.getDamager() instanceof Player p) {
             if (ChatColor.stripColor(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName()).equalsIgnoreCase(itemname)) {
                 if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
 

@@ -1,6 +1,7 @@
 package kiul.kiulabilities.gamelogic.abilities;
 
 import kiul.kiulabilities.Kiulabilities;
+import kiul.kiulabilities.StatusEffects;
 import kiul.kiulabilities.gamelogic.AbilityExtras;
 import kiul.kiulabilities.gamelogic.AbilityItemNames;
 import kiul.kiulabilities.gamelogic.ColoredText;
@@ -18,6 +19,7 @@ import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
@@ -82,6 +84,7 @@ public class Tracker implements Listener {
 
                             if (players.size() > 0) {
                                 Arrays.sort(nearbyPlayers.toArray());
+                                roger.setOwner(p);
                                 roger.setTarget(players.get(nearbyPlayers.get(0)));
                                 roger.setVelocity((players.get(nearbyPlayers.get(0)).getLocation().add(0, 1, 0).toVector().subtract(roger.getLocation().toVector())).normalize().multiply(0.8));
                                 roger.setCustomName(p.getDisplayName() + "'s Bloodhound");
@@ -189,8 +192,12 @@ public class Tracker implements Listener {
         }
     }
 
+    boolean isToggled = false;
+    boolean isActive = false;
+
     @EventHandler
     public void ultCheckActivate(PlayerSwapHandItemsEvent e) {
+
 
         Player p = (Player) e.getPlayer();
 
@@ -198,51 +205,64 @@ public class Tracker implements Listener {
         if (p.getInventory().getItemInMainHand().getItemMeta() != null) {
             if (ChatColor.stripColor(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName()).equalsIgnoreCase(itemname)) {
                 e.setCancelled(true);
-                if (ultimatePointsListeners.getUltPoints(p) >= ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId())) {
-                    if (!ultimateCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (ultimateCooldown.get(p.getUniqueId())).longValue() > ultimateTimer * 1000)) {
-                        ultimateCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
-                        ultimatePointsListeners.useUltPoints(p, ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId()));
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                            @Override
-                            public void run() {
-                                // ULT CODE START
-                                new BukkitRunnable() {
-                                    public void run() {
-                                            for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
+                if (isActive) {
+                    isToggled = !isToggled;
 
-                                                if (onlinePlayers != p) {
+                    new BukkitRunnable() {
+                        public void run() {
+                            for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
+                                if (isToggled) {
 
-                                                    Vector direction = onlinePlayers.getEyeLocation().toVector().subtract(p.getEyeLocation().toVector()).normalize();
-                                                    double distance = 1.5; // Adjust as needed
-                                                    Location particleLocation = p.getEyeLocation().add(direction.multiply(distance));
+                                    if (onlinePlayers != p) {
 
-                                                    int distanceBetween = (int) p.getEyeLocation().distance(onlinePlayers.getEyeLocation());
-                                                    if (distanceBetween / 10 >= 1) {
-                                                        int scaledValue = 255 / (distanceBetween / 10);
-                                                        p.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 3, new Particle.DustOptions(Color.fromRGB(scaledValue, 0, 0), 1));
-                                                    } else {
-                                                        int scaledValue = 255;
-                                                        p.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 3, new Particle.DustOptions(Color.fromRGB(scaledValue, 0, 0), 1));
-                                                    }
-                                                }
-                                            }
+                                        Vector direction = onlinePlayers.getEyeLocation().toVector().subtract(p.getEyeLocation().toVector()).normalize();
+                                        double distance = 1.5; // Adjust as needed
+                                        Location particleLocation = p.getEyeLocation().add(direction.multiply(distance));
+
+                                        int distanceBetween = (int) p.getEyeLocation().distance(onlinePlayers.getEyeLocation());
+                                        if (distanceBetween / 10 >= 1) {
+                                            int scaledValue = 255 / (distanceBetween / 10);
+                                            p.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 3, new Particle.DustOptions(Color.fromRGB(scaledValue, 0, 0), 1));
+                                        } else {
+                                            int scaledValue = 255;
+                                            p.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 3, new Particle.DustOptions(Color.fromRGB(scaledValue, 0, 0), 1));
+                                        }
+
                                     }
-                                }.runTaskTimer(plugin, 0L, 5L);
-                                //fuck you intellij
-
-
-
-
-                                // ULT CODE END
+                                } else {
+                                    cancel();
+                                }
                             }
-                        }, ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId()) * 20);
-
-                    } else {
-                        DecimalFormat df = new DecimalFormat("0.00");
-                        String timer = df.format((double) (ultimateTimer * 1000 - (System.currentTimeMillis() - ((Long) ultimateCooldown.get(p.getUniqueId())).longValue())) / 1000);
-                        p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.RED + " Ultimate ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.RED + ChatColor.ITALIC + timer + "s!");                    }
+                        }
+                    }.runTaskTimer(plugin, 0L, 2L);
+                    return;
                 } else {
-                    ultimatePointsListeners.CheckUltPoints(p);
+                    if (ultimatePointsListeners.getUltPoints(p) >= ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId())) {
+                        if (!ultimateCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (ultimateCooldown.get(p.getUniqueId())).longValue() > ultimateTimer * 1000)) {
+                            ultimateCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
+                            ultimatePointsListeners.useUltPoints(p, ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId()));
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                @Override
+                                public void run() {
+                                    // ULT CODE START
+                                    isActive = true;
+                                    p.sendTitle("","Press [OFFHAND] to toggle ultimate");
+
+                                    //fuck you intellij
+
+
+                                    // ULT CODE END
+                                }
+                            }, ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId()) * 20);
+
+                        } else {
+                            DecimalFormat df = new DecimalFormat("0.00");
+                            String timer = df.format((double) (ultimateTimer * 1000 - (System.currentTimeMillis() - ((Long) ultimateCooldown.get(p.getUniqueId())).longValue())) / 1000);
+                            p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.RED + " Ultimate ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.RED + ChatColor.ITALIC + timer + "s!");
+                        }
+                    } else {
+                        ultimatePointsListeners.CheckUltPoints(p);
+                    }
                 }
             }
         }
@@ -267,12 +287,32 @@ public class Tracker implements Listener {
 
     @EventHandler
     public void rogerExplode(EntityDamageByEntityEvent e) {
+        if (e.getEntity().hasMetadata("harmless")) {
+            e.setCancelled(true);
+        }
         if (e.getEntity() instanceof Player && e.getDamager() instanceof Wolf) {
             Wolf roger = (Wolf) e.getDamager();
             Player p = (Player) e.getEntity();
             if (roger.hasMetadata("roger")) {
-                p.getWorld().createExplosion(roger.getLocation(),1,false);
+                e.setCancelled(true);
+                Location explosion = roger.getLocation().clone();
                 roger.remove();
+                p.damage(8,(Player)roger.getOwner());
+                p.getWorld().spawn(explosion.add(0.5, 1.8, 0.5), Firework.class, (firework) -> {
+
+                    FireworkMeta fireworkMeta = firework.getFireworkMeta();
+                    fireworkMeta.setPower(0);
+                    firework.setShooter((Player)roger.getOwner());
+                    fireworkMeta.addEffect(FireworkEffect.builder().withColor(Color.LIME).flicker(true).build());
+                    fireworkMeta.addEffect(FireworkEffect.builder().withColor(Color.GREEN).trail(true).build());
+                    firework.setFireworkMeta(fireworkMeta);
+                    firework.detonate();
+                    firework.setMetadata("harmless", new FixedMetadataValue(plugin, "pat"));
+                });
+                p.getWorld().createExplosion(explosion,1f,false,false,(Player) roger.getOwner());
+                StatusEffects.bleed(p,80);
+
+
             }
         }
 

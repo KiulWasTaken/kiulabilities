@@ -20,16 +20,15 @@ public class StatusEffects implements Listener {
     public static ArrayList<Player> preventMove = new ArrayList<>();
 
 
-    public static void stun(Player p, int time) {
+    public static void stun(Player p, int ticks) {
         Plugin plugin = Kiulabilities.getPlugin(Kiulabilities.class);
-        p.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, time, 1, true, false));
-        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, time, 1, true, false));
-        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, time, 1, true, false));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, ticks, 1, true, false));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, ticks, 1, true, false));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, ticks, 1, true, false));
 
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new BukkitRunnable() {
-            int i = time * 2;
 
-            @Override
+        new BukkitRunnable() {
+            int i = ticks;
             public void run() {
 
                 if (i > 0) {
@@ -40,19 +39,18 @@ public class StatusEffects implements Listener {
                     cancel();
                 }
 
+
             }
-        }, 0L, 10);
+        }.runTaskTimer(plugin, 0L, 1L);
     }
 
-    public static void root(Player p, int time) {
+    public static void root(Player p, int ticks) {
         Plugin plugin = Kiulabilities.getPlugin(Kiulabilities.class);
 
         preventMove.add(p);
 
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new BukkitRunnable() {
-            int i = time * 2;
-
-            @Override
+        new BukkitRunnable() {
+            int i = ticks;
             public void run() {
 
                 if (i > 0) {
@@ -63,22 +61,21 @@ public class StatusEffects implements Listener {
                     cancel();
                 }
 
+
             }
-        }, 0L, 10);
+        }.runTaskTimer(plugin, 0L, 1L);
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override
             public void run() {
                 preventMove.remove(p);
             }
-        }, time * 20);
+        }, ticks * 20);
     }
 
-    public static void shield(Player p, int level, int time) {
+    public static void shield(Player p, int level, int ticks) {
         Plugin plugin = Kiulabilities.getPlugin(Kiulabilities.class);
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new BukkitRunnable() {
-            int i = time * 2;
-
-            @Override
+        new BukkitRunnable() {
+            int i = ticks;
             public void run() {
 
                 if (i > 0) {
@@ -89,24 +86,23 @@ public class StatusEffects implements Listener {
                     cancel();
                 }
 
-            }
-        }, 0L, 10);
 
-        p.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, time, level, true, false));
+            }
+        }.runTaskTimer(plugin, 0L, 1L);
+
+        p.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, ticks, level, true, false));
 
 
     }
 
-    public static void bleed(Player p, int time) {
+    public static void bleed(Player p, int ticks) {
         Plugin plugin = Kiulabilities.getPlugin(Kiulabilities.class);
 
-        p.setSaturatedRegenRate(-1);
-        p.setUnsaturatedRegenRate(-1);
+        p.setSaturatedRegenRate(1000);
+        p.setUnsaturatedRegenRate(1000);
 
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new BukkitRunnable() {
-            int i = time * 2;
-
-            @Override
+        new BukkitRunnable() {
+            int i = ticks;
             public void run() {
 
                 if (i > 0) {
@@ -117,15 +113,16 @@ public class StatusEffects implements Listener {
                     cancel();
                 }
 
+
             }
-        }, 0L, 10);
+        }.runTaskTimer(plugin, 0L, 1L);
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override
             public void run() {
                 p.setSaturatedRegenRate(10);
                 p.setUnsaturatedRegenRate(80);
             }
-        }, time * 20);
+        }, ticks);
     }
 
 
