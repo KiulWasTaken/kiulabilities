@@ -39,7 +39,6 @@ public final class Kiulabilities extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Catalyst(), this);
         getServer().getPluginManager().registerEvents(new Discharge(),this);
         getServer().getPluginManager().registerEvents(new Spectre(), this);
-        getServer().getPluginManager().registerEvents(new Ignition(), this);
     }
 
     @Override

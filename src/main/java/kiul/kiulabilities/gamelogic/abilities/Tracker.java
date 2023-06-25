@@ -5,30 +5,25 @@ import kiul.kiulabilities.gamelogic.AbilityExtras;
 import kiul.kiulabilities.gamelogic.AbilityItemNames;
 import kiul.kiulabilities.gamelogic.ColoredText;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Ageable;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
-import org.bukkit.material.Crops;
-import org.bukkit.material.MaterialData;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -40,6 +35,9 @@ public class Tracker implements Listener {
     private final HashMap<UUID, Long> secondaryCooldown = new HashMap<>();
 
     private final HashMap<UUID, Long> ultimateCooldown = new HashMap<>();
+
+     static boolean ultimateEnabled = false;
+    static boolean toggle = false;
 
     String configname = AbilityItemNames.TRACKER.name();
 
@@ -68,7 +66,7 @@ public class Tracker implements Listener {
                             roger.setOwner(p);
                             roger.setAngry(true);
                             roger.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 99999, 2, false, false));
-                            roger.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(6);
+                            roger.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(4);
                             roger.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(100);
                             Location user = p.getLocation();
                             ArrayList<Double> nearbyPlayers = new ArrayList<>();
@@ -86,7 +84,8 @@ public class Tracker implements Listener {
                                 Arrays.sort(nearbyPlayers.toArray());
                                 roger.setTarget(players.get(nearbyPlayers.get(0)));
                                 roger.setVelocity((players.get(nearbyPlayers.get(0)).getLocation().add(0, 1, 0).toVector().subtract(roger.getLocation().toVector())).normalize().multiply(0.8));
-                                roger.setCustomName(p.getDisplayName() + "'s Bloodhound Roger");
+                                roger.setCustomName(p.getDisplayName() + "'s Bloodhound");
+                                roger.setMetadata("roger", new FixedMetadataValue(plugin, "pat"));
                             }
 
                             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -194,6 +193,8 @@ public class Tracker implements Listener {
     public void ultCheckActivate(PlayerSwapHandItemsEvent e) {
 
         Player p = (Player) e.getPlayer();
+
+
         if (p.getInventory().getItemInMainHand().getItemMeta() != null) {
             if (ChatColor.stripColor(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName()).equalsIgnoreCase(itemname)) {
                 e.setCancelled(true);
@@ -204,7 +205,35 @@ public class Tracker implements Listener {
                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                             @Override
                             public void run() {
-                                // ULT CODE
+                                // ULT CODE START
+                                new BukkitRunnable() {
+                                    public void run() {
+                                            for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
+
+                                                if (onlinePlayers != p) {
+
+                                                    Vector direction = onlinePlayers.getEyeLocation().toVector().subtract(p.getEyeLocation().toVector()).normalize();
+                                                    double distance = 1.5; // Adjust as needed
+                                                    Location particleLocation = p.getEyeLocation().add(direction.multiply(distance));
+
+                                                    int distanceBetween = (int) p.getEyeLocation().distance(onlinePlayers.getEyeLocation());
+                                                    if (distanceBetween / 10 >= 1) {
+                                                        int scaledValue = 255 / (distanceBetween / 10);
+                                                        p.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 3, new Particle.DustOptions(Color.fromRGB(scaledValue, 0, 0), 1));
+                                                    } else {
+                                                        int scaledValue = 255;
+                                                        p.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 3, new Particle.DustOptions(Color.fromRGB(scaledValue, 0, 0), 1));
+                                                    }
+                                                }
+                                            }
+                                    }
+                                }.runTaskTimer(plugin, 0L, 5L);
+
+
+
+
+
+                                // ULT CODE END
                             }
                         }, ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId()) * 20);
 
@@ -219,16 +248,6 @@ public class Tracker implements Listener {
         }
     }
 
-    @EventHandler
-    public void dontEatIt(PlayerItemConsumeEvent e) {
-
-        Player p = (Player) e.getPlayer();
-        if (e.getItem().getType() == Material.SWEET_BERRIES) {
-            e.setCancelled(true);
-        }
-
-
-    }
 
     public List<Block> getBlocks(Block start, int radius){
         if (radius < 0) {
@@ -251,11 +270,77 @@ public class Tracker implements Listener {
         if (e.getEntity() instanceof Player && e.getDamager() instanceof Wolf) {
             Wolf roger = (Wolf) e.getDamager();
             Player p = (Player) e.getEntity();
-            if (roger.hasMetadata("ROGER")) {
+            if (roger.hasMetadata("roger")) {
                 p.getWorld().createExplosion(roger.getLocation(),1,false);
                 roger.remove();
             }
         }
 
     }
+
+    @EventHandler
+    public void combatPassive (PlayerDeathEvent e) {
+        Player killer = e.getEntity().getKiller();
+
+        if (killer.hasMetadata("tracker")) {
+            killer.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 160, 0));
+        }
+    }
+
+
+
+
+
+
+
+    @EventHandler
+    public void berriesDontHurt (EntityDamageByBlockEvent e) {
+        if (e.getEntity().hasMetadata("tracker") && e.getDamager().getType() == Material.SWEET_BERRY_BUSH) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void healPassive (PlayerToggleSneakEvent e) {
+        Player p = e.getPlayer();
+        ArrayList<Player> preventInfiniteRepeatingTask = new ArrayList<>();
+        if (p.getInventory().getItemInMainHand() !=null && p.getInventory().getItemInMainHand().getItemMeta() != null && ChatColor.stripColor(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName()).equalsIgnoreCase(itemname)) {
+            if (!preventInfiniteRepeatingTask.contains(e.getPlayer())) {
+                preventInfiniteRepeatingTask.add(e.getPlayer());
+                new BukkitRunnable() {
+                    public void run() {
+                        if (p.isSneaking()) {
+                            for (Entity entity : p.getNearbyEntities(2, 2, 2)) {
+                                if (entity instanceof Player) {
+                                    ((Player) entity).addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 15, 1));
+                                }
+                            }
+                            Location playerLocation = p.getLocation();
+                            double radius = 2; // Radius of the cylinder
+                            int height = 2; // Height of the cylinder (1.5 blocks = 3 halves)
+                            int density = 10; // Density of particles (adjust as needed)
+
+                            for (int yOffset = 0; yOffset < height; yOffset++) {
+                                double y = playerLocation.getY() + yOffset + 0.5; // Add 0.5 to center the cylinder
+
+                                for (int i = 0; i < 360; i += density) {
+                                    double angle = Math.toRadians(i);
+                                    double x = playerLocation.getX() + radius * Math.cos(angle);
+                                    double z = playerLocation.getZ() + radius * Math.sin(angle);
+
+                                    Location particleLocation = new Location(playerLocation.getWorld(), x, y, z);
+                                    playerLocation.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 1,new Particle.DustOptions(Color.LIME,1));
+                                }
+                            }
+                        } else {
+                            preventInfiniteRepeatingTask.remove(e.getPlayer());
+                            cancel();
+                        }
+
+                    }
+                }.runTaskTimer(plugin, 0L, 5L);
+            }
+        }
+    }
 }
+

@@ -169,6 +169,8 @@ public class Commands implements TabExecutor, Listener {
             }
         } else if (label.equalsIgnoreCase("giveultpoint")) { /** /giveultpoint */
             ultimatePointsListeners.addUltPoint(p);
+        } else if (label.equalsIgnoreCase("roundend")) {
+
         }
         return false;
     }

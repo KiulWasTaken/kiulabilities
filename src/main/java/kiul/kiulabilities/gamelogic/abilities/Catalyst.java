@@ -16,12 +16,18 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class Catalyst implements Listener {
@@ -203,6 +209,26 @@ public class Catalyst implements Listener {
                 spreadCenter.getState().update();
             }
         }, 1);
+    }
+
+    @EventHandler
+    public void Passive (PlayerMoveEvent e) {
+        ArrayList<Player> preventInfiniteRepeatingTask = new ArrayList<>();
+
+        if (!preventInfiniteRepeatingTask.contains(e.getPlayer())) {
+            preventInfiniteRepeatingTask.add(e.getPlayer());
+            new BukkitRunnable() {
+                public void run() {
+                    if (e.getPlayer().getLocation().add(0,-1,0).getBlock().getType() == Material.SCULK) {
+                        e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,15,0));
+                    } else {
+                        preventInfiniteRepeatingTask.remove(e.getPlayer());
+                        cancel();
+                    }
+
+                }
+            }.runTaskTimer(plugin, 0L, 1L);
+        }
     }
 }
 
