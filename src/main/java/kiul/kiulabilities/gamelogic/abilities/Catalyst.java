@@ -210,7 +210,7 @@ public class Catalyst implements Listener {
             }
         }, 1);
     }
-
+// fuck you intellij
     @EventHandler
     public void Passive (PlayerMoveEvent e) {
         ArrayList<Player> preventInfiniteRepeatingTask = new ArrayList<>();
