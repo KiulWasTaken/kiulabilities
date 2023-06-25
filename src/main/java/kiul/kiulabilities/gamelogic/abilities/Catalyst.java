@@ -1,6 +1,7 @@
 package kiul.kiulabilities.gamelogic.abilities;
 
 import kiul.kiulabilities.Kiulabilities;
+import kiul.kiulabilities.StatusEffects;
 import kiul.kiulabilities.gamelogic.AbilityExtras;
 import kiul.kiulabilities.gamelogic.AbilityItemNames;
 import kiul.kiulabilities.gamelogic.ColoredText;
@@ -8,14 +9,15 @@ import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Zombie;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
 import java.text.DecimalFormat;
@@ -56,36 +58,13 @@ public class Catalyst implements Listener {
 
                         /** PRIMARY - CODE START >> */
 
-                        World world = p.getWorld();
+
                         Location inFront = p.getLocation().add(p.getLocation().getDirection().normalize().multiply(2));
                         inFront.setY(p.getLocation().add(0,-1,0).getY());
                         Block spreadCenter = inFront.getBlock();
+                        spread(spreadCenter,p);
 
-                        spreadCenter.setType(Material.SCULK_CATALYST);
-                        if ( spreadCenter.getRelative(BlockFace.NORTH).getType() != Material.AIR) {
-                            spreadCenter.getRelative(BlockFace.NORTH).setType(Material.SCULK);
-                        }
-                        if ( spreadCenter.getRelative(BlockFace.EAST).getType() != Material.AIR) {
-                            spreadCenter.getRelative(BlockFace.EAST).setType(Material.SCULK);
-                        }
-                        if ( spreadCenter.getRelative(BlockFace.SOUTH).getType() != Material.AIR) {
-                            spreadCenter.getRelative(BlockFace.SOUTH).setType(Material.SCULK);
-                        }
-                        if ( spreadCenter.getRelative(BlockFace.WEST).getType() != Material.AIR) {
-                            spreadCenter.getRelative(BlockFace.WEST).setType(Material.SCULK);
-                        }
-                            Zombie triggerSpread = (Zombie) world.spawnEntity(inFront, EntityType.ZOMBIE);
-                            triggerSpread.setBaby();
-                            triggerSpread.setInvisible(true);
-                            triggerSpread.setGravity(false);
-                            triggerSpread.setSilent(true);
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(Kiulabilities.getPlugin(Kiulabilities.class), new Runnable() {
-                                @Override
-                                public void run() {
-                                    triggerSpread.damage(20, p);
-                                    spreadCenter.getState().update();
-                                }
-                            }, 10);
+                        /** CODE END << */
 
                         if (secondaryCooldown.isEmpty()) {
                             secondaryCooldown.put(p.getUniqueId(), (long) 0);
@@ -96,7 +75,7 @@ public class Catalyst implements Listener {
                             Kiulabilities.ABILITYUSED.add(p.getUniqueId());
                             AbilityExtras.TimerTask(p, primaryTimer, primaryCooldown, secondaryTimer, secondaryCooldown);
                         }
-                        /** CODE END << */
+
 
                     } else {
                         DecimalFormat df = new DecimalFormat("0.00");
@@ -108,6 +87,13 @@ public class Catalyst implements Listener {
 
                         /** SECONDARY - CODE START >> */
 
+                        for (Entity nearbyEntities : p.getNearbyEntities(9,9,9)) {
+                            if (nearbyEntities instanceof Player) {
+                                EvokerFangs evokerFangs = (EvokerFangs) nearbyEntities.getWorld().spawnEntity(nearbyEntities.getLocation(), EntityType.EVOKER_FANGS);
+                                evokerFangs.setOwner(p);
+                                evokerFangs.setMetadata("spreadfang", new FixedMetadataValue(plugin, "pat"));
+                            }
+                        }
 
 
                         /** CODE END << */
@@ -165,6 +151,58 @@ public class Catalyst implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void noDropsForSpreadZombie (EntityDeathEvent e) {
+        if (e.getEntity().hasMetadata("spread")) {
+            for (int i = 0; i < e.getDrops().size(); i++) {
+                e.getDrops().set(i,null);
+                e.setDroppedExp(0);
+            }
+        }
+    }
+
+    @EventHandler
+    public void spreadFromFangHit (EntityDamageByEntityEvent e) {
+        if (e.getDamager().getType() == EntityType.EVOKER_FANGS && e.getDamager().hasMetadata("spreadfang")) {
+            EvokerFangs evokerFangs = (EvokerFangs) e.getDamager();
+            spread(e.getEntity().getLocation().add(0,-1,0).getBlock(),(Player) evokerFangs.getOwner());
+            StatusEffects.root((Player) e.getEntity(),1);
+        }
+    }
+
+
+    public void spread (Block spreadCenter,Player p) {
+        World world = spreadCenter.getWorld();
+
+        spreadCenter.setType(Material.SCULK_CATALYST);
+        if ( spreadCenter.getRelative(BlockFace.NORTH).getType() != Material.AIR) {
+            spreadCenter.getRelative(BlockFace.NORTH).setType(Material.SCULK);
+        }
+        if ( spreadCenter.getRelative(BlockFace.EAST).getType() != Material.AIR) {
+            spreadCenter.getRelative(BlockFace.EAST).setType(Material.SCULK);
+        }
+        if ( spreadCenter.getRelative(BlockFace.SOUTH).getType() != Material.AIR) {
+            spreadCenter.getRelative(BlockFace.SOUTH).setType(Material.SCULK);
+        }
+        if ( spreadCenter.getRelative(BlockFace.WEST).getType() != Material.AIR) {
+            spreadCenter.getRelative(BlockFace.WEST).setType(Material.SCULK);
+
+        }
+        Zombie triggerSpread = (Zombie) world.spawnEntity(spreadCenter.getLocation(), EntityType.ZOMBIE);
+        triggerSpread.setBaby();
+        triggerSpread.setInvisible(true);
+        triggerSpread.setGravity(false);
+        triggerSpread.setSilent(true);
+        triggerSpread.setMetadata("spread", new FixedMetadataValue(plugin, "pat"));
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Kiulabilities.getPlugin(Kiulabilities.class), new Runnable() {
+            @Override
+            public void run() {
+                triggerSpread.damage(20, p);
+                spreadCenter.getState().update();
+            }
+        }, 1);
     }
 }
 
