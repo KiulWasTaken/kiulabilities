@@ -3,6 +3,7 @@ kiul\kiulabilities\gamelogic\AbilityExtras.class
 kiul\kiulabilities\gamelogic\ultimatePointsListeners$2.class
 kiul\kiulabilities\gamelogic\abilities\Catalyst$2.class
 kiul\kiulabilities\gamelogic\GlintEnchantment.class
+kiul\kiulabilities\CommandMethods\UltimatePointSupplyDrop$1.class
 kiul\kiulabilities\gamelogic\abilities\Stealth$1.class
 kiul\kiulabilities\gamelogic\DroppingAbilitys.class
 kiul\kiulabilities\StatusEffects$4.class
@@ -11,6 +12,7 @@ kiul\kiulabilities\gamelogic\abilities\Earth$2.class
 kiul\kiulabilities\gamelogic\abilities\Artificer.class
 kiul\kiulabilities\gamelogic\abilities\Spectre$3.class
 kiul\kiulabilities\gamelogic\abilities\Tracker$2.class
+kiul\kiulabilities\gamelogic\abilities\Catalyst$3.class
 kiul\kiulabilities\gamelogic\AbilityItemNames.class
 kiul\kiulabilities\StatusEffects$5.class
 kiul\kiulabilities\gamelogic\abilities\Featherweight.class
@@ -33,6 +35,8 @@ kiul\kiulabilities\gamelogic\ultimatePointsConfig.class
 kiul\kiulabilities\gamelogic\abilities\Spectre$5.class
 kiul\kiulabilities\gamelogic\abilities\Tracker$1.class
 kiul\kiulabilities\gamelogic\abilities\Spectre$6$1.class
+kiul\kiulabilities\CommandMethods\UltimatePointSupplyDrop$1$1.class
+kiul\kiulabilities\gamelogic\abilities\Tracker$4.class
 kiul\kiulabilities\gamelogic\abilities\Featherweight$2.class
 kiul\kiulabilities\gamelogic\abilities\Stealth$3.class
 kiul\kiulabilities\StatusEffects$2.class
@@ -48,14 +52,17 @@ kiul\kiulabilities\gamelogic\abilities\Ignition$3.class
 kiul\kiulabilities\gamelogic\abilities\Spectre.class
 kiul\kiulabilities\gamelogic\AbilityExtras$1.class
 kiul\kiulabilities\StatusEffects$3.class
+kiul\kiulabilities\gamelogic\abilities\Tracker$5.class
 kiul\kiulabilities\gamelogic\abilities\Earth.class
 kiul\kiulabilities\gamelogic\abilities\Discharge$1.class
 kiul\kiulabilities\gamelogic\abilities\Artificer$1.class
 kiul\kiulabilities\gamelogic\abilities\Stealth$5.class
 kiul\kiulabilities\gamelogic\abilities\Spectre$1.class
+kiul\kiulabilities\CommandMethods\UltimatePointSupplyDrop.class
 kiul\kiulabilities\gamelogic\abilities\Stealth$2.class
 kiul\kiulabilities\StatusEffects.class
 kiul\kiulabilities\gamelogic\abilities\Catalyst.class
 kiul\kiulabilities\gamelogic\abilities\Spectre$7.class
 kiul\kiulabilities\gamelogic\abilities\Featherweight$1.class
 kiul\kiulabilities\StatusEffects$6.class
+kiul\kiulabilities\gamelogic\abilities\Featherweight$4.class

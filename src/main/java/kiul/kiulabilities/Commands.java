@@ -1,9 +1,11 @@
 package kiul.kiulabilities;
 
+import kiul.kiulabilities.CommandMethods.UltimatePointSupplyDrop;
 import kiul.kiulabilities.gamelogic.AbilityItemNames;
 import kiul.kiulabilities.gamelogic.ColoredText;
 import kiul.kiulabilities.gamelogic.GlintEnchantment;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -57,8 +59,13 @@ public class Commands implements TabExecutor, Listener {
                     String metaData = "tracker";
 
                     //
-                    lore.add(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Summon a wolf that hunts down and stuns the nearest player");
-                    lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Grow a defensive cluster of sweet berry bushes in nearby grass");
+                    lore.add(ColoredText.translateHexCodes("&#d8d8d8&lRight-Click &6» &#d8d8d8" + ""));
+                    lore.add(ColoredText.translateHexCodes("&#c4c4c4&lLeft-Click &6» &#c4c4c4" + ""));
+                    lore.add(ColoredText.translateHexCodes("&#b1b1b1&lSwap-Item &6» &#b1b1b1" + ""));
+                    lore.add(ColoredText.translateHexCodes(" "));
+                    lore.add(ColoredText.translateHexCodes("&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.TRACKER.Class")));
+                    lore.add(ColoredText.translateHexCodes(" "));
+                    lore.add(ColoredText.translateHexCodes("&#b1b1b1&lUltimate-Status &6» " + "&c&lDEACTIVATED"));
                     //
 
                     spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
@@ -69,11 +76,17 @@ public class Commands implements TabExecutor, Listener {
                     int requiredUltimatePoints = 3;
                     Material material = Material.WHITE_DYE;
                     String displayName = ColoredText.translateHexCodes(AbilityItemNames.FEATHERWEIGHT.getLabel());
-                    String metaData = "featherweight";
+                    String metaData = null;
 
                     //
-                    lore.add(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Fly up into the sky");
-                    lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "----");
+                    lore.add(ColoredText.translateHexCodes("&#d8d8d8&lRight-Click &6» &#d8d8d8" + "Shoots 8 s-bullets 360° around you."));
+                    lore.add(ColoredText.translateHexCodes("&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "Launch up into the air. (With elytra if active, 11s)"));
+                    lore.add(ColoredText.translateHexCodes("&#b1b1b1&lSwap-Item (&#b1b1b1DEACTIVATED&l) &6» &#b1b1b1" + "Activated elytra status permanently."));
+                    lore.add(ColoredText.translateHexCodes("&#919090&lSwap-Item (&#919090ACTIVATED&l) &6» &#919090" + "Spawn a shulker bullet above all players alive."));
+                    lore.add(ColoredText.translateHexCodes(" "));
+                    lore.add(ColoredText.translateHexCodes("&#737373&lClass &6» " + plugin.getConfig().getString("Abilities.FEATHERWEIGHT.Class")));
+                    lore.add(ColoredText.translateHexCodes(" "));
+                    lore.add(ColoredText.translateHexCodes("&#919090&lElytra-Status &6» " + "&c&lDEACTIVATED"));
                     //
 
                     spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
@@ -121,7 +134,7 @@ public class Commands implements TabExecutor, Listener {
                     lore.add(ColoredText.translateHexCodes("&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "Double jump forward, doesn't work while falling. (attempting to fly will work to)"));
                     lore.add(ColoredText.translateHexCodes("&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "EVERY player gets repulsed in a direction away from the player."));
                     lore.add(ColoredText.translateHexCodes(" "));
-                    lore.add(ColoredText.translateHexCodes("&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.UNNAMED.Class")));
+                    lore.add(ColoredText.translateHexCodes("&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.SPECTRE.Class")));
                     //
 
                     spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
@@ -161,6 +174,11 @@ public class Commands implements TabExecutor, Listener {
                     String metaData = null;
 
                     //
+                    lore.add(ColoredText.translateHexCodes("&#d8d8d8&lRight-Click &6» &#d8d8d8" + "Spawn fire around the player."));
+                    lore.add(ColoredText.translateHexCodes("&#c4c4c4&lLeft-Click (Entity) &6» &#c4c4c4" + "Set the entity on fire, with a bang."));
+                    lore.add(ColoredText.translateHexCodes("&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "Summon a meteor rain that damages players and the landscape."));
+                    lore.add(ColoredText.translateHexCodes(" "));
+                    lore.add(ColoredText.translateHexCodes("&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.IGNITION.Class")));
                     //
 
                     spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
@@ -169,8 +187,15 @@ public class Commands implements TabExecutor, Listener {
             }
         } else if (label.equalsIgnoreCase("giveultpoint")) { /** /giveultpoint */
             ultimatePointsListeners.addUltPoint(p);
-        } else if (label.equalsIgnoreCase("roundend")) {
-
+        } else if (label.equalsIgnoreCase("resetactionbar")) { /** /resetactionbar */
+            for (Player allplayers : Bukkit.getOnlinePlayers()) {
+                allplayers.setMetadata("reset", new FixedMetadataValue(plugin, "pat"));
+            }
+        } else if (label.equalsIgnoreCase("spawnlootcrate")) { /** /spawnlootcrate */
+            for (Player allplayers : Bukkit.getOnlinePlayers()) {
+                UltimatePointSupplyDrop.SpawnLootCrate(allplayers);
+                break;
+            }
         }
         return false;
     }

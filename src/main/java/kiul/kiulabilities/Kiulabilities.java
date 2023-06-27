@@ -1,5 +1,6 @@
 package kiul.kiulabilities;
 
+import kiul.kiulabilities.CommandMethods.UltimatePointSupplyDrop;
 import kiul.kiulabilities.gamelogic.*;
 import kiul.kiulabilities.gamelogic.abilities.*;
 import org.bukkit.NamespacedKey;
@@ -28,6 +29,8 @@ public final class Kiulabilities extends JavaPlugin {
 
         getCommand("test").setExecutor(new Commands());
         getCommand("giveultpoint").setExecutor(new Commands());
+        getCommand("resetactionbar").setExecutor(new Commands());
+        getCommand("spawnlootcrate").setExecutor(new Commands());
         getServer().getPluginManager().registerEvents(new Stealth(), this);
         getServer().getPluginManager().registerEvents(new Tracker(), this);
         getServer().getPluginManager().registerEvents(new Commands(), this);
@@ -39,6 +42,8 @@ public final class Kiulabilities extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Catalyst(), this);
         getServer().getPluginManager().registerEvents(new Discharge(),this);
         getServer().getPluginManager().registerEvents(new Spectre(), this);
+        getServer().getPluginManager().registerEvents(new Ignition(), this);
+        getServer().getPluginManager().registerEvents(new UltimatePointSupplyDrop(), this);
     }
 
     @Override

@@ -1,10 +1,7 @@
 package kiul.kiulabilities.gamelogic.abilities;
 
 import kiul.kiulabilities.Kiulabilities;
-import kiul.kiulabilities.gamelogic.AbilityExtras;
-import kiul.kiulabilities.gamelogic.AbilityItemNames;
-import kiul.kiulabilities.gamelogic.ColoredText;
-import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
+import kiul.kiulabilities.gamelogic.*;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -15,6 +12,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
@@ -61,11 +59,55 @@ public class Featherweight implements Listener {
                             e.setCancelled(true);
 
                             /** ABILITY CODE START**/
+
                             p.setVelocity(new Vector(0, 1, 0));
-                            for (Player ap : Bukkit.getOnlinePlayers()) {
-                                ap.spawnParticle(Particle.SPIT, p.getLocation(), 10);
-                                ap.spawnParticle(Particle.CLOUD, p.getLocation(), 10);
+
+                            p.getWorld().spawnParticle(Particle.SPIT, p.getLocation(), 10);
+                            p.getWorld().spawnParticle(Particle.CLOUD, p.getLocation(), 10);
+
+                            List<String> lore = p.getInventory().getItemInMainHand().getItemMeta().getLore();
+
+                            if (ChatColor.stripColor(lore.get(lore.size()-1)).equalsIgnoreCase("Ultimate-Status » " + "ACTIVATED")) {
+
+                                ItemStack chestplate = p.getInventory().getChestplate();
+
+                                ItemStack item = new ItemStack(Material.ELYTRA);
+
+                                ItemMeta itemMeta = item.getItemMeta();
+                                AttributeModifier armorModifier = new AttributeModifier(UUID.randomUUID(), "generic.armor", 8.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST);
+                                AttributeModifier toughnessModifier = new AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST);
+                                itemMeta.addAttributeModifier(Attribute.GENERIC_ARMOR, armorModifier);
+                                itemMeta.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, toughnessModifier);
+                                itemMeta.setUnbreakable(true);
+                                GlintEnchantment glow = new GlintEnchantment(new NamespacedKey(plugin, "glow"));
+                                itemMeta.addEnchant(glow, 1, true);
+                                itemMeta.setDisplayName(itemname);
+                                item.setItemMeta(itemMeta);
+                                p.getInventory().setChestplate(item);
+
+                                p.setGliding(true);
+
+                                double yaw = Math.toRadians(p.getLocation().getYaw());
+
+                                double xOffset = -2 * Math.sin(yaw);
+                                double zOffset = 2 * Math.cos(yaw);
+
+                                Vector vec = p.getLocation().add(xOffset, 0, zOffset).toVector().subtract(p.getLocation().toVector()).normalize();
+
+                                p.setVelocity(p.getVelocity().add(vec.multiply(0.5)).add(new Vector(0,0.3,0)));
+
+                                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        p.getInventory().remove(item);
+                                        p.getInventory().setChestplate(chestplate);
+
+                                    }
+                                }, 120);
+
                             }
+
                             /**ABILITY CODE END**/
 
                             if (secondaryCooldown.isEmpty()) {
@@ -80,28 +122,31 @@ public class Featherweight implements Listener {
                         } else {
                             DecimalFormat df = new DecimalFormat("0.00");
                             String timer = df.format((double) (primaryTimer * 1000 - (System.currentTimeMillis() - ((Long) primaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
-                            p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.DARK_AQUA + " Primary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.DARK_AQUA + ChatColor.ITALIC + timer + "s!");                        }
+                            p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.DARK_AQUA + " Primary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.DARK_AQUA + ChatColor.ITALIC + timer + "s!");
+                        }
                     } else if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
                         if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
-                            e.setCancelled(true);
 
-                            // ABILITY CODE START
-                            List<Entity> nearbyPlayers = p.getNearbyEntities(15,15,15);
-                            for (int i = 0; i < nearbyPlayers.size(); i++) {
-                                if (nearbyPlayers.get(i) == p || !(nearbyPlayers.get(i) instanceof Player)) {
-                                    nearbyPlayers.remove(i);
+                            /** SECONDARY CODE START */
+
+                            for (int i = 0; i <= 7; i++) {
+                                double yaw = Math.toRadians(-180 + i * 45); // Convert yaw to radians
+
+                                double xOffset = -2 * Math.sin(yaw);
+                                double zOffset = 2 * Math.cos(yaw);
+
+                                Vector vec = p.getLocation().add(xOffset, 0, zOffset).toVector().subtract(p.getLocation().toVector()).normalize();
+
+                                ShulkerBullet shulkerBullet = (ShulkerBullet) p.getWorld().spawnEntity(p.getEyeLocation().add(0,-0.5,0), EntityType.SHULKER_BULLET);
+
+                                shulkerBullet.setVelocity(vec.multiply(0.5).add(new Vector(0,0.1,0)));
+
+                                if (i == 7) {
+                                    break;
                                 }
                             }
 
-                            for (int i = 0; i < 3; i++) {
-                                ShulkerBullet sb = (ShulkerBullet) p.getWorld().spawnEntity(p.getLocation().add(0,3,0),EntityType.SHULKER_BULLET);
-                                Random random = new Random();
-                                sb.setTarget(nearbyPlayers.get(random.nextInt(0,nearbyPlayers.size() + 1)));
-                            }
-
-
-
-                            //ABILITY CODE END
+                            /** SECONDARY CODE END */
 
                             if (primaryCooldown.isEmpty()) {
                                 primaryCooldown.put(p.getUniqueId(), (long) 0);
@@ -136,25 +181,61 @@ public class Featherweight implements Listener {
                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                             @Override
                             public void run() {
-                                // ULTIMATE CODE HERE
-                                ItemStack item = new ItemStack(Material.ELYTRA); // Replace with your desired item type
 
-                                ItemMeta itemMeta = item.getItemMeta();
-                                AttributeModifier armorModifier = new AttributeModifier(UUID.randomUUID(), "generic.armor", 8.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST);
-                                AttributeModifier toughnessModifier = new AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST);
-                                itemMeta.addAttributeModifier(Attribute.GENERIC_ARMOR, armorModifier);
-                                itemMeta.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, toughnessModifier);
-                                itemMeta.setUnbreakable(true);
-                                item.setItemMeta(itemMeta);
-                                p.getInventory().setChestplate(item);
-                                //ULTIMATE CODE END
+                                /** ULTIMATE CODE HERE */
+
+                                List<String> lore1 = p.getInventory().getItemInMainHand().getItemMeta().getLore();
+
+                                if (ChatColor.stripColor(lore1.get(lore1.size()-1)).equalsIgnoreCase("Ultimate-Status » " + "ACTIVATED")) {
+
+
+                                    ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
+                                    ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),2);
+
+                                    for (Entity entity : p.getWorld().getEntities()) {
+                                        if (entity != p) {
+                                            if (entity.getType() != EntityType.ARMOR_STAND && entity.getType() != EntityType.DROPPED_ITEM && entity.getType() != EntityType.SHULKER_BULLET) {
+
+                                                ShulkerBullet shulkerBullet = (ShulkerBullet) p.getWorld().spawnEntity(entity.getLocation().add(0, 5, 0), EntityType.SHULKER_BULLET);
+                                                shulkerBullet.setTarget(entity);
+                                                shulkerBullet.setVelocity(new Vector(0,0.3,0));
+
+                                            }
+                                        }
+                                    }
+
+                                } else {
+
+                                    ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
+                                    ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),2);
+
+                                    List<String> lore = new ArrayList<>();
+
+                                    ItemMeta itemMeta = p.getInventory().getItemInMainHand().getItemMeta();
+
+                                    for (String str : itemMeta.getLore()) {
+                                        lore.add(str);
+                                    }
+
+                                    lore.remove(lore.size() - 1);
+
+                                    lore.add(ColoredText.translateHexCodes("&#919090&lElytra-Status &6» " + "&a&lACTIVATED"));
+
+                                    itemMeta.setLore(lore);
+
+                                    p.getInventory().getItemInMainHand().setItemMeta(itemMeta);
+                                }
+
+                                /** ULTIMATE CODE END */
+
                             }
                         }, ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId()) * 20);
 
                     } else {
                         DecimalFormat df = new DecimalFormat("0.00");
                         String timer = df.format((double) (ultimateTimer * 1000 - (System.currentTimeMillis() - ((Long) ultimateCooldown.get(p.getUniqueId())).longValue())) / 1000);
-                        p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.RED + " Ultimate ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.RED + ChatColor.ITALIC + timer + "s!");                    }
+                        p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.RED + " Ultimate ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.RED + ChatColor.ITALIC + timer + "s!");
+                    }
                 } else {
                     ultimatePointsListeners.CheckUltPoints(p);
                 }
@@ -167,39 +248,37 @@ public class Featherweight implements Listener {
         Player p = e.getPlayer();
         new BukkitRunnable() {
             public void run() {
-                if (p.isSneaking() == true && p.hasMetadata("featherweight")) {
-                    if (p.getInventory().getItemInMainHand().getItemMeta().getLore().contains(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Fly up into the sky")) {
-                        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 10, 1, false, false));
-                    } else {
-                        cancel();
-                    }
+                if (p.isSneaking() == true && AbilityExtras.itemcheck(p, itemname) == true) {
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 10, 1, false, false));
+                } else {
+                    cancel();
                 }
             }
-        }.runTaskTimer(plugin,0L,10L);
+        }.runTaskTimer(plugin, 0L, 15L);
         new BukkitRunnable() {
             public void run() {
 
-                if (p.isSneaking() == true && p.getLocation().add(0, -1, 0).clone().getBlock().getType() == Material.AIR && p.hasMetadata("featherweight")) {
+                if (p.isSneaking() == true && p.getLocation().add(0, -1, 0).clone().getBlock().getType() == Material.AIR && AbilityExtras.itemcheck(p, itemname) == true) {
 
-                        Location center = p.getLocation().add(0, -2, 0); // replace world, x, y, z with your desired values
-                        double radius = 0.5;
-                        double height = 0.1; // controls the height of the spiral
-                        int totalParticles = 100; // adjust the total number of particles
+                    Location center = p.getLocation().add(0, -2, 0); // replace world, x, y, z with your desired values
+                    double radius = 0.5;
+                    double height = 0.1; // controls the height of the spiral
+                    int totalParticles = 100; // adjust the total number of particles
 
-                        for (int i = 0; i < totalParticles; i++) {
-                            double angle = 0.1 * i;
-                            double x = (radius + height * angle) * Math.cos(angle);
-                            double y = height * angle;
-                            double z = (radius + height * angle) * Math.sin(angle);
-                            Particle.DustOptions dustOptions = new Particle.DustOptions(Color.WHITE, 1); // Example particle type and color
-                            Location loc = center.clone().add(x, y, z);
-                            loc.getWorld().spawnParticle(Particle.REDSTONE, loc, 0, 0, 0, 0, dustOptions);
-                        }
-                    } else {
-                        cancel();
+                    for (int i = 0; i < totalParticles; i++) {
+                        double angle = 0.1 * i;
+                        double x = (radius + height * angle) * Math.cos(angle);
+                        double y = height * angle;
+                        double z = (radius + height * angle) * Math.sin(angle);
+                        Particle.DustOptions dustOptions = new Particle.DustOptions(Color.WHITE, 1); // Example particle type and color
+                        Location loc = center.clone().add(x, y, z);
+                        loc.getWorld().spawnParticle(Particle.REDSTONE, loc, 0, 0, 0, 0, dustOptions);
                     }
+                } else {
+                    cancel();
                 }
-        }.runTaskTimer(plugin,0L,3L);
+            }
+        }.runTaskTimer(plugin, 0L, 3L);
     }
 
     private double getDistanceToCenter(double x, double z, double CENTER_X, double CENTER_Z) {
@@ -207,4 +286,14 @@ public class Featherweight implements Listener {
         double deltaZ = z - CENTER_Z;
         return Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
     }
+
+    @EventHandler
+    public void onshulkerhitplayer(EntityDamageByEntityEvent e) {
+
+        if (e.getDamager() instanceof ShulkerBullet shulkerBullet) {
+            Particle.DustTransition dustTransition = new Particle.DustTransition(Color.fromRGB(122, 0, 122), Color.fromRGB(0, 0, 0), 3.0F);
+            shulkerBullet.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, e.getEntity().getLocation(), 5, 0.5, 0.5, 0.5, dustTransition);
+        }
+
     }
+}

@@ -20,6 +20,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
@@ -248,8 +249,21 @@ public class Tracker implements Listener {
                                     isActive = true;
                                     p.sendTitle("","Press [OFFHAND] to toggle ultimate");
 
-                                    //fuck you intellij
+                                    List<String> lore = new ArrayList<>();
 
+                                    ItemMeta itemMeta = p.getInventory().getItemInMainHand().getItemMeta();
+
+                                    for (String str : itemMeta.getLore()) {
+                                        lore.add(str);
+                                    }
+
+                                    lore.remove(lore.size() - 1);
+
+                                    lore.add(ColoredText.translateHexCodes("&#919090&lUltimate-Status &6» " + "&a&lACTIVATED"));
+
+                                    itemMeta.setLore(lore);
+
+                                    p.getInventory().getItemInMainHand().setItemMeta(itemMeta);
 
                                     // ULT CODE END
                                 }

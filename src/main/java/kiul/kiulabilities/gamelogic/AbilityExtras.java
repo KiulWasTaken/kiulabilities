@@ -6,6 +6,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -40,6 +41,12 @@ public class AbilityExtras {
                 String ultimate = progressultimate(ultpoints, requiredpoints, maximumpoints);
 
                 AbilityExtras.TimerActionBar(p, primary, ultimate, secondary);
+
+                if (p.hasMetadata("reset")) {
+                    Kiulabilities.ABILITYUSED.remove(p.getUniqueId());
+                    p.removeMetadata("reset", plugin);
+                    cancel();
+                }
 
             }
         }.runTaskTimer(plugin, 0L, 3L);

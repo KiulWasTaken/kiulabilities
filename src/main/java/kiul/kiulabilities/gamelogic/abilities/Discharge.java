@@ -232,10 +232,14 @@ public class Discharge implements Listener {
 
     @EventHandler
     public void tridentClick (InventoryClickEvent e) {
-        if (e.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("discharge trident")) {
-            e.setCancelled(true);
+
+        if (e.getCurrentItem() != null && e.getCurrentItem().hasItemMeta()) {
+            if (e.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("discharge trident")) {
+                e.setCancelled(true);
+            }
         }
     }
+
     @EventHandler
     public void lightningDamage (EntityDamageEvent e) {
         if (e.getCause() == EntityDamageEvent.DamageCause.LIGHTNING && e.getEntity() instanceof Player && e.getEntity().hasMetadata("discharge")) {
