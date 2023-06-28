@@ -26,24 +26,29 @@ public final class Kiulabilities extends JavaPlugin {
         ultimatePointsConfig.save();
 
         this.saveDefaultConfig();
+        saveConfig();
 
         getCommand("test").setExecutor(new Commands());
         getCommand("giveultpoint").setExecutor(new Commands());
         getCommand("resetactionbar").setExecutor(new Commands());
         getCommand("spawnlootcrate").setExecutor(new Commands());
-        getServer().getPluginManager().registerEvents(new Stealth(), this);
-        getServer().getPluginManager().registerEvents(new Tracker(), this);
         getServer().getPluginManager().registerEvents(new Commands(), this);
         getServer().getPluginManager().registerEvents(new ultimatePointsListeners(), this);
         getServer().getPluginManager().registerEvents(new menuClickListener(), this);
-        getServer().getPluginManager().registerEvents(new Artificer(), this);
-        getServer().getPluginManager().registerEvents(new Featherweight(), this);
         getServer().getPluginManager().registerEvents(new DroppingAbilitys(), this);
+        getServer().getPluginManager().registerEvents(new UltimatePointSupplyDrop(), this);
+
+        /** ABILITIES */
         getServer().getPluginManager().registerEvents(new Catalyst(), this);
         getServer().getPluginManager().registerEvents(new Discharge(),this);
         getServer().getPluginManager().registerEvents(new Spectre(), this);
         getServer().getPluginManager().registerEvents(new Ignition(), this);
-        getServer().getPluginManager().registerEvents(new UltimatePointSupplyDrop(), this);
+        getServer().getPluginManager().registerEvents(new Artificer(), this);
+        getServer().getPluginManager().registerEvents(new Featherweight(), this);
+        getServer().getPluginManager().registerEvents(new Stealth(), this);
+        getServer().getPluginManager().registerEvents(new Tracker(), this);
+        getServer().getPluginManager().registerEvents(new Frozone(), this);
+        /***/
     }
 
     @Override

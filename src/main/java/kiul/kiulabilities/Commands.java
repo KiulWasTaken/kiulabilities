@@ -9,10 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
+import org.bukkit.command.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -31,7 +28,7 @@ public class Commands implements TabExecutor, Listener {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        Player p = (Player) sender;
+            Player p = (Player) sender;
         if (label.equalsIgnoreCase("test")) {
 
             ArrayList<String> lore = new ArrayList<>();
@@ -156,7 +153,7 @@ public class Commands implements TabExecutor, Listener {
                 case "discharge": {
                     int maxUltimatePoints = 6;
                     int requiredUltimatePoints = 4;
-                    Material material = Material.LIGHT_BLUE_DYE;
+                    Material material = Material.BLUE_DYE;
                     String displayName = ColoredText.translateHexCodes(AbilityItemNames.DISCHARGE.getLabel());
                     String metaData = null;
 
@@ -179,6 +176,24 @@ public class Commands implements TabExecutor, Listener {
                     lore.add(ColoredText.translateHexCodes("&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "Summon a meteor rain that damages players and the landscape."));
                     lore.add(ColoredText.translateHexCodes(" "));
                     lore.add(ColoredText.translateHexCodes("&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.IGNITION.Class")));
+                    //
+
+                    spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
+                }
+                break;
+                case "frozone": {
+                    int maxUltimatePoints = 2;
+                    int requiredUltimatePoints = 1;
+                    Material material = Material.LIGHT_BLUE_DYE;
+                    String displayName = ColoredText.translateHexCodes(AbilityItemNames.FROZONE.getLabel());
+                    String metaData = null;
+
+                    //
+                    lore.add(ColoredText.translateHexCodes("&#d8d8d8&lRight-Click &6» &#d8d8d8" + "Shoot a icey projectile that explodes on impact."));
+                    lore.add(ColoredText.translateHexCodes("&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "Construct a wall of ice, that also catches you."));
+                    lore.add(ColoredText.translateHexCodes("&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "Every player is incased within a ice ball."));
+                    lore.add(ColoredText.translateHexCodes(" "));
+                    lore.add(ColoredText.translateHexCodes("&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.FROZONE.Class")));
                     //
 
                     spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);

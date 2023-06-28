@@ -64,6 +64,12 @@ Abilities:
       Ultimate: 10
     Class: "&4&lCOMBAT"
     DisplayName: "&#fb1f1f&lI&#f73f23&lg&#f45e27&ln&#f07e2b&li&#ed9e2f&lt&#e9be33&li&#e6dd37&lo&#e2fd3b&ln &#e6dd37&lA&#e9be33&lb&#ed9e2f&li&#f07e2b&ll&#f45e27&li&#f73f23&lt&#fb1f1f&ly"
-
+  FROZONE:
+    Cooldowns:
+      Primary: 10
+      Secondary: 10
+      Ultimate: 10
+    Class: "&#0345fc&lCONTROL"
+    DisplayName: "&#f0f0f0&lF&#d1f2f2&lr&#b2f4f4&lo&#93f6f6&lz&#74f8f8&lo&#55fafa&ln&#36fcfc&le &#36fcfc&lA&#55fafa&lb&#74f8f8&li&#93f6f6&ll&#b2f4f4&li&#d1f2f2&lt&#f0f0f0&ly"
 
 

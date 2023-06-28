@@ -18,7 +18,8 @@ import java.util.List;
         STEALTH(AbilityExtras.displayname("STEALTH.DisplayName")),
         CATALYST(AbilityExtras.displayname("CATALYST.DisplayName")),
         DISCHARGE(AbilityExtras.displayname("DISCHARGE.DisplayName")),
-        IGNITION(AbilityExtras.displayname("IGNITION.DisplayName"));
+        IGNITION(AbilityExtras.displayname("IGNITION.DisplayName")),
+        FROZONE(AbilityExtras.displayname("FROZONE.DisplayName"));
 
         private String label;
 

@@ -34,9 +34,15 @@ public class AbilityExtras {
 
                 String secondary = AbilityExtras.progress(num2);
 
+
+
                 int ultpoints = ultimatePointsListeners.getUltPoints(p);
-                int requiredpoints = ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId());
-                int maximumpoints = ultimatePointsListeners.maximumUltPoints.get(p.getUniqueId());
+                int requiredpoints = 0;
+                int maximumpoints = 0;
+                if (ultimatePointsListeners.maximumUltPoints.containsKey(p.getUniqueId())) {
+                    requiredpoints = ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId());
+                    maximumpoints = ultimatePointsListeners.maximumUltPoints.get(p.getUniqueId());
+                }
 
                 String ultimate = progressultimate(ultpoints, requiredpoints, maximumpoints);
 
