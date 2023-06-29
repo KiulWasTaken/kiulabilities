@@ -19,6 +19,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
@@ -258,15 +259,62 @@ public class Catalyst implements Listener {
 
     @EventHandler
     public void getHurtOnSculkEvent (EntityDamageByEntityEvent e) {
-        if (e.getEntity() instanceof Player && e.getEntity().hasMetadata("catalyst")) {
+        if (e.getEntity() instanceof Player && e.getEntity().hasMetadata("catalyst") && e.getEntity().isOnGround()) {
             spread(e.getEntity().getLocation().add(0,-1,0).getBlock(),(Player) e.getEntity(),1);
+        }
+    }
+
+
+    @EventHandler
+    public void dismissOnSculkCrouch (PlayerToggleSneakEvent e) {
+        if (e.getPlayer().isSneaking() && e.getPlayer().hasMetadata("catalyst") && isCharged) {
+            e.getPlayer().getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,e.getPlayer().getLocation().add(0,1,0),10,1,1,1,0.0005);
+            for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
+                onlinePlayers.hidePlayer(plugin,e.getPlayer());
+            }
+            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS,80,0,true,false));
+
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
+                        onlinePlayers.showPlayer(plugin,e.getPlayer());
+                    }
+                }
+            }, 80);
+
         }
     }
 
     @EventHandler
     public void catalystKillEvent (PlayerDeathEvent e) {
-        if (e.getEntity().getKiller().hasMetadata("catalyst") && e.getEntity().getKiller() instanceof Player) {
+        if (e.getEntity().getKiller().hasMetadata("catalyst") && e.getEntity().getKiller() instanceof Player && e.getEntity().isOnGround()) {
             spread(e.getEntity().getLocation().add(0,-1,0).getBlock(),e.getEntity().getKiller(),2);
+        }
+
+        if (isUltimateActive) {
+            Player p = e.getEntity().getKiller();
+            isCharged = true;
+            p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE,160,0,true,false));
+            p.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION,160,1,true,false));
+            p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED,160,1,true,false));
+
+            for (Player players : Bukkit.getOnlinePlayers()) {
+                if (players.getGameMode() != GameMode.SPECTATOR && p.getLocation().add(0,-1,0).getBlock().getType() == Material.SCULK || p.getLocation().add(0,-1,0).getBlock().getType() == Material.SCULK_CATALYST) {
+                    EvokerFangs evokerFangs = (EvokerFangs) players.getWorld().spawnEntity(players.getLocation(), EntityType.EVOKER_FANGS);
+                    evokerFangs.setOwner(p);
+                    evokerFangs.setMetadata("spreadfang", new FixedMetadataValue(plugin, "pat"));
+                }
+            }
+            new BukkitRunnable() {
+                public void run() {
+                    if (p.getPotionEffect(PotionEffectType.INCREASE_DAMAGE).getDuration() <= 0 ) {
+                        isCharged = false;
+                        cancel();
+                    }
+                }
+            }.runTaskTimer(plugin, 160L, 20L);
+
         }
     }
 

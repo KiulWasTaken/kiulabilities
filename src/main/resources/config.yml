@@ -17,7 +17,7 @@ Abilities:
     DisplayName: "&f&lArtificer Ability"
   CATALYST:
     Cooldowns:
-      Primary: 10
+      Primary: 1
       Secondary: 10
       Ultimate: 10
     Class: ""

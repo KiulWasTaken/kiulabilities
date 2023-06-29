@@ -138,8 +138,8 @@ public class Commands implements TabExecutor, Listener {
                 }
                 break;
                 case "catalyst": {
-                    int maxUltimatePoints = 6;
-                    int requiredUltimatePoints = 4;
+                    int maxUltimatePoints = 2;
+                    int requiredUltimatePoints = 2;
                     Material material = Material.CYAN_DYE;
                     String displayName = ColoredText.translateHexCodes(AbilityItemNames.CATALYST.getLabel());
                     String metaData = null;

@@ -11,6 +11,7 @@ kiul\kiulabilities\StatusEffects$4.class
 kiul\kiulabilities\gamelogic\abilities\Frozone$8.class
 kiul\kiulabilities\gamelogic\abilities\Stealth.class
 kiul\kiulabilities\gamelogic\abilities\Earth$2.class
+kiul\kiulabilities\gamelogic\abilities\Catalyst$6.class
 kiul\kiulabilities\gamelogic\abilities\Artificer.class
 kiul\kiulabilities\gamelogic\abilities\Spectre$3.class
 kiul\kiulabilities\gamelogic\abilities\Frozone$1.class
@@ -40,6 +41,8 @@ kiul\kiulabilities\gamelogic\ultimatePointsConfig.class
 kiul\kiulabilities\gamelogic\abilities\Spectre$5.class
 kiul\kiulabilities\gamelogic\abilities\Tracker$1.class
 kiul\kiulabilities\gamelogic\abilities\Spectre$6$1.class
+kiul\kiulabilities\gamelogic\abilities\Catalyst$4.class
+kiul\kiulabilities\gamelogic\abilities\Catalyst$7.class
 kiul\kiulabilities\gamelogic\abilities\Frozone$3.class
 kiul\kiulabilities\CommandMethods\UltimatePointSupplyDrop$1$1.class
 kiul\kiulabilities\gamelogic\abilities\Tracker$4.class
@@ -64,6 +67,7 @@ kiul\kiulabilities\gamelogic\abilities\Tracker$5.class
 kiul\kiulabilities\gamelogic\abilities\Earth.class
 kiul\kiulabilities\gamelogic\abilities\Discharge$1.class
 kiul\kiulabilities\gamelogic\abilities\Artificer$1.class
+kiul\kiulabilities\gamelogic\abilities\Catalyst$8.class
 kiul\kiulabilities\gamelogic\abilities\Stealth$5.class
 kiul\kiulabilities\gamelogic\abilities\Spectre$1.class
 kiul\kiulabilities\CommandMethods\UltimatePointSupplyDrop.class
@@ -74,4 +78,5 @@ kiul\kiulabilities\gamelogic\abilities\Catalyst.class
 kiul\kiulabilities\gamelogic\abilities\Spectre$7.class
 kiul\kiulabilities\gamelogic\abilities\Featherweight$1.class
 kiul\kiulabilities\StatusEffects$6.class
+kiul\kiulabilities\gamelogic\abilities\Catalyst$5.class
 kiul\kiulabilities\gamelogic\abilities\Featherweight$4.class
