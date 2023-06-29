@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
@@ -51,6 +52,9 @@ public class Catalyst implements Listener {
 
     String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.CATALYST.getLabel()));
 
+    boolean isCharged = false;
+    boolean isUltimateActive = false;
+
     @EventHandler
     public void onClick(PlayerInteractEvent e) throws InterruptedException {
 
@@ -69,7 +73,7 @@ public class Catalyst implements Listener {
                         Location inFront = p.getLocation().add(p.getLocation().getDirection().normalize().multiply(2));
                         inFront.setY(p.getLocation().add(0,-1,0).getY());
                         Block spreadCenter = inFront.getBlock();
-                        spread(spreadCenter,p);
+                        spread(spreadCenter,p,2);
 
                         Block backLeft = getLocationRelative(1.0,2.2,0.0, p.getLocation()).getBlock();
                         Block backRight = getLocationRelative(1.0,0.0,2.2, p.getLocation()).getBlock();
@@ -146,22 +150,6 @@ public class Catalyst implements Listener {
                                 p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,frontTopRight.getLocation(),5,1,1,1, 0.0005);
                             }
                         }, 10);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                         /** CODE END << */
 
                         if (secondaryCooldown.isEmpty()) {
@@ -231,9 +219,7 @@ public class Catalyst implements Listener {
                             public void run() {
 
                                 /** ULTIMATE - CODE START >> */
-
-
-
+                                isUltimateActive = true;
                                 /** CODE END << */
 
                             }
@@ -265,13 +251,27 @@ public class Catalyst implements Listener {
     public void spreadFromFangHit (EntityDamageByEntityEvent e) {
         if (e.getDamager().getType() == EntityType.EVOKER_FANGS && e.getDamager().hasMetadata("spreadfang")) {
             EvokerFangs evokerFangs = (EvokerFangs) e.getDamager();
-            spread(e.getEntity().getLocation().add(0,-1,0).getBlock(),(Player) evokerFangs.getOwner());
+            spread(e.getEntity().getLocation().add(0,-1,0).getBlock(),(Player) evokerFangs.getOwner(), 1);
             StatusEffects.root((Player) e.getEntity(),1);
         }
     }
 
+    @EventHandler
+    public void getHurtOnSculkEvent (EntityDamageByEntityEvent e) {
+        if (e.getEntity() instanceof Player && e.getEntity().hasMetadata("catalyst")) {
+            spread(e.getEntity().getLocation().add(0,-1,0).getBlock(),(Player) e.getEntity(),1);
+        }
+    }
 
-    public void spread (Block spreadCenter,Player p) {
+    @EventHandler
+    public void catalystKillEvent (PlayerDeathEvent e) {
+        if (e.getEntity().getKiller().hasMetadata("catalyst") && e.getEntity().getKiller() instanceof Player) {
+            spread(e.getEntity().getLocation().add(0,-1,0).getBlock(),e.getEntity().getKiller(),2);
+        }
+    }
+
+
+    public void spread (Block spreadCenter,Player p, int amount) {
         World world = spreadCenter.getWorld();
 
         spreadCenter.setType(Material.SCULK_CATALYST);
@@ -288,19 +288,22 @@ public class Catalyst implements Listener {
             spreadCenter.getRelative(BlockFace.WEST).setType(Material.SCULK);
 
         }
-        Zombie triggerSpread = (Zombie) world.spawnEntity(spreadCenter.getLocation(), EntityType.ZOMBIE);
-        triggerSpread.setBaby();
-        triggerSpread.setInvisible(true);
-        triggerSpread.setGravity(false);
-        triggerSpread.setSilent(true);
-        triggerSpread.setMetadata("spread", new FixedMetadataValue(plugin, "pat"));
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Kiulabilities.getPlugin(Kiulabilities.class), new Runnable() {
-            @Override
-            public void run() {
-                triggerSpread.damage(20, p);
-                spreadCenter.getState().update();
-            }
-        }, 1);
+        for (int i = 0; i < amount; i++) {
+            Zombie triggerSpread = (Zombie) world.spawnEntity(spreadCenter.getLocation(), EntityType.ZOMBIE);
+            triggerSpread.setBaby();
+            triggerSpread.setInvisible(true);
+            triggerSpread.setGravity(false);
+            triggerSpread.setSilent(true);
+            triggerSpread.setMetadata("spread", new FixedMetadataValue(plugin, "pat"));
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Kiulabilities.getPlugin(Kiulabilities.class), new Runnable() {
+                @Override
+                public void run() {
+                    triggerSpread.damage(20, p);
+                    spreadCenter.getState().update();
+                }
+            }, 1);
+        }
+
     }
 // fuck you intellij
     @EventHandler
