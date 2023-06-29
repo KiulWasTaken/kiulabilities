@@ -336,7 +336,7 @@ public class Tracker implements Listener {
     public void combatPassive (PlayerDeathEvent e) {
         Player killer = e.getEntity().getKiller();
 
-        if (killer.hasMetadata("tracker")) {
+        if (e.getEntity() != null && killer != null && killer.hasMetadata("tracker")) {
             killer.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 160, 0));
         }
     }

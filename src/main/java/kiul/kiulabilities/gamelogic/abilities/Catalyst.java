@@ -23,6 +23,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class Catalyst implements Listener {
         Player p = e.getPlayer();
 
         if (p.getInventory().getItemInMainHand() != null && p.getInventory().getItemInMainHand().hasItemMeta()) {
-            if (ChatColor.stripColor(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName()).equalsIgnoreCase(itemname)) {
+            if (ChatColor.stripColor(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName()).equalsIgnoreCase(itemname) && p.isOnGround()) {
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     if (!primaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (primaryCooldown.get(p.getUniqueId())).longValue() > primaryTimer * 1000)) {
 
@@ -69,6 +70,97 @@ public class Catalyst implements Listener {
                         inFront.setY(p.getLocation().add(0,-1,0).getY());
                         Block spreadCenter = inFront.getBlock();
                         spread(spreadCenter,p);
+
+                        Block backLeft = getLocationRelative(1.0,2.2,0.0, p.getLocation()).getBlock();
+                        Block backRight = getLocationRelative(1.0,0.0,2.2, p.getLocation()).getBlock();
+
+                        Block midLeftBottom = getLocationRelative(2.0,1.6,0.0, p.getLocation()).getBlock();
+                        Block midLeftTop = midLeftBottom.getRelative(BlockFace.UP);
+                        Block midRightBottom = getLocationRelative(2.0,0.0,1.6, p.getLocation()).getBlock();
+                        Block midRightTop = midRightBottom.getRelative(BlockFace.UP);
+
+                        Block frontBottomMid = getLocationRelative(3.0,0.0,0.0, p.getLocation()).getBlock();
+                        Block frontBottomLeft = getLocationRelative(3.0,1.0,0.0, p.getLocation()).getBlock();
+                        Block frontBottomRight = getLocationRelative(3.0,0.0,1.0, p.getLocation()).getBlock();
+                        Block frontMiddleMiddle = frontBottomMid.getRelative(BlockFace.UP);
+                        Block frontMiddleRight = frontBottomRight.getRelative(BlockFace.UP);
+                        Block frontMiddleLeft = frontBottomLeft.getRelative(BlockFace.UP);
+                        Block frontTopLeft = frontMiddleLeft.getRelative(BlockFace.UP);
+                        Block frontTopRight = frontMiddleRight.getRelative(BlockFace.UP);
+                        Block frontTopMiddle = frontMiddleMiddle.getRelative(BlockFace.UP);
+
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                            @Override
+                            public void run() {
+                                backRight.setType(Material.SCULK);
+                                p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,backRight.getLocation(),5,1,1,1, 0.0005);
+                                backLeft.setType(Material.SCULK);
+                                p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,backLeft.getLocation(),5,1,1,1, 0.0005);
+
+                            }
+                        }, 2);
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                            @Override
+                            public void run() {
+                                midLeftBottom.setType(Material.SCULK);
+                                p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,midRightBottom.getLocation(),5,1,1,1, 0.0005);
+                                midRightBottom.setType(Material.SCULK);
+                                p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,midLeftBottom.getLocation(),5,1,1,1, 0.0005);
+                            }
+                        }, 4);
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                            @Override
+                            public void run() {
+                                midLeftTop.setType(Material.SCULK);
+                                p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,midLeftTop.getLocation(),5,1,1,1, 0.0005);
+                                midRightTop.setType(Material.SCULK);
+                                p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,midRightTop.getLocation(),5,1,1,1, 0.0005);
+                                frontBottomLeft.setType(Material.SCULK);
+                                p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,frontBottomLeft.getLocation(),5,1,1,1, 0.0005);
+                                frontBottomRight.setType(Material.SCULK);
+                                p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,frontBottomRight.getLocation(),5,1,1,1, 0.0005);
+
+                            }
+                        }, 6);
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                            @Override
+                            public void run() {
+                                frontBottomMid.setType(Material.SCULK);
+                                p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,frontBottomMid.getLocation(),5,1,1,1, 0.0005);
+                                frontMiddleLeft.setType(Material.SCULK);
+                                p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,frontMiddleLeft.getLocation(),5,1,1,1, 0.0005);
+                                frontMiddleRight.setType(Material.SCULK);
+                                p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,frontMiddleRight.getLocation(),5,1,1,1, 0.0005);
+                            }
+                        }, 8);
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                            @Override
+                            public void run() {
+                                frontMiddleMiddle.setType(Material.SCULK);
+                                p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,frontMiddleMiddle.getLocation(),5,1,1,1, 0.0005);
+                                frontTopLeft.setType(Material.SCULK);
+                                p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,frontTopLeft.getLocation(),5,1,1,1, 0.0005);
+                                frontTopMiddle.setType(Material.SCULK);
+                                p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,frontTopMiddle.getLocation(),5,1,1,1, 0.0005);
+                                frontTopRight.setType(Material.SCULK);
+                                p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,frontTopRight.getLocation(),5,1,1,1, 0.0005);
+                            }
+                        }, 10);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                         /** CODE END << */
 
@@ -229,6 +321,29 @@ public class Catalyst implements Listener {
                 }
             }.runTaskTimer(plugin, 0L, 1L);
         }
+    }
+
+
+    public Location getLocationRelative (double forwards, double left, double right, Location center) {
+
+        Vector direction = center.getDirection().setY(0).normalize();
+
+
+// Scale the direction vector to the desired length
+        Vector forwardVector = direction.multiply(forwards);
+
+// Calculate the left vector by rotating the forward vector 90 degrees
+
+        Vector leftVector = new Vector(-forwardVector.getZ(), 0, forwardVector.getX()).normalize().multiply(left);
+
+        Vector rightVector = new Vector(forwardVector.getZ(), 0, -forwardVector.getX()).normalize().multiply(right);
+
+        Vector targetVector = (forwardVector.add(leftVector)).add(rightVector);
+
+        Location targetLocation = center.clone().add(targetVector);
+
+        return targetLocation;
+
     }
 }
 
