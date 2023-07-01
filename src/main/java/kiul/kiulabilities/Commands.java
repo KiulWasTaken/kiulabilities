@@ -1,6 +1,6 @@
 package kiul.kiulabilities;
 
-import kiul.kiulabilities.CommandMethods.UltimatePointSupplyDrop;
+import kiul.kiulabilities.CommandMethods.SupplyDrop;
 import kiul.kiulabilities.gamelogic.AbilityItemNames;
 import kiul.kiulabilities.gamelogic.ColoredText;
 import kiul.kiulabilities.gamelogic.GlintEnchantment;
@@ -10,14 +10,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.*;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +26,15 @@ public class Commands implements TabExecutor, Listener {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if (sender instanceof ConsoleCommandSender console || sender instanceof Player p) {
+            if (label.equalsIgnoreCase("spawnlootcrate")) { /** /spawnlootcrate */
+                for (Player allplayers : Bukkit.getOnlinePlayers()) {
+                    SupplyDrop.SpawnLootCrate(allplayers);
+                    break;
+                }
+                return false;
+            }
+        }
             Player p = (Player) sender;
         if (label.equalsIgnoreCase("test")) {
 
@@ -76,8 +83,8 @@ public class Commands implements TabExecutor, Listener {
                     String metaData = null;
 
                     //
-                    lore.add(ColoredText.translateHexCodes("&#d8d8d8&lRight-Click &6» &#d8d8d8" + "Shoots 8 s-bullets 360° around you."));
-                    lore.add(ColoredText.translateHexCodes("&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "Launch up into the air. (With elytra if active, 11s)"));
+                    lore.add(ColoredText.translateHexCodes("&#d8d8d8&lRight-Click &6» &#d8d8d8" + "Launch up into the air. (With elytra if active, 11s)"));
+                    lore.add(ColoredText.translateHexCodes("&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "Shoots 8 s-bullets 360° around you."));
                     lore.add(ColoredText.translateHexCodes("&#b1b1b1&lSwap-Item (&#b1b1b1DEACTIVATED&l) &6» &#b1b1b1" + "Activated elytra status permanently."));
                     lore.add(ColoredText.translateHexCodes("&#919090&lSwap-Item (&#919090ACTIVATED&l) &6» &#919090" + "Spawn a shulker bullet above all players alive."));
                     lore.add(ColoredText.translateHexCodes(" "));
@@ -205,11 +212,6 @@ public class Commands implements TabExecutor, Listener {
         } else if (label.equalsIgnoreCase("resetactionbar")) { /** /resetactionbar */
             for (Player allplayers : Bukkit.getOnlinePlayers()) {
                 allplayers.setMetadata("reset", new FixedMetadataValue(plugin, "pat"));
-            }
-        } else if (label.equalsIgnoreCase("spawnlootcrate")) { /** /spawnlootcrate */
-            for (Player allplayers : Bukkit.getOnlinePlayers()) {
-                UltimatePointSupplyDrop.SpawnLootCrate(allplayers);
-                break;
             }
         }
         return false;

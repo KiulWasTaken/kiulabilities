@@ -1,6 +1,6 @@
 package kiul.kiulabilities;
 
-import kiul.kiulabilities.CommandMethods.UltimatePointSupplyDrop;
+import kiul.kiulabilities.CommandMethods.SupplyDrop;
 import kiul.kiulabilities.gamelogic.*;
 import kiul.kiulabilities.gamelogic.abilities.*;
 import org.bukkit.NamespacedKey;
@@ -36,7 +36,7 @@ public final class Kiulabilities extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ultimatePointsListeners(), this);
         getServer().getPluginManager().registerEvents(new menuClickListener(), this);
         getServer().getPluginManager().registerEvents(new DroppingAbilitys(), this);
-        getServer().getPluginManager().registerEvents(new UltimatePointSupplyDrop(), this);
+        getServer().getPluginManager().registerEvents(new SupplyDrop(), this);
 
         /** ABILITIES */
         getServer().getPluginManager().registerEvents(new Catalyst(), this);

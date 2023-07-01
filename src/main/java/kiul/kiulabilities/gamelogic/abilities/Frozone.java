@@ -181,6 +181,7 @@ public class Frozone implements Listener {
 
         if (e.getDamager() instanceof Creeper creeper) {
             if (creeper.hasMetadata("frozonecreeper")) {
+                e.setCancelled(true);
                 if (e.getEntity() instanceof Player p) {
                     if (p.getGameMode() == GameMode.SURVIVAL) {
                         if (AbilityExtras.itemcheck(p, itemname) == false) {
@@ -189,14 +190,12 @@ public class Frozone implements Listener {
                     }
                 } else if (e.getEntity() instanceof LivingEntity livingEntity) {
 
-                    e.setCancelled(true);
-
                     livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 5, false, false));
 
                 }
-            }
-            if (e.getDamager().getLocation().distance(e.getEntity().getLocation()) < 8) {
-                repulseplayer(e.getDamager().getLocation(), e.getEntity(), -6, 1.5);
+                if (e.getDamager().getLocation().distance(e.getEntity().getLocation()) < 8) {
+                    repulseplayer(e.getDamager().getLocation(), e.getEntity(), -6, 1.5);
+                }
             }
         }
     }
@@ -219,26 +218,25 @@ public class Frozone implements Listener {
 
                                 /** ULTIMATE - CODE START >> */
 
-                                for (Player player : Bukkit.getOnlinePlayers()) {
-                                    if (player != p) {
-                                        Location location = player.getLocation().add(0, 1, 0);
-
                                         for (double i = 0; i <= Math.PI; i += Math.PI / 13) {
                                             double radius = Math.sin(i);
                                             double y = Math.cos(i) * 4;
                                             for (double a = 0; a < Math.PI * 2; a += Math.PI / 13) {
                                                 double x = Math.cos(a) * radius * 4;
                                                 double z = Math.sin(a) * radius * 4;
-                                                location.add(x, y, z);
-                                                if (location.getBlock().getType() != Material.BLUE_ICE) {
-                                                    replaceblock(location.getBlock().getLocation(), location.getBlock().getLocation().getBlock().getType(), 5);
-                                                    location.getBlock().setType(Material.BLUE_ICE);
+                                                for (Player player : Bukkit.getOnlinePlayers()) {
+                                                    if (player != p) {
+                                                        Location location = player.getLocation().add(0, 1, 0);
+                                                        location.add(x, y, z);
+                                                        if (location.getBlock().getType() != Material.BLUE_ICE) {
+                                                            replaceblock(location.getBlock().getLocation(), location.getBlock().getLocation().getBlock().getType(), 5);
+                                                            location.getBlock().setType(Material.BLUE_ICE);
+                                                        }
+                                                        location.subtract(x, y, z);
+                                                    }
                                                 }
-                                                location.subtract(x, y, z);
                                             }
                                         }
-                                    }
-                                }
 
                                 /** CODE END << */
 
@@ -393,7 +391,7 @@ public class Frozone implements Listener {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override
             public void run() {
-                if (material != null) {
+                if (material != null || material == Material.GLASS || material == Material.LIGHT_BLUE_STAINED_GLASS || material == Material.PACKED_ICE || material == Material.BLUE_ICE) {
                     blockloc.getBlock().setType(material);
                 } else {
                     blockloc.getBlock().setType(Material.AIR);

@@ -67,17 +67,17 @@ public class Featherweight implements Listener {
 
                             List<String> lore = p.getInventory().getItemInMainHand().getItemMeta().getLore();
 
-                            if (ChatColor.stripColor(lore.get(lore.size()-1)).equalsIgnoreCase("Ultimate-Status » " + "ACTIVATED")) {
+                            if (ChatColor.stripColor(lore.get(lore.size()-1)).equalsIgnoreCase("Elytra-Status » " + "ACTIVATED")) {
 
                                 ItemStack chestplate = p.getInventory().getChestplate();
 
                                 ItemStack item = new ItemStack(Material.ELYTRA);
 
                                 ItemMeta itemMeta = item.getItemMeta();
-                                AttributeModifier armorModifier = new AttributeModifier(UUID.randomUUID(), "generic.armor", 8.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST);
-                                AttributeModifier toughnessModifier = new AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST);
+                                AttributeModifier armorModifier = new AttributeModifier(UUID.randomUUID(), "generic.armor", 6.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST);
+                                //AttributeModifier toughnessModifier = new AttributeModifier(UUID.randomUUID(), "generic.armor_toughness", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST);
                                 itemMeta.addAttributeModifier(Attribute.GENERIC_ARMOR, armorModifier);
-                                itemMeta.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, toughnessModifier);
+                                //itemMeta.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, toughnessModifier);
                                 itemMeta.setUnbreakable(true);
                                 GlintEnchantment glow = new GlintEnchantment(new NamespacedKey(plugin, "glow"));
                                 itemMeta.addEnchant(glow, 1, true);
@@ -85,7 +85,14 @@ public class Featherweight implements Listener {
                                 item.setItemMeta(itemMeta);
                                 p.getInventory().setChestplate(item);
 
-                                p.setGliding(true);
+                                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        p.setGliding(true);
+
+                                    }
+                                }, 10);
 
                                 double yaw = Math.toRadians(p.getLocation().getYaw());
 
@@ -137,7 +144,7 @@ public class Featherweight implements Listener {
 
                                 Vector vec = p.getLocation().add(xOffset, 0, zOffset).toVector().subtract(p.getLocation().toVector()).normalize();
 
-                                ShulkerBullet shulkerBullet = (ShulkerBullet) p.getWorld().spawnEntity(p.getEyeLocation().add(0,-0.5,0), EntityType.SHULKER_BULLET);
+                                ShulkerBullet shulkerBullet = (ShulkerBullet) p.getWorld().spawnEntity(p.getEyeLocation().add(0,-0.5,0).add(vec.multiply(2)), EntityType.SHULKER_BULLET);
 
                                 shulkerBullet.setVelocity(vec.multiply(0.5).add(new Vector(0,0.1,0)));
 
