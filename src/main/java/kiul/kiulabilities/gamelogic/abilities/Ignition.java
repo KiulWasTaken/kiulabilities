@@ -59,14 +59,6 @@ public class Ignition implements Listener {
 
                         /** PRIMARY - CODE START >> */
 
-                        Location originalLocation = p.getLocation();
-                        double yaw = Math.toRadians(originalLocation.getYaw());
-
-                        double xOffset = -6 * Math.sin(yaw);
-                        double zOffset = 6 * Math.cos(yaw);
-
-                         p.teleport(originalLocation.add(xOffset, 0, zOffset));
-
                         new BukkitRunnable() {
                             double t = Math.PI / 4;
                             Location loc = p.getLocation().add(0, -1, 0);
@@ -148,7 +140,6 @@ public class Ignition implements Listener {
 
                                 /** ULTIMATE - CODE START >> */
 
-                                fireballrain(p);
                                 fireballrain(p);
 
                                 /** CODE END << */

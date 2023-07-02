@@ -13,6 +13,9 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFadeEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -79,7 +82,7 @@ public class Frozone implements Listener {
 
                                 for (Entity entity : loc.getChunk().getEntities()) {
                                     if (entity.getType() != EntityType.DROPPED_ITEM && entity.getType() != EntityType.ARMOR_STAND && entity != p) {
-                                        if (entity.getLocation().distance(loc) < 1) {
+                                        if (entity.getLocation().distance(loc) < 2) {
                                             cancel();
                                             particlehit(p, loc);
                                             break;
@@ -87,7 +90,7 @@ public class Frozone implements Listener {
                                     }
                                 }
 
-                                if (t > 40 || loc.getBlock().getType() != Material.AIR && loc.getBlock().getType() != Material.WATER && loc.getBlock().getType() != Material.LAVA) {
+                                if (t > 20 || loc.getBlock().getType() != Material.AIR && loc.getBlock().getType() != Material.WATER && loc.getBlock().getType() != Material.LAVA) {
                                     cancel();
                                     particlehit(p, loc);
                                 }
@@ -149,13 +152,15 @@ public class Frozone implements Listener {
 
     public void particlehit (Player p, Location loc) {
 
-        Creeper explosive = (Creeper) p.getWorld().spawnEntity(loc, EntityType.CREEPER);
-        explosive.setMaxFuseTicks(0);
-        explosive.ignite();
-        explosive.setInvisible(true);
-        explosive.setSilent(true);
-        explosive.setMetadata("frozonecreeper", new FixedMetadataValue(plugin, "pat"));
-        explosive.setExplosionRadius(11);
+            p.getWorld().spawn(loc, Creeper.class, (explosive) -> {
+                explosive.setMaxFuseTicks(0);
+                explosive.ignite();
+                explosive.setInvisible(true);
+                explosive.setSilent(true);
+                explosive.setMetadata("frozonecreeper", new FixedMetadataValue(plugin, "pat"));
+                explosive.setExplosionRadius(6);
+                explosive.setCustomName("frozonecreeper");
+            });
 
     }
 
@@ -166,7 +171,7 @@ public class Frozone implements Listener {
             if (creeper.hasMetadata("frozonecreeper")) {
 
                 for (Block block : e.blockList()) {
-                    replaceblock(block.getLocation(), block.getType(),2);
+                    replaceblock(block.getLocation(), block.getType(), block.getBlockData(),2);
                     block.getLocation().getBlock().setType(Material.BLUE_ICE);
                 }
 
@@ -185,16 +190,16 @@ public class Frozone implements Listener {
                 if (e.getEntity() instanceof Player p) {
                     if (p.getGameMode() == GameMode.SURVIVAL) {
                         if (AbilityExtras.itemcheck(p, itemname) == false) {
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 5, false, false));
+                            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 40, 5, false, false));
                         }
                     }
                 } else if (e.getEntity() instanceof LivingEntity livingEntity) {
 
-                    livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 5, false, false));
+                    livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 40, 5, false, false));
 
                 }
-                if (e.getDamager().getLocation().distance(e.getEntity().getLocation()) < 8) {
-                    repulseplayer(e.getDamager().getLocation(), e.getEntity(), -6, 1.5);
+                if (e.getDamager().getLocation().distance(e.getEntity().getLocation()) < 4) {
+                    repulseplayer(e.getDamager().getLocation(), e.getEntity(), -3, 0.8);
                 }
             }
         }
@@ -229,7 +234,7 @@ public class Frozone implements Listener {
                                                         Location location = player.getLocation().add(0, 1, 0);
                                                         location.add(x, y, z);
                                                         if (location.getBlock().getType() != Material.BLUE_ICE) {
-                                                            replaceblock(location.getBlock().getLocation(), location.getBlock().getLocation().getBlock().getType(), 5);
+                                                            replaceblock(location.getBlock().getLocation(), location.getBlock().getLocation().getBlock().getType(), location.getBlock().getBlockData(), 5);
                                                             location.getBlock().setType(Material.BLUE_ICE);
                                                         }
                                                         location.subtract(x, y, z);
@@ -273,7 +278,7 @@ public class Frozone implements Listener {
 
                                             p.getLocation().clone().add(0, -1, 0).getBlock().setType(Material.PACKED_ICE);
 
-                                            replaceblock(p.getLocation().clone().add(0, -1, 0), p.getLocation().clone().getBlock().getType(), 0);
+                                            replaceblock(p.getLocation().clone().add(0, -1, 0), p.getLocation().clone().add(0,-1,0).getBlock().getType(), p.getLocation().clone().add(0,-1,0).getBlock().getBlockData(), 0);
 
                                         }
                                     } else {
@@ -351,21 +356,21 @@ public class Frozone implements Listener {
                 public void run() {
                     if (finalI > 5 && finalI < numberOfParticles - 1) {
                         if (particleLocation.getBlock().getType() != Material.PACKED_ICE) {
-                            replaceblock(particleLocation, particleLocation.getBlock().getType(), 0);
+                            replaceblock(particleLocation, particleLocation.getBlock().getType(), particleLocation.getBlock().getBlockData(), 0);
                             particleLocation.getBlock().setType(Material.PACKED_ICE);
                         }
                         if (particleLocation.clone().add(0,1,0).getBlock().getType() != Material.PACKED_ICE) {
-                            replaceblock(particleLocation.clone().add(0, 1, 0), particleLocation.clone().add(0,1,0).getBlock().getType(), 0);
+                            replaceblock(particleLocation.clone().add(0, 1, 0), particleLocation.clone().add(0,1,0).getBlock().getType(), particleLocation.clone().add(0,1,0).getBlock().getBlockData(), 0);
                             particleLocation.clone().add(0, 1, 0).getBlock().setType(Material.PACKED_ICE);
                         }
                         if (particleLocation.clone().add(0,2,0).getBlock().getType() != Material.PACKED_ICE) {
-                            replaceblock(particleLocation.clone().add(0, 2, 0), particleLocation.clone().add(0,2,0).getBlock().getType(), 0);
+                            replaceblock(particleLocation.clone().add(0, 2, 0), particleLocation.clone().add(0,2,0).getBlock().getType(), particleLocation.clone().add(0,2,0).getBlock().getBlockData(), 0);
                             particleLocation.clone().add(0, 2, 0).getBlock().setType(Material.PACKED_ICE);
                             p.getWorld().playSound(particleLocation, Sound.BLOCK_STONE_PLACE, 0.3F, 0.5F);
                         }
                     } else {
                         if (particleLocation.getBlock().getType() != Material.PACKED_ICE) {
-                            replaceblock(particleLocation, particleLocation.getBlock().getType(), 0);
+                            replaceblock(particleLocation, particleLocation.getBlock().getType(), particleLocation.getBlock().getBlockData(), 0);
                             particleLocation.getBlock().setType(Material.PACKED_ICE);
                         }
                     }
@@ -374,25 +379,26 @@ public class Frozone implements Listener {
         }
     }
 
-    public void replaceblock (Location blockloc, Material material, int delay) {
+    public void replaceblock (Location blockloc, Material material, BlockData blockData, int delay) {
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override
             public void run() {
-                blockloc.getBlock().setType(Material.LIGHT_BLUE_STAINED_GLASS);
+                blockloc.getBlock().setType(Material.ICE);
             }
         }, delay*20 + 30);
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override
             public void run() {
-                blockloc.getBlock().setType(Material.GLASS);
+                blockloc.getBlock().setType(Material.LIGHT_BLUE_STAINED_GLASS);
             }
         }, delay*20 + 60);
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override
             public void run() {
-                if (material != null || material == Material.GLASS || material == Material.LIGHT_BLUE_STAINED_GLASS || material == Material.PACKED_ICE || material == Material.BLUE_ICE) {
+                if (material != null && material != Material.GLASS && material != Material.LIGHT_BLUE_STAINED_GLASS && material != Material.PACKED_ICE && material != Material.BLUE_ICE && material != Material.ICE) {
                     blockloc.getBlock().setType(material);
+                    blockloc.getBlock().setBlockData(blockData);
                 } else {
                     blockloc.getBlock().setType(Material.AIR);
                 }
@@ -461,6 +467,26 @@ public class Frozone implements Listener {
 
             entity1.setVelocity(vec1.add(new Vector(0, Y, 0)));
 
+        }
+
+    }
+
+    @EventHandler
+    public void icemelt (BlockFadeEvent e) {
+
+        if (e.getBlock().getType() == Material.ICE) {
+            e.setCancelled(true);
+        }
+
+    }
+
+    @EventHandler
+    public void icebroken (BlockBreakEvent e) {
+
+        if (e.getBlock().getType() == Material.ICE) {
+            if (e.getPlayer().getGameMode() == GameMode.SURVIVAL) {
+                e.getBlock().getLocation().getBlock().setType(Material.AIR);
+            }
         }
 
     }

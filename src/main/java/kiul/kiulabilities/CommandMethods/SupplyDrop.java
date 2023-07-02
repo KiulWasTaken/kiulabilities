@@ -7,6 +7,7 @@ import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -277,40 +278,42 @@ public class SupplyDrop implements Listener {
     public void onDeath(PlayerInteractEntityEvent e) {
 
         if (e.getRightClicked() instanceof PolarBear entity) {
-            if (entity.hasMetadata("lootdrop")) {
-                entity.remove();
-                entity.getWorld().spawnParticle(Particle.FLAME, entity.getLocation(), 30, 1, 1, 1, 0);
-                entity.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, entity.getLocation().add(0,-0.5,0), 5, 0.5, 0.5, 0.5, 0);
-                entity.getWorld().playSound(entity.getLocation(), Sound.BLOCK_CHEST_OPEN,0.4F,0.8F);
+            if (e.getPlayer() .getGameMode() == GameMode.SURVIVAL) {
+                if (entity.hasMetadata("lootdrop")) {
+                    entity.remove();
+                    entity.getWorld().spawnParticle(Particle.FLAME, entity.getLocation(), 30, 1, 1, 1, 0);
+                    entity.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, entity.getLocation().add(0, -0.5, 0), 5, 0.5, 0.5, 0.5, 0);
+                    entity.getWorld().playSound(entity.getLocation(), Sound.BLOCK_CHEST_OPEN, 0.4F, 0.8F);
 
-                Random random = new Random();
+                    Random random = new Random();
 
-                ultimatePointsListeners.addUltPoint(e.getPlayer());
-                entity.getWorld().dropItem(entity.getLocation().add(0,1,0), new ItemStack(Material.GOLDEN_APPLE, random.nextInt(3)));
-                entity.getWorld().dropItem(entity.getLocation().add(0,1,0), new ItemStack(Material.TNT, random.nextInt(6)));
-                entity.getWorld().dropItem(entity.getLocation().add(0,1,0), new ItemStack(Material.ENDER_PEARL, random.nextInt(2)));
+                    ultimatePointsListeners.addUltPoint(e.getPlayer());
+                    entity.getWorld().dropItem(entity.getLocation().add(0, 1, 0), new ItemStack(Material.GOLDEN_APPLE, random.nextInt(3)));
+                    entity.getWorld().dropItem(entity.getLocation().add(0, 1, 0), new ItemStack(Material.TNT, random.nextInt(6)));
+                    entity.getWorld().dropItem(entity.getLocation().add(0, 1, 0), new ItemStack(Material.ENDER_PEARL, random.nextInt(2)));
 
-                ItemStack fireb = new ItemStack(Material.FIRE_CHARGE);
-                fireb.setAmount(random.nextInt(4));
-                ItemMeta fbMeta = fireb.getItemMeta();
-                fbMeta.setDisplayName(ChatColor.BOLD + "Fire Ball");
-                List<String> lore = new ArrayList<String>();
-                lore.add(ChatColor.DARK_AQUA + "Right click to launch a fireball!");
-                fbMeta.setLore(lore);
-                fireb.setItemMeta(fbMeta);
+                    ItemStack fireb = new ItemStack(Material.FIRE_CHARGE);
+                    fireb.setAmount(random.nextInt(4));
+                    ItemMeta fbMeta = fireb.getItemMeta();
+                    fbMeta.setDisplayName(ChatColor.BOLD + "Fire Ball");
+                    List<String> lore = new ArrayList<String>();
+                    lore.add(ChatColor.DARK_AQUA + "Right click to launch a fireball!");
+                    fbMeta.setLore(lore);
+                    fireb.setItemMeta(fbMeta);
 
-                entity.getWorld().dropItem(entity.getLocation().add(0,1,0), fireb);
+                    entity.getWorld().dropItem(entity.getLocation().add(0, 1, 0), fireb);
 
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    player.sendMessage(ColoredText.translateHexCodes(
-                            "&4&l<&#fbf451&lC&#fbbe3f&lr&#fc882d&la&#fc511b&lt&#fd1b09&le&#fd1b09&l-&#fc511b&lD&#fc882d&lr&#fbbe3f&lo&#fbf451&lp&4&l> " +
-                                    "&#6da87d&l" + e.getPlayer().getDisplayName() + "&#6da87d has collected a supply-crate!"));
-                }
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        player.sendMessage(ColoredText.translateHexCodes(
+                                "&4&l<&#fbf451&lC&#fbbe3f&lr&#fc882d&la&#fc511b&lt&#fd1b09&le&#fd1b09&l-&#fc511b&lD&#fc882d&lr&#fbbe3f&lo&#fbf451&lp&4&l> " +
+                                        "&#6da87d&l" + e.getPlayer().getDisplayName() + "&#6da87d has collected a supply-crate!"));
+                    }
 
-                for (Entity entity1 : entity.getWorld().getNearbyEntities(entity.getLocation(),0.5,3,0.5)) {
-                    if (entity1.hasMetadata("lootdrop")) {
-                        entity1.remove();
-                        break;
+                    for (Entity entity1 : entity.getWorld().getNearbyEntities(entity.getLocation(), 0.5, 3, 0.5)) {
+                        if (entity1.hasMetadata("lootdrop")) {
+                            entity1.remove();
+                            break;
+                        }
                     }
                 }
             }
@@ -394,6 +397,17 @@ public class SupplyDrop implements Listener {
 
         }
         return null;
+    }
+
+    @EventHandler
+    public void hitchicken(EntityDamageByEntityEvent e) {
+
+        if (e.getDamager() instanceof Player p) {
+            if (p.getGameMode() == GameMode.ADVENTURE) {
+                e.setCancelled(true);
+            }
+        }
+
     }
 
 }

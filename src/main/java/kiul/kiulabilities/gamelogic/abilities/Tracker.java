@@ -9,6 +9,7 @@ import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.*;
@@ -122,18 +123,26 @@ public class Tracker implements Listener {
 
                             // ABILITY CODE START
 
-                            for (Block nearbyBlocks : getBlocks(p.getLocation().getBlock(), 2)) {
-                                if (nearbyBlocks.getType() == Material.GRASS) {
-                                    nearbyBlocks.setType(Material.SWEET_BERRY_BUSH);
-                                    BlockState state = nearbyBlocks.getState();
-                                    Ageable ageable = (Ageable) state.getBlockData();
-                                    ageable.setAge(2);
-                                    state.setBlockData(ageable);
-                                    state.update();
+                            Random random = new Random();
 
-
+                            for (Block nearbyBlocks : getBlocks(p.getLocation().getBlock(), 4)) {
+                                if (nearbyBlocks.getType() == Material.AIR) {
+                                    if (nearbyBlocks.getRelative(BlockFace.DOWN).getType() != Material.AIR && nearbyBlocks.getRelative(BlockFace.DOWN).getType() != Material.SWEET_BERRY_BUSH && nearbyBlocks.getRelative(BlockFace.DOWN).getType().isOccluding() == true) {
+                                        Location loc = nearbyBlocks.getLocation();
+                                        if (random.nextInt(5) == 1) {
+                                            loc.getBlock().setType(Material.SWEET_BERRY_BUSH);
+                                            if (loc.getBlock().getType() == Material.SWEET_BERRY_BUSH) {
+                                                BlockState state = loc.getBlock().getState();
+                                                Ageable ageable = (Ageable) state.getBlockData();
+                                                ageable.setAge(2);
+                                                state.setBlockData(ageable);
+                                                state.update();
+                                            }
+                                        }
+                                    }
                                 }
                             }
+
                             Location center = p.getLocation().add(0, 1, 0); // replace world, x, y, z with your desired values
                             double radius = 2;
 
@@ -147,18 +156,6 @@ public class Tracker implements Listener {
                             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                                 @Override
                                 public void run() {
-                                    for (Block nearbyBlocks : getBlocks(p.getLocation().getBlock(), 3)) {
-                                        if (nearbyBlocks.getType() == Material.GRASS) {
-                                            nearbyBlocks.setType(Material.SWEET_BERRY_BUSH);
-                                            BlockState state = nearbyBlocks.getState();
-                                            Ageable ageable = (Ageable) state.getBlockData();
-                                            ageable.setAge(2);
-                                            state.setBlockData(ageable);
-                                            state.update();
-
-
-                                        }
-                                    }
                                     Location center = p.getLocation().add(0, 0.5, 0); // replace world, x, y, z with your desired values
                                     double radius = 3;
 

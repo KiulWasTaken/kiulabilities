@@ -136,8 +136,13 @@ public class Featherweight implements Listener {
 
                             /** SECONDARY CODE START */
 
-                            for (int i = 0; i <= 7; i++) {
-                                double yaw = Math.toRadians(-180 + i * 45); // Convert yaw to radians
+                            for (int i = 0; i <= 15; i++) {
+                                double playeryaw = p.getLocation().getYaw();
+                                if (playeryaw > 180) {
+                                    playeryaw = -playeryaw;
+
+                                }
+                                double yaw = Math.toRadians(playeryaw + i * 22.5); // Convert yaw to radians
 
                                 double xOffset = -2 * Math.sin(yaw);
                                 double zOffset = 2 * Math.cos(yaw);
@@ -148,7 +153,7 @@ public class Featherweight implements Listener {
 
                                 shulkerBullet.setVelocity(vec.multiply(0.5).add(new Vector(0,0.1,0)));
 
-                                if (i == 7) {
+                                if (i == 15) {
                                     break;
                                 }
                             }
@@ -185,15 +190,17 @@ public class Featherweight implements Listener {
                         ultimateCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
                         ultimatePointsListeners.useUltPoints(p, ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId()));
 
+                        List<String> lore1 = p.getInventory().getItemInMainHand().getItemMeta().getLore();
+                        ItemMeta itemMeta = p.getInventory().getItemInMainHand().getItemMeta();
+                        ItemStack item = p.getInventory().getItemInMainHand();
+
                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                             @Override
                             public void run() {
 
                                 /** ULTIMATE CODE HERE */
 
-                                List<String> lore1 = p.getInventory().getItemInMainHand().getItemMeta().getLore();
-
-                                if (ChatColor.stripColor(lore1.get(lore1.size()-1)).equalsIgnoreCase("Ultimate-Status » " + "ACTIVATED")) {
+                                if (ChatColor.stripColor(lore1.get(lore1.size()-1)).equalsIgnoreCase("Elytra-Status » " + "ACTIVATED")) {
 
 
                                     ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
@@ -218,8 +225,6 @@ public class Featherweight implements Listener {
 
                                     List<String> lore = new ArrayList<>();
 
-                                    ItemMeta itemMeta = p.getInventory().getItemInMainHand().getItemMeta();
-
                                     for (String str : itemMeta.getLore()) {
                                         lore.add(str);
                                     }
@@ -230,7 +235,7 @@ public class Featherweight implements Listener {
 
                                     itemMeta.setLore(lore);
 
-                                    p.getInventory().getItemInMainHand().setItemMeta(itemMeta);
+                                    item.setItemMeta(itemMeta);
                                 }
 
                                 /** ULTIMATE CODE END */

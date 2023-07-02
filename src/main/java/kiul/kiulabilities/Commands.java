@@ -127,8 +127,8 @@ public class Commands implements TabExecutor, Listener {
                 }
                 break;
                 case "spectre": {
-                    int maxUltimatePoints = 6;
-                    int requiredUltimatePoints = 4;
+                    int maxUltimatePoints = 4;
+                    int requiredUltimatePoints = 2;
                     Material material = Material.PINK_DYE;
                     String displayName = ColoredText.translateHexCodes(AbilityItemNames.SPECTRE.getLabel());
                     String metaData = null;
