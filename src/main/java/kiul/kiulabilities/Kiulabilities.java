@@ -48,6 +48,7 @@ public final class Kiulabilities extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Stealth(), this);
         getServer().getPluginManager().registerEvents(new Tracker(), this);
         getServer().getPluginManager().registerEvents(new Frozone(), this);
+        getServer().getPluginManager().registerEvents(new Gecko(), this);
         /***/
     }
 

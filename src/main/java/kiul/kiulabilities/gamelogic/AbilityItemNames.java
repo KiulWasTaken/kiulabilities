@@ -19,7 +19,8 @@ import java.util.List;
         CATALYST(AbilityExtras.displayname("CATALYST.DisplayName")),
         DISCHARGE(AbilityExtras.displayname("DISCHARGE.DisplayName")),
         IGNITION(AbilityExtras.displayname("IGNITION.DisplayName")),
-        FROZONE(AbilityExtras.displayname("FROZONE.DisplayName"));
+        FROZONE(AbilityExtras.displayname("FROZONE.DisplayName")),
+        GECKO(AbilityExtras.displayname("GECKO.DisplayName"));
 
         private String label;
 

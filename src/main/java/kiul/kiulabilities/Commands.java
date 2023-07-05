@@ -5,6 +5,8 @@ import kiul.kiulabilities.gamelogic.AbilityItemNames;
 import kiul.kiulabilities.gamelogic.ColoredText;
 import kiul.kiulabilities.gamelogic.GlintEnchantment;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,6 +20,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Commands implements TabExecutor, Listener {
@@ -201,6 +204,24 @@ public class Commands implements TabExecutor, Listener {
                     lore.add(ColoredText.translateHexCodes("&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "Every player is incased within a ice ball."));
                     lore.add(ColoredText.translateHexCodes(" "));
                     lore.add(ColoredText.translateHexCodes("&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.FROZONE.Class")));
+                    //
+
+                    spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
+                }
+                break;
+                case "gecko": {
+                    int maxUltimatePoints = 2;
+                    int requiredUltimatePoints = 1;
+                    Material material = Material.GREEN_DYE;
+                    String displayName = ColoredText.translateHexCodes(AbilityItemNames.GECKO.getLabel());
+                    String metaData = null;
+
+                    //
+                    lore.add(ColoredText.translateHexCodes("&#d8d8d8&lRight-Click &6» &#d8d8d8" + "Shoot out ur tongue, pulling in any entity u hit."));
+                    lore.add(ColoredText.translateHexCodes("&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "Become invisible until attacked/moving again."));
+                    lore.add(ColoredText.translateHexCodes("&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "Detach your tail, explodes when entity comes close."));
+                    lore.add(ColoredText.translateHexCodes(" "));
+                    lore.add(ColoredText.translateHexCodes("&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.GECKO.Class")));
                     //
 
                     spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
