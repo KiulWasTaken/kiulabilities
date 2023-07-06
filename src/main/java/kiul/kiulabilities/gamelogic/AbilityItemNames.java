@@ -17,10 +17,10 @@ import java.util.List;
         TRACKER(AbilityExtras.displayname("TRACKER.DisplayName")),
         STEALTH(AbilityExtras.displayname("STEALTH.DisplayName")),
         CATALYST(AbilityExtras.displayname("CATALYST.DisplayName")),
-        DISCHARGE(AbilityExtras.displayname("DISCHARGE.DisplayName")),
         IGNITION(AbilityExtras.displayname("IGNITION.DisplayName")),
         FROZONE(AbilityExtras.displayname("FROZONE.DisplayName")),
-        GECKO(AbilityExtras.displayname("GECKO.DisplayName"));
+        GECKO(AbilityExtras.displayname("GECKO.DisplayName")),
+        CELLO(AbilityExtras.displayname("CELLO.DisplayName"));
 
         private String label;
 

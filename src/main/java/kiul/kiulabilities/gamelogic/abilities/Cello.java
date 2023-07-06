@@ -7,25 +7,15 @@ import kiul.kiulabilities.gamelogic.AbilityItemNames;
 import kiul.kiulabilities.gamelogic.ColoredText;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
 import org.bukkit.*;
-import org.bukkit.enchantments.Enchantment;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
-import org.bukkit.event.player.PlayerToggleFlightEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.event.player.*;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -36,7 +26,7 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Discharge implements Listener {
+public class Cello implements Listener {
 
     public Plugin plugin = Kiulabilities.getPlugin(Kiulabilities.class);
 
@@ -46,21 +36,20 @@ public class Discharge implements Listener {
 
     private final HashMap<UUID, Long> ultimateCooldown = new HashMap<>();
 
-    static boolean isUltActive = false;
+    private final HashMap<Player,Player> bestFriend = new HashMap<>();
 
-    String configname = AbilityItemNames.DISCHARGE.name(); /** CHANGE 'ARTIFICER'*/
+    String configname = AbilityItemNames.CELLO.name();
 
     private int primaryTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Primary");
     private int secondaryTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Secondary");
     private int ultimateTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Ultimate");
 
-    String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.DISCHARGE.getLabel())); /** CHANGE 'ARTIFICER'*/
+    String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.CELLO.getLabel()));
 
     @EventHandler
     public void onClick(PlayerInteractEvent e) throws InterruptedException {
 
         Player p = e.getPlayer();
-
 
         if (p.getInventory().getItemInMainHand() != null && p.getInventory().getItemInMainHand().hasItemMeta()) {
             if (ChatColor.stripColor(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName()).equalsIgnoreCase(itemname)) {
@@ -70,15 +59,20 @@ public class Discharge implements Listener {
                         e.setCancelled(true);
 
                         /** PRIMARY - CODE START >> */
-                        if (isUltActive == false) {
-                            ItemStack t = new ItemStack(Material.TRIDENT);
-                            ItemMeta tm = t.getItemMeta();
-                            tm.setDisplayName("Discharge Trident");
-                            t.setItemMeta(tm);
-                            p.getInventory().setItemInOffHand(t);
+                        if (bestFriend.get(p) == null) {
+                            if (getNearestEntityInSight(p, 10) instanceof Player bff) {
+                                bestFriend.put(p, bff);
+                            }
                         } else {
-                            for (Entity ap : p.getNearbyEntities(13, 13, 13)) {
-                                    ap.getWorld().spawnEntity(ap.getLocation(),EntityType.LIGHTNING);
+                            Player bff = bestFriend.get(p);
+                            if (p.getNearbyEntities(10,10,10).contains(bestFriend.get(p))) {
+                                StatusEffects.shield(bff, 1, 9999999);
+                            } else {
+                                for (Entity nearby : p.getNearbyEntities(7,7,7)) {
+                                    if (nearby instanceof Player nearbyPlayer) {
+                                        ((Player) nearby).addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS,200,0,true,false));
+                                    }
+                                }
                             }
                         }
 
@@ -102,18 +96,8 @@ public class Discharge implements Listener {
                     if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
 
                         /** SECONDARY - CODE START >> */
-                        if (p.getLocation().getBlock().getType() == Material.WATER && isUltActive == false) {
-                            for (Entity ap : p.getNearbyEntities(13, 13, 13)) {
-                                if (ap instanceof Player) {
-                                    if (ap.getLocation().getBlock().getType() == Material.WATER) {
-                                        ((Player) ap).damage(4, p); //make static methods for debuffs
-                                        spawnParticleTrail(p.getLocation(), ap.getLocation(), Particle.BLOCK_CRACK, p, 50, 0);
+                        if (mode == 0) {
 
-
-
-                                    }
-                                }
-                            }
                         }
 
                         /** CODE END << */
@@ -154,19 +138,9 @@ public class Discharge implements Listener {
                             public void run() {
 
                                 /** ULTIMATE - CODE START >> */
-                                p.getWorld().setThundering(true);
-                                p.getWorld().setThunderDuration(999999999);
-
-                                ItemStack ut = new ItemStack(Material.TRIDENT);
-                                ItemMeta utm = ut.getItemMeta();
-                                utm.setDisplayName("Discharge Ultimate Trident");
-                                utm.setUnbreakable(true);
-                                utm.addEnchant(Enchantment.RIPTIDE,1,false);
-                                ut.setItemMeta(utm);
-                                p.getInventory().setItemInOffHand(ut);
 
 
-                                isUltActive = true;
+
                                 /** CODE END << */
 
                             }
@@ -183,73 +157,53 @@ public class Discharge implements Listener {
             }
         }
     }
-    private void spawnParticleTrail(Location from, Location to, Particle particleType, Player player, int PARTICLE_COUNT, int VARIANCE) {
-        Random random = new Random();
-        double distance = from.distance(to);
-        double step = distance / PARTICLE_COUNT;
-
-        for (double i = 0; i < distance; i += step) {
-            double offsetX = random.nextDouble() * VARIANCE * 1 - VARIANCE;
-            double offsetY = random.nextDouble() * VARIANCE * 1 - VARIANCE;
-            double offsetZ = random.nextDouble() * VARIANCE * 1 - VARIANCE;
-
-            Location particleLocation = from.clone().add(to.clone().subtract(from).multiply(i));
-            particleLocation.add(offsetX, offsetY, offsetZ);
-
-            player.getWorld().spawnParticle(particleType, particleLocation, 1, Material.YELLOW_WOOL.createBlockData());
-        }
-    }
-    @EventHandler
-    public void tridentThrow (ProjectileLaunchEvent e) {
-        if (e.getEntity().getType() == EntityType.TRIDENT && e.getEntity().getShooter() instanceof Player && ((Player) e.getEntity().getShooter()).hasMetadata("discharge")) {
-            e.getEntity().setMetadata("discharge", new FixedMetadataValue(plugin, "pat"));
-            ItemStack s = new ItemStack(Material.SHIELD);
-            ItemMeta sm = s.getItemMeta();
-            sm.setUnbreakable(true);
-            s.setItemMeta(sm);
-            ((Player) e.getEntity().getShooter()).getInventory().setItemInOffHand(s);
-        }
-    }
-    @EventHandler
-    public void tridentHit (ProjectileHitEvent e) {
-        if (e.getEntity().hasMetadata("discharge") && e.getHitEntity() != null) {
-            e.getHitEntity().getWorld().spawnEntity(e.getHitEntity().getLocation(),EntityType.LIGHTNING);
-            StatusEffects.root((Player) e.getHitEntity(),1);
-            e.getEntity().remove();
-            if (e.getHitEntity().getLocation().getBlock().getType() == Material.WATER) {
-                for (Entity ap : e.getHitEntity().getNearbyEntities(13,13,13)) {
-                    if (ap instanceof Player && e.getEntity().getShooter() instanceof Player) {
-                        if (ap.getLocation().getBlock().getType() == Material.WATER) {
-                            ((Player) ap).damage(4, (Player) e.getEntity().getShooter());
-                            StatusEffects.stun(((Player) ap).getPlayer(), 3);
-
+    public static Entity getNearestEntityInSight(Player player, int range) {
+        ArrayList<Entity> entities = (ArrayList<Entity>) player.getNearbyEntities(range, range, range);
+        ArrayList<Block> sightBlock = (ArrayList<Block>) player.getLineOfSight( (Set<Material>) null, range);
+        ArrayList<Location> sight = new ArrayList<Location>();
+        for (int i = 0;i<sightBlock.size();i++)
+            sight.add(sightBlock.get(i).getLocation());
+        for (int i = 0;i<sight.size();i++) {
+            for (int k = 0;k<entities.size();k++) {
+                if (Math.abs(entities.get(k).getLocation().getX()-sight.get(i).getX())<1.3) {
+                    if (Math.abs(entities.get(k).getLocation().getY()-sight.get(i).getY())<1.5) {
+                        if (Math.abs(entities.get(k).getLocation().getZ()-sight.get(i).getZ())<1.3) {
+                            return entities.get(k);
                         }
                     }
                 }
             }
         }
+        return null; //Return null/nothing if no entity was found
     }
-
+    static int mode = 0;
     @EventHandler
-    public void tridentClick (InventoryClickEvent e) {
+    public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
+        Player p = event.getPlayer();
 
-        if (e.getCurrentItem() != null && e.getCurrentItem().hasItemMeta()) {
-            if (e.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("discharge trident")) {
-                e.setCancelled(true);
-            }
+        if (event.isSneaking()) {
+            cycleMode();
+            String modeName = getModeName(mode);
+            p.sendTitle("","Mode: " + modeName);
         }
     }
 
-    @EventHandler
-    public void lightningDamage (EntityDamageEvent e) {
-        if (e.getCause() == EntityDamageEvent.DamageCause.LIGHTNING && e.getEntity() instanceof Player && e.getEntity().hasMetadata("discharge")) {
-            e.setCancelled(true);
+    private void cycleMode() {
+        mode++;
+        if (mode > 2) {
+            mode = 0;
+        }
+    }
+    private String getModeName(int mode) {
+        switch (mode) {
+            case 0:
+                return ChatColor.GREEN + "Healing";
+            case 1:
+                return ChatColor.GRAY + "Fling";
+            case 2:
+                return ChatColor.YELLOW + "Stun";
+            default:
+                return "Unknown Mode";
         }
     }
 }
-
-
-
-
-
-

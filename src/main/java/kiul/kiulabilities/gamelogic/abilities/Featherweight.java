@@ -60,7 +60,7 @@ public class Featherweight implements Listener {
 
                             /** ABILITY CODE START**/
 
-                            p.setVelocity(new Vector(0, 1, 0));
+                            p.setVelocity(new Vector(0, 1.5, 0));
 
                             p.getWorld().spawnParticle(Particle.SPIT, p.getLocation(), 10);
                             p.getWorld().spawnParticle(Particle.CLOUD, p.getLocation(), 10);
