@@ -103,7 +103,7 @@ public class Catalyst implements Listener {
                                 p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,backLeft.getLocation(),5,1,1,1, 0.0005);
 
                             }
-                        }, 2);
+                        }, 1);
                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                             @Override
                             public void run() {
@@ -112,7 +112,7 @@ public class Catalyst implements Listener {
                                 midRightBottom.setType(Material.SCULK);
                                 p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,midLeftBottom.getLocation(),5,1,1,1, 0.0005);
                             }
-                        }, 4);
+                        }, 2);
                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                             @Override
                             public void run() {
@@ -126,7 +126,7 @@ public class Catalyst implements Listener {
                                 p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,frontBottomRight.getLocation(),5,1,1,1, 0.0005);
 
                             }
-                        }, 6);
+                        }, 3);
                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                             @Override
                             public void run() {
@@ -137,7 +137,7 @@ public class Catalyst implements Listener {
                                 frontMiddleRight.setType(Material.SCULK);
                                 p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,frontMiddleRight.getLocation(),5,1,1,1, 0.0005);
                             }
-                        }, 8);
+                        }, 4);
                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                             @Override
                             public void run() {
@@ -150,7 +150,7 @@ public class Catalyst implements Listener {
                                 frontTopRight.setType(Material.SCULK);
                                 p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,frontTopRight.getLocation(),5,1,1,1, 0.0005);
                             }
-                        }, 10);
+                        }, 5);
                         /** CODE END << */
 
                         if (secondaryCooldown.isEmpty()) {
@@ -173,6 +173,7 @@ public class Catalyst implements Listener {
                     if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
 
                         /** SECONDARY - CODE START >> */
+                        spread(p.getLocation().add(0,-1,0).getBlock(),p,2);
 
                         for (Entity nearbyEntities : p.getNearbyEntities(9,9,9)) {
                             if (nearbyEntities instanceof Player) {
@@ -314,7 +315,6 @@ public class Catalyst implements Listener {
                     }
                 }
             }.runTaskTimer(plugin, 160L, 20L);
-
         }
     }
 
@@ -346,7 +346,7 @@ public class Catalyst implements Listener {
             Bukkit.getScheduler().scheduleSyncDelayedTask(Kiulabilities.getPlugin(Kiulabilities.class), new Runnable() {
                 @Override
                 public void run() {
-                    triggerSpread.damage(20, p);
+                    triggerSpread.damage(100, p);
                     spreadCenter.getState().update();
                 }
             }, 1);
