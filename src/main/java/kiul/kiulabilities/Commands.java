@@ -7,10 +7,11 @@ import kiul.kiulabilities.gamelogic.GlintEnchantment;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.SculkVein;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -19,9 +20,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Commands implements TabExecutor, Listener {
 
@@ -234,8 +233,217 @@ public class Commands implements TabExecutor, Listener {
             for (Player allplayers : Bukkit.getOnlinePlayers()) {
                 allplayers.setMetadata("reset", new FixedMetadataValue(plugin, "pat"));
             }
+        } else if (label.equalsIgnoreCase("cata")) { /** /resetactionbar */
+            Location loc = p.getLocation().add(0,-1,0);
+            if (loc.getBlock().getType().isOccluding() == true) {
+                loc.getBlock().setType(Material.SCULK);
+            }
+            cata(loc.clone().add(1,0,0), 0, 0 , 20, 1, 10);
+            cata(loc.clone().add(-1,0,0), 0, 0 , 20, 1, 10);
+            cata(loc.clone().add(0,0,1), 0, 0 , 20, 1, 10);
+            cata(loc.clone().add(0,0,-1), 0, 0 , 20, 1, 10);
         }
         return false;
+    }
+
+    public void cata (Location loc, int delay, int timer, int length, int speed, int revertAfter) {
+        Random random = new Random();
+        int rint = random.nextInt(12);
+        List<Block> check = new ArrayList<>();
+        if (timer < length) {
+            check.add(loc.getBlock().getRelative(BlockFace.NORTH));
+            check.add(loc.getBlock().getRelative(BlockFace.EAST));
+            check.add(loc.getBlock().getRelative(BlockFace.SOUTH));
+            check.add(loc.getBlock().getRelative(BlockFace.WEST));
+            check.add(loc.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.UP));
+            check.add(loc.getBlock().getRelative(BlockFace.EAST).getRelative(BlockFace.UP));
+            check.add(loc.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.UP));
+            check.add(loc.getBlock().getRelative(BlockFace.WEST).getRelative(BlockFace.UP));
+            check.add(loc.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.DOWN));
+            check.add(loc.getBlock().getRelative(BlockFace.EAST).getRelative(BlockFace.DOWN));
+            check.add(loc.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.DOWN));
+            check.add(loc.getBlock().getRelative(BlockFace.WEST).getRelative(BlockFace.DOWN));
+            for (Block block1 : check) {
+                if (block1.getType() != Material.SCULK && block1.getType().isOccluding() == true && block1.getRelative(BlockFace.UP).getType().isOccluding() == false) {
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        player.sendMessage(rint + "");
+                    }
+
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                        Block block = loc.getBlock();
+
+                        @Override
+                        public void run() {
+                            switch (rint) {
+                                case 0:
+                                    block = block.getRelative(BlockFace.NORTH);
+                                    break;
+                                case 1: {
+                                    block = block.getRelative(BlockFace.EAST);
+                                    break;
+                                }
+                                case 2: {
+                                    block = block.getRelative(BlockFace.SOUTH);
+                                    break;
+                                }
+                                case 3: {
+                                    block = block.getRelative(BlockFace.WEST);
+                                    break;
+                                }
+                                case 4: {
+                                    block = block.getRelative(BlockFace.NORTH).getRelative(BlockFace.DOWN);
+                                    break;
+                                }
+                                case 5: {
+                                    block = block.getRelative(BlockFace.EAST).getRelative(BlockFace.DOWN);
+                                    break;
+                                }
+                                case 6: {
+                                    block = block.getRelative(BlockFace.SOUTH).getRelative(BlockFace.DOWN);
+                                    break;
+                                }
+                                case 7: {
+                                    block = block.getRelative(BlockFace.WEST).getRelative(BlockFace.DOWN);
+                                    break;
+                                }
+                                case 8: {
+                                    block = block.getRelative(BlockFace.NORTH).getRelative(BlockFace.UP);
+                                    break;
+                                }
+                                case 9: {
+                                    block = block.getRelative(BlockFace.EAST).getRelative(BlockFace.UP);
+                                    break;
+                                }
+                                case 10: {
+                                    block = block.getRelative(BlockFace.SOUTH).getRelative(BlockFace.UP);
+                                    break;
+                                }
+                                case 11: {
+                                    block = block.getRelative(BlockFace.WEST).getRelative(BlockFace.UP);
+                                    break;
+                                }
+                            }
+
+                            if (block.getType() != Material.SCULK && block.getType() != Material.AIR && block.getType().isOccluding() == true && block.getRelative(BlockFace.UP).getType().isOccluding() == false) {
+
+                                if (block.getRelative(BlockFace.UP).getType() == Material.SCULK_VEIN) {
+                                    block.getRelative(BlockFace.UP).setType(Material.AIR);
+                                }
+
+                                Material mat = block.getType();
+                                BlockData blockData = block.getBlockData();
+
+                                block.setType(Material.SCULK);
+
+                                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        if (block.getType() == Material.SCULK) {
+                                            block.setType(mat);
+                                            block.setBlockData(blockData);
+                                            block.getLocation().getWorld().playSound(block.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_SCULK_CATALYST_BLOOM, 0.5F, 2F);
+                                            block.getLocation().getWorld().playSound(block.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_SCULK_CHARGE, 0.5F, 2F);
+                                            block.getLocation().getWorld().spawnParticle(Particle.SCULK_CHARGE_POP, block.getLocation().clone().add(0.5, 1, 0.5), 5, 0.5, 0, 0.5, 0);
+                                        }
+
+                                    }
+                                }, revertAfter * 20);
+
+                                block.getLocation().getWorld().playSound(block.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_SCULK_CATALYST_BLOOM, 0.5F, 0.5F);
+                                block.getLocation().getWorld().playSound(block.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_SCULK_CHARGE, 0.5F, 0.5F);
+                                block.getLocation().getWorld().spawnParticle(Particle.SCULK_CHARGE_POP, block.getLocation().clone().add(0.5, 1, 0.5), 5, 0.5, 0, 0.5, 0);
+                                block.getLocation().getWorld().spawnParticle(Particle.SCULK_SOUL, block.getLocation().clone().add(0.5, 1, 0.5), 5, 0.5, 0, 0.5, 0);
+
+                                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).getType().isOccluding() == false && block.getRelative(BlockFace.NORTH).getType() != Material.SCULK && block.getRelative(BlockFace.NORTH).getType() != Material.AIR && block.getRelative(BlockFace.NORTH).getType().isOccluding() == true) {
+                                            block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).setType(Material.SCULK_VEIN);
+                                            if (block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).getType() == Material.SCULK_VEIN) {
+                                                SculkVein sculkVein = (SculkVein) block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).getBlockData();
+                                                sculkVein.setFace(BlockFace.DOWN, true);
+                                                block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).setBlockData(sculkVein);
+                                            }
+                                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                                @Override
+                                                public void run() {
+
+                                                    if (block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).getType() == Material.SCULK_VEIN) {
+                                                        block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).setType(Material.AIR);
+                                                    }
+
+                                                }
+                                            }, revertAfter * 20);
+                                        }
+                                        if (block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).getType().isOccluding() == false && block.getRelative(BlockFace.EAST).getType() != Material.SCULK && block.getRelative(BlockFace.EAST).getType() != Material.AIR && block.getRelative(BlockFace.EAST).getType().isOccluding() == true) {
+                                            block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).setType(Material.SCULK_VEIN);
+                                            if (block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).getType() == Material.SCULK_VEIN) {
+                                                SculkVein sculkVein = (SculkVein) block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).getBlockData();
+                                                sculkVein.setFace(BlockFace.DOWN, true);
+                                                block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).setBlockData(sculkVein);
+                                            }
+                                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                                @Override
+                                                public void run() {
+
+                                                    if (block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).getType() == Material.SCULK_VEIN) {
+                                                        block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).setType(Material.AIR);
+                                                    }
+
+                                                }
+                                            }, revertAfter * 20);
+                                        }
+                                        if (block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).getType().isOccluding() == false && block.getRelative(BlockFace.SOUTH).getType() != Material.SCULK && block.getRelative(BlockFace.SOUTH).getType() != Material.AIR && block.getRelative(BlockFace.SOUTH).getType().isOccluding() == true) {
+                                            block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).setType(Material.SCULK_VEIN);
+                                            if (block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).getType() == Material.SCULK_VEIN) {
+                                                SculkVein sculkVein = (SculkVein) block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).getBlockData();
+                                                sculkVein.setFace(BlockFace.DOWN, true);
+                                                block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).setBlockData(sculkVein);
+                                            }
+                                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                                @Override
+                                                public void run() {
+
+                                                    if (block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).getType() == Material.SCULK_VEIN) {
+                                                        block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).setType(Material.AIR);
+                                                    }
+
+                                                }
+                                            }, revertAfter * 20);
+                                        }
+                                        if (block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).getType().isOccluding() == false && block.getRelative(BlockFace.WEST).getType() != Material.SCULK && block.getRelative(BlockFace.WEST).getType() != Material.AIR && block.getRelative(BlockFace.WEST).getType().isOccluding() == true) {
+                                            block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).setType(Material.SCULK_VEIN);
+                                            if (block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).getType() == Material.SCULK_VEIN) {
+                                                SculkVein sculkVein = (SculkVein) block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).getBlockData();
+                                                sculkVein.setFace(BlockFace.DOWN, true);
+                                                block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).setBlockData(sculkVein);
+                                            }
+                                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                                @Override
+                                                public void run() {
+
+                                                    if (block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).getType() == Material.SCULK_VEIN) {
+                                                        block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).setType(Material.AIR);
+                                                    }
+
+                                                }
+                                            }, revertAfter * 20);
+                                        }
+                                    }
+                                }, 5);
+
+                                cata(block.getLocation(), speed, timer + 1, length, speed, revertAfter);
+
+                            } else {
+                                cata(loc, 1, timer, length, 1, revertAfter);
+                            }
+                        }
+                    }, delay);
+                    break;
+                }
+            }
+        }
     }
 
     public void spawnAbilityItem (Player p, Integer maxUltPoints, Integer requiredUltPoints, Material material, List<String> lore, String displayName, String metaData) {

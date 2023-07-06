@@ -3,8 +3,10 @@ package kiul.kiulabilities;
 import kiul.kiulabilities.CommandMethods.SupplyDrop;
 import kiul.kiulabilities.gamelogic.*;
 import kiul.kiulabilities.gamelogic.abilities.*;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
@@ -32,6 +34,7 @@ public final class Kiulabilities extends JavaPlugin {
         getCommand("giveultpoint").setExecutor(new Commands());
         getCommand("resetactionbar").setExecutor(new Commands());
         getCommand("spawnlootcrate").setExecutor(new Commands());
+        getCommand("cata").setExecutor(new Commands());
         getServer().getPluginManager().registerEvents(new Commands(), this);
         getServer().getPluginManager().registerEvents(new ultimatePointsListeners(), this);
         getServer().getPluginManager().registerEvents(new menuClickListener(), this);

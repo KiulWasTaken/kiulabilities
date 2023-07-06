@@ -375,7 +375,7 @@ public class Frozone implements Listener {
                         }
                     }
                 }
-            }, i*2);
+            }, i*1);
         }
     }
 
