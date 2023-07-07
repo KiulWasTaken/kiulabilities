@@ -1,9 +1,12 @@
 package kiul.kiulabilities;
 
+import kiul.kiulabilities.CommandMethods.SupplyDrop;
 import kiul.kiulabilities.gamelogic.*;
 import kiul.kiulabilities.gamelogic.abilities.*;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
@@ -25,20 +28,31 @@ public final class Kiulabilities extends JavaPlugin {
         ultimatePointsConfig.save();
 
         this.saveDefaultConfig();
+        saveConfig();
 
         getCommand("test").setExecutor(new Commands());
         getCommand("giveultpoint").setExecutor(new Commands());
-        getServer().getPluginManager().registerEvents(new Stealth(), this);
-        getServer().getPluginManager().registerEvents(new Tracker(), this);
+        getCommand("resetactionbar").setExecutor(new Commands());
+        getCommand("spawnlootcrate").setExecutor(new Commands());
+        getCommand("cata").setExecutor(new Commands());
         getServer().getPluginManager().registerEvents(new Commands(), this);
         getServer().getPluginManager().registerEvents(new ultimatePointsListeners(), this);
         getServer().getPluginManager().registerEvents(new menuClickListener(), this);
-        getServer().getPluginManager().registerEvents(new Artificer(), this);
-        getServer().getPluginManager().registerEvents(new Featherweight(), this);
         getServer().getPluginManager().registerEvents(new DroppingAbilitys(), this);
+        getServer().getPluginManager().registerEvents(new SupplyDrop(), this);
+
+        /** ABILITIES */
         getServer().getPluginManager().registerEvents(new Catalyst(), this);
         getServer().getPluginManager().registerEvents(new Discharge(),this);
         getServer().getPluginManager().registerEvents(new Spectre(), this);
+        getServer().getPluginManager().registerEvents(new Ignition(), this);
+        getServer().getPluginManager().registerEvents(new Artificer(), this);
+        getServer().getPluginManager().registerEvents(new Featherweight(), this);
+        getServer().getPluginManager().registerEvents(new Stealth(), this);
+        getServer().getPluginManager().registerEvents(new Tracker(), this);
+        getServer().getPluginManager().registerEvents(new Frozone(), this);
+        getServer().getPluginManager().registerEvents(new Gecko(), this);
+        /***/
     }
 
     @Override

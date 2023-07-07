@@ -1,27 +1,26 @@
 package kiul.kiulabilities;
 
+import kiul.kiulabilities.CommandMethods.SupplyDrop;
 import kiul.kiulabilities.gamelogic.AbilityItemNames;
 import kiul.kiulabilities.gamelogic.ColoredText;
 import kiul.kiulabilities.gamelogic.GlintEnchantment;
 import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
-import org.bukkit.enchantments.Enchantment;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.SculkVein;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Commands implements TabExecutor, Listener {
 
@@ -29,7 +28,16 @@ public class Commands implements TabExecutor, Listener {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        Player p = (Player) sender;
+        if (sender instanceof ConsoleCommandSender console || sender instanceof Player p) {
+            if (label.equalsIgnoreCase("spawnlootcrate")) { /** /spawnlootcrate */
+                for (Player allplayers : Bukkit.getOnlinePlayers()) {
+                    SupplyDrop.SpawnLootCrate(allplayers);
+                    break;
+                }
+                return false;
+            }
+        }
+            Player p = (Player) sender;
         if (label.equalsIgnoreCase("test")) {
 
             ArrayList<String> lore = new ArrayList<>();
@@ -57,8 +65,13 @@ public class Commands implements TabExecutor, Listener {
                     String metaData = "tracker";
 
                     //
-                    lore.add(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Summon a wolf that hunts down and stuns the nearest player");
-                    lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Grow a defensive cluster of sweet berry bushes in nearby grass");
+                    lore.add(ColoredText.translateHexCodes("&#d8d8d8&lRight-Click &6» &#d8d8d8" + ""));
+                    lore.add(ColoredText.translateHexCodes("&#c4c4c4&lLeft-Click &6» &#c4c4c4" + ""));
+                    lore.add(ColoredText.translateHexCodes("&#b1b1b1&lSwap-Item &6» &#b1b1b1" + ""));
+                    lore.add(ColoredText.translateHexCodes(" "));
+                    lore.add(ColoredText.translateHexCodes("&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.TRACKER.Class")));
+                    lore.add(ColoredText.translateHexCodes(" "));
+                    lore.add(ColoredText.translateHexCodes("&#b1b1b1&lUltimate-Status &6» " + "&c&lDEACTIVATED"));
                     //
 
                     spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
@@ -69,11 +82,17 @@ public class Commands implements TabExecutor, Listener {
                     int requiredUltimatePoints = 3;
                     Material material = Material.WHITE_DYE;
                     String displayName = ColoredText.translateHexCodes(AbilityItemNames.FEATHERWEIGHT.getLabel());
-                    String metaData = "featherweight";
+                    String metaData = null;
 
                     //
-                    lore.add(ChatColor.WHITE + "Right-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "Fly up into the sky");
-                    lore.add(ChatColor.WHITE + "Left-Click " + ChatColor.GOLD + "» " + ChatColor.GRAY + "----");
+                    lore.add(ColoredText.translateHexCodes("&#d8d8d8&lRight-Click &6» &#d8d8d8" + "Launch up into the air. (With elytra if active, 11s)"));
+                    lore.add(ColoredText.translateHexCodes("&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "Shoots 8 s-bullets 360° around you."));
+                    lore.add(ColoredText.translateHexCodes("&#b1b1b1&lSwap-Item (&#b1b1b1DEACTIVATED&l) &6» &#b1b1b1" + "Activated elytra status permanently."));
+                    lore.add(ColoredText.translateHexCodes("&#919090&lSwap-Item (&#919090ACTIVATED&l) &6» &#919090" + "Spawn a shulker bullet above all players alive."));
+                    lore.add(ColoredText.translateHexCodes(" "));
+                    lore.add(ColoredText.translateHexCodes("&#737373&lClass &6» " + plugin.getConfig().getString("Abilities.FEATHERWEIGHT.Class")));
+                    lore.add(ColoredText.translateHexCodes(" "));
+                    lore.add(ColoredText.translateHexCodes("&#919090&lElytra-Status &6» " + "&c&lDEACTIVATED"));
                     //
 
                     spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
@@ -110,8 +129,8 @@ public class Commands implements TabExecutor, Listener {
                 }
                 break;
                 case "spectre": {
-                    int maxUltimatePoints = 6;
-                    int requiredUltimatePoints = 4;
+                    int maxUltimatePoints = 4;
+                    int requiredUltimatePoints = 2;
                     Material material = Material.PINK_DYE;
                     String displayName = ColoredText.translateHexCodes(AbilityItemNames.SPECTRE.getLabel());
                     String metaData = null;
@@ -121,15 +140,15 @@ public class Commands implements TabExecutor, Listener {
                     lore.add(ColoredText.translateHexCodes("&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "Double jump forward, doesn't work while falling. (attempting to fly will work to)"));
                     lore.add(ColoredText.translateHexCodes("&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "EVERY player gets repulsed in a direction away from the player."));
                     lore.add(ColoredText.translateHexCodes(" "));
-                    lore.add(ColoredText.translateHexCodes("&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.UNNAMED.Class")));
+                    lore.add(ColoredText.translateHexCodes("&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.SPECTRE.Class")));
                     //
 
                     spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
                 }
                 break;
                 case "catalyst": {
-                    int maxUltimatePoints = 6;
-                    int requiredUltimatePoints = 4;
+                    int maxUltimatePoints = 2;
+                    int requiredUltimatePoints = 2;
                     Material material = Material.CYAN_DYE;
                     String displayName = ColoredText.translateHexCodes(AbilityItemNames.CATALYST.getLabel());
                     String metaData = null;
@@ -143,7 +162,7 @@ public class Commands implements TabExecutor, Listener {
                 case "discharge": {
                     int maxUltimatePoints = 6;
                     int requiredUltimatePoints = 4;
-                    Material material = Material.LIGHT_BLUE_DYE;
+                    Material material = Material.BLUE_DYE;
                     String displayName = ColoredText.translateHexCodes(AbilityItemNames.DISCHARGE.getLabel());
                     String metaData = null;
 
@@ -161,6 +180,47 @@ public class Commands implements TabExecutor, Listener {
                     String metaData = null;
 
                     //
+                    lore.add(ColoredText.translateHexCodes("&#d8d8d8&lRight-Click &6» &#d8d8d8" + "Spawn fire around the player."));
+                    lore.add(ColoredText.translateHexCodes("&#c4c4c4&lLeft-Click (Entity) &6» &#c4c4c4" + "Set the entity on fire, with a bang."));
+                    lore.add(ColoredText.translateHexCodes("&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "Summon a meteor rain that damages players and the landscape."));
+                    lore.add(ColoredText.translateHexCodes(" "));
+                    lore.add(ColoredText.translateHexCodes("&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.IGNITION.Class")));
+                    //
+
+                    spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
+                }
+                break;
+                case "frozone": {
+                    int maxUltimatePoints = 2;
+                    int requiredUltimatePoints = 1;
+                    Material material = Material.LIGHT_BLUE_DYE;
+                    String displayName = ColoredText.translateHexCodes(AbilityItemNames.FROZONE.getLabel());
+                    String metaData = null;
+
+                    //
+                    lore.add(ColoredText.translateHexCodes("&#d8d8d8&lRight-Click &6» &#d8d8d8" + "Shoot a icey projectile that explodes on impact."));
+                    lore.add(ColoredText.translateHexCodes("&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "Construct a wall of ice, that also catches you."));
+                    lore.add(ColoredText.translateHexCodes("&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "Every player is incased within a ice ball."));
+                    lore.add(ColoredText.translateHexCodes(" "));
+                    lore.add(ColoredText.translateHexCodes("&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.FROZONE.Class")));
+                    //
+
+                    spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
+                }
+                break;
+                case "gecko": {
+                    int maxUltimatePoints = 2;
+                    int requiredUltimatePoints = 1;
+                    Material material = Material.GREEN_DYE;
+                    String displayName = ColoredText.translateHexCodes(AbilityItemNames.GECKO.getLabel());
+                    String metaData = null;
+
+                    //
+                    lore.add(ColoredText.translateHexCodes("&#d8d8d8&lRight-Click &6» &#d8d8d8" + "Shoot out ur tongue, pulling in any entity u hit."));
+                    lore.add(ColoredText.translateHexCodes("&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "Become invisible until attacked/moving again."));
+                    lore.add(ColoredText.translateHexCodes("&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "Detach your tail, explodes when entity comes close."));
+                    lore.add(ColoredText.translateHexCodes(" "));
+                    lore.add(ColoredText.translateHexCodes("&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.GECKO.Class")));
                     //
 
                     spawnAbilityItem(p, maxUltimatePoints, requiredUltimatePoints, material, lore, displayName, metaData);
@@ -169,10 +229,223 @@ public class Commands implements TabExecutor, Listener {
             }
         } else if (label.equalsIgnoreCase("giveultpoint")) { /** /giveultpoint */
             ultimatePointsListeners.addUltPoint(p);
-        } else if (label.equalsIgnoreCase("roundend")) {
-
+        } else if (label.equalsIgnoreCase("resetactionbar")) { /** /resetactionbar */
+            for (Player allplayers : Bukkit.getOnlinePlayers()) {
+                allplayers.setMetadata("reset", new FixedMetadataValue(plugin, "pat"));
+            }
+        } else if (label.equalsIgnoreCase("cata")) { /** /resetactionbar */
+            Location loc = p.getLocation().add(0,-1,0);
+            cata(loc.clone().add(2,0,0), 0, 0 , 20, 1, 10);
+            cata(loc.clone().add(-2,0,0), 0, 0 , 20, 1, 10);
+            cata(loc.clone().add(0,0,2), 0, 0 , 20, 1, 10);
+            cata(loc.clone().add(0,0,-2), 0, 0 , 20, 1, 10);
+            cata(loc.clone().add(2,0,2), 0, 0 , 20, 1, 10);
+            cata(loc.clone().add(-2,0,2), 0, 0 , 20, 1, 10);
+            cata(loc.clone().add(-2,0,-2), 0, 0 , 20, 1, 10);
+            cata(loc.clone().add(2,0,-2), 0, 0 , 20, 1, 10);
         }
         return false;
+    }
+
+    public void cata (Location loc, int delay, int timer, int length, int speed, int revertAfter) {
+        Random random = new Random();
+        int rint = random.nextInt(12);
+        List<Block> check = new ArrayList<>();
+        if (timer < length) {
+            check.add(loc.getBlock().getRelative(BlockFace.NORTH));
+            check.add(loc.getBlock().getRelative(BlockFace.EAST));
+            check.add(loc.getBlock().getRelative(BlockFace.SOUTH));
+            check.add(loc.getBlock().getRelative(BlockFace.WEST));
+            check.add(loc.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.UP));
+            check.add(loc.getBlock().getRelative(BlockFace.EAST).getRelative(BlockFace.UP));
+            check.add(loc.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.UP));
+            check.add(loc.getBlock().getRelative(BlockFace.WEST).getRelative(BlockFace.UP));
+            check.add(loc.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.DOWN));
+            check.add(loc.getBlock().getRelative(BlockFace.EAST).getRelative(BlockFace.DOWN));
+            check.add(loc.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.DOWN));
+            check.add(loc.getBlock().getRelative(BlockFace.WEST).getRelative(BlockFace.DOWN));
+            for (Block block1 : check) {
+                if (block1.getType() != Material.SCULK && block1.getType().isOccluding() == true && block1.getRelative(BlockFace.UP).getType().isOccluding() == false) {
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                        Block block = loc.getBlock();
+
+                        @Override
+                        public void run() {
+                            switch (rint) {
+                                case 0:
+                                    block = block.getRelative(BlockFace.NORTH);
+                                    break;
+                                case 1: {
+                                    block = block.getRelative(BlockFace.EAST);
+                                    break;
+                                }
+                                case 2: {
+                                    block = block.getRelative(BlockFace.SOUTH);
+                                    break;
+                                }
+                                case 3: {
+                                    block = block.getRelative(BlockFace.WEST);
+                                    break;
+                                }
+                                case 4: {
+                                    block = block.getRelative(BlockFace.NORTH).getRelative(BlockFace.DOWN);
+                                    break;
+                                }
+                                case 5: {
+                                    block = block.getRelative(BlockFace.EAST).getRelative(BlockFace.DOWN);
+                                    break;
+                                }
+                                case 6: {
+                                    block = block.getRelative(BlockFace.SOUTH).getRelative(BlockFace.DOWN);
+                                    break;
+                                }
+                                case 7: {
+                                    block = block.getRelative(BlockFace.WEST).getRelative(BlockFace.DOWN);
+                                    break;
+                                }
+                                case 8: {
+                                    block = block.getRelative(BlockFace.NORTH).getRelative(BlockFace.UP);
+                                    break;
+                                }
+                                case 9: {
+                                    block = block.getRelative(BlockFace.EAST).getRelative(BlockFace.UP);
+                                    break;
+                                }
+                                case 10: {
+                                    block = block.getRelative(BlockFace.SOUTH).getRelative(BlockFace.UP);
+                                    break;
+                                }
+                                case 11: {
+                                    block = block.getRelative(BlockFace.WEST).getRelative(BlockFace.UP);
+                                    break;
+                                }
+                            }
+
+                            if (block.getType() != Material.SCULK && block.getType() != Material.AIR && block.getType().isOccluding() == true && block.getRelative(BlockFace.UP).getType().isOccluding() == false) {
+
+                                if (block.getRelative(BlockFace.UP).getType().isOccluding() == false) {
+                                    block.getRelative(BlockFace.UP).setType(Material.AIR);
+                                }
+
+                                Material mat = block.getType();
+                                BlockData blockData = block.getBlockData();
+
+                                block.setType(Material.SCULK);
+
+                                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        if (block.getType() == Material.SCULK) {
+                                            block.setType(mat);
+                                            block.setBlockData(blockData);
+                                            block.getLocation().getWorld().playSound(block.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_SCULK_CATALYST_BLOOM, 0.5F, 2F);
+                                            block.getLocation().getWorld().playSound(block.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_SCULK_CHARGE, 0.5F, 2F);
+                                            block.getLocation().getWorld().spawnParticle(Particle.SCULK_CHARGE_POP, block.getLocation().clone().add(0.5, 1, 0.5), 5, 0.5, 0, 0.5, 0);
+                                        }
+
+                                    }
+                                }, revertAfter * 20);
+
+                                block.getLocation().getWorld().playSound(block.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_SCULK_CATALYST_BLOOM, 0.5F, 0.5F);
+                                block.getLocation().getWorld().playSound(block.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_SCULK_CHARGE, 0.5F, 0.5F);
+                                block.getLocation().getWorld().spawnParticle(Particle.SCULK_CHARGE_POP, block.getLocation().clone().add(0.5, 1.1, 0.5), 5, 0.5, 0, 0.5, 0);
+                                block.getLocation().getWorld().spawnParticle(Particle.SCULK_CHARGE, block.getLocation().clone().add(0.5, 1.1, 0.5), 5, 0.5, 0, 0.5, 0,1F);
+                                block.getLocation().getWorld().spawnParticle(Particle.SCULK_SOUL, block.getLocation().clone().add(0.5, 1, 0.5), 5, 0.5, 0, 0.5, 0);
+
+                                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).getType().isOccluding() == false && block.getRelative(BlockFace.NORTH).getType() != Material.SCULK && block.getRelative(BlockFace.NORTH).getType() != Material.AIR && block.getRelative(BlockFace.NORTH).getType().isOccluding() == true) {
+                                            block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).setType(Material.AIR);
+                                            block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).setType(Material.SCULK_VEIN);
+                                            if (block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).getType() == Material.SCULK_VEIN) {
+                                                SculkVein sculkVein = (SculkVein) block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).getBlockData();
+                                                sculkVein.setFace(BlockFace.DOWN, true);
+                                                block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).setBlockData(sculkVein);
+                                            }
+                                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                                @Override
+                                                public void run() {
+
+                                                    if (block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).getType() == Material.SCULK_VEIN) {
+                                                        block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).setType(Material.AIR);
+                                                    }
+
+                                                }
+                                            }, revertAfter * 20);
+                                        }
+                                        if (block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).getType().isOccluding() == false && block.getRelative(BlockFace.EAST).getType() != Material.SCULK && block.getRelative(BlockFace.EAST).getType() != Material.AIR && block.getRelative(BlockFace.EAST).getType().isOccluding() == true) {
+                                            block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).setType(Material.AIR);
+                                            block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).setType(Material.SCULK_VEIN);
+                                            if (block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).getType() == Material.SCULK_VEIN) {
+                                                SculkVein sculkVein = (SculkVein) block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).getBlockData();
+                                                sculkVein.setFace(BlockFace.DOWN, true);
+                                                block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).setBlockData(sculkVein);
+                                            }
+                                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                                @Override
+                                                public void run() {
+
+                                                    if (block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).getType() == Material.SCULK_VEIN) {
+                                                        block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).setType(Material.AIR);
+                                                    }
+
+                                                }
+                                            }, revertAfter * 20);
+                                        }
+                                        if (block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).getType().isOccluding() == false && block.getRelative(BlockFace.SOUTH).getType() != Material.SCULK && block.getRelative(BlockFace.SOUTH).getType() != Material.AIR && block.getRelative(BlockFace.SOUTH).getType().isOccluding() == true) {
+                                            block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).setType(Material.AIR);
+                                            block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).setType(Material.SCULK_VEIN);
+                                            if (block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).getType() == Material.SCULK_VEIN) {
+                                                SculkVein sculkVein = (SculkVein) block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).getBlockData();
+                                                sculkVein.setFace(BlockFace.DOWN, true);
+                                                block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).setBlockData(sculkVein);
+                                            }
+                                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                                @Override
+                                                public void run() {
+
+                                                    if (block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).getType() == Material.SCULK_VEIN) {
+                                                        block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).setType(Material.AIR);
+                                                    }
+
+                                                }
+                                            }, revertAfter * 20);
+                                        }
+                                        if (block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).getType().isOccluding() == false && block.getRelative(BlockFace.WEST).getType() != Material.SCULK && block.getRelative(BlockFace.WEST).getType() != Material.AIR && block.getRelative(BlockFace.WEST).getType().isOccluding() == true) {
+                                            block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).setType(Material.AIR);
+                                            block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).setType(Material.SCULK_VEIN);
+                                            if (block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).getType() == Material.SCULK_VEIN) {
+                                                SculkVein sculkVein = (SculkVein) block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).getBlockData();
+                                                sculkVein.setFace(BlockFace.DOWN, true);
+                                                block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).setBlockData(sculkVein);
+                                            }
+                                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                                @Override
+                                                public void run() {
+
+                                                    if (block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).getType() == Material.SCULK_VEIN) {
+                                                        block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).setType(Material.AIR);
+                                                    }
+
+                                                }
+                                            }, revertAfter * 20);
+                                        }
+                                    }
+                                }, 5);
+
+                                cata(block.getLocation(), speed, timer + 1, length, speed, revertAfter);
+
+                            } else {
+                                cata(loc, 1, timer, length, 1, revertAfter);
+                            }
+                        }
+                    }, delay);
+                    break;
+                }
+            }
+        }
     }
 
     public void spawnAbilityItem (Player p, Integer maxUltPoints, Integer requiredUltPoints, Material material, List<String> lore, String displayName, String metaData) {

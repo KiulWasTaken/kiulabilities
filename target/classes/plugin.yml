@@ -9,3 +9,9 @@ commands:
     description: allows you to test abilities in devevlopment
   giveultpoint:
     description: gives the user one ultimate point
+  resetactionbar:
+    description: reset the current actionbar for all players
+  spawnlootcrate:
+    description: spawns a loot crate randomly in the world border
+  cata:
+    description: spawns a loot crate randomly in the world border

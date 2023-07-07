@@ -133,7 +133,6 @@ public class Artificer implements Listener {
 
     @EventHandler
     public void ultCheckActivate (PlayerSwapHandItemsEvent e) {
-        // wee woo woo woo
 
         Player p = (Player) e.getPlayer();
 
@@ -147,7 +146,9 @@ public class Artificer implements Listener {
                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                             @Override
                             public void run() {
-                                // ULTIMATE CODE HERE
+
+                                /** ULTIMATE CODE HERE */
+
                                 for (Player ap : Bukkit.getOnlinePlayers()) {
                                     if (ap != p)
                                     {
@@ -156,7 +157,9 @@ public class Artificer implements Listener {
                                         ap.getWorld().spawnEntity(ap.getLocation().add(2, 7, -2), EntityType.PRIMED_TNT);
                                     }
                                 }
-                                //ULTIMATE CODE END
+
+                                /** ULTIMATE CODE END */
+
                             }
                         }, ultimatePointsListeners.requiredUltPoints.get(p.getUniqueId()) * 20);
 
@@ -175,13 +178,14 @@ public class Artificer implements Listener {
 
         Player p = e.getPlayer();
 
-        if (e.getItem().getType() == Material.GOLDEN_APPLE){
-            p.getInventory().addItem(new ItemStack(Material.TNT));
-            p.playSound(p.getLocation(),Sound.BLOCK_NOTE_BLOCK_CHIME,1,1);
+        if (AbilityExtras.itemcheck(p, itemname) == true) {
+            if (e.getItem().getType() == Material.GOLDEN_APPLE) {
+                p.getInventory().addItem(new ItemStack(Material.TNT));
+                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1);
+            }
         }
-
-
     }
+
     private void setVelocity(Entity toPush, Player aura) {
         Location pushTo = aura.getLocation().subtract(toPush.getLocation());
         org.bukkit.util.Vector pushVector = new Vector(pushTo.toVector().normalize().multiply(-0.8).getX(), 0.5, pushTo.toVector().normalize().multiply(-0.8).getZ());

@@ -9,6 +9,7 @@ import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.ShulkerBullet;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -64,7 +65,7 @@ public class Spectre implements Listener {
 
                         Vector direction = p.getEyeLocation().getDirection().multiply(1.5);
 
-                        AtomicInteger DashAmount = new AtomicInteger(7);
+                        AtomicInteger DashAmount = new AtomicInteger(5);
 
                         new BukkitRunnable() {
                             @Override
@@ -76,33 +77,35 @@ public class Spectre implements Listener {
 
                                 for (Entity entity : p.getLocation().getWorld().getNearbyEntities(p.getLocation(), 5, 5, 5)) {
                                     if (entity != p) {
-                                        if (entity.getType() != EntityType.DROPPED_ITEM && entity.getType() != EntityType.ARMOR_STAND) {
-                                            if (entity.getLocation().add(0.5, 1, 0.5).distance(p.getLocation().add(0.5, 1, 0.5)) <= 1.5) {
+                                        if (entity instanceof Player hitplayer) {
+                                            if (hitplayer.getGameMode() == GameMode.SURVIVAL) {
+                                                if (entity.getLocation().add(0.5, 1, 0.5).distance(p.getLocation().add(0.5, 1, 0.5)) <= 2.5) {
 
-                                                p.setVelocity(p.getVelocity().add(direction.multiply(-0.2)));
+                                                    p.setVelocity(p.getVelocity().add(direction.multiply(-0.13)));
 
-                                                Particle.DustTransition dustTransition1 = new Particle.DustTransition(Color.fromRGB(0, 0, 0), Color.fromRGB(180, 180, 180), 10.0F);
-                                                p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation().add(0,1,0), 25, 0.5, 0.7, 0.5, dustTransition1);
+                                                    Particle.DustTransition dustTransition1 = new Particle.DustTransition(Color.fromRGB(0, 0, 0), Color.fromRGB(180, 180, 180), 10.0F);
+                                                    p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation().add(0, 1, 0), 25, 0.5, 0.7, 0.5, dustTransition1);
 
-                                                hitplayers.add(entity);
+                                                    hitplayers.add(entity);
 
-                                                for (Entity entity1 : p.getLocation().getWorld().getNearbyEntities(p.getLocation(), 5, 10, 5)) {
-                                                    if (entity1 != p) {
-                                                        if (entity1.getType() != EntityType.DROPPED_ITEM && entity1.getType() != EntityType.ARMOR_STAND) {
-                                                            if (entity1.getLocation().add(0.5, 1, 0.5).distance(p.getLocation().add(0.5, 1, 0.5)) <= 3) {
+                                                    for (Entity entity1 : p.getLocation().getWorld().getNearbyEntities(p.getLocation(), 5, 10, 5)) {
+                                                        if (entity1 != p) {
+                                                            if (entity1.getType() != EntityType.DROPPED_ITEM && entity1.getType() != EntityType.ARMOR_STAND) {
+                                                                if (entity1.getLocation().add(0.5, 1, 0.5).distance(p.getLocation().add(0.5, 1, 0.5)) <= 3) {
 
-                                                                repulseplayer(p, entity1, -2, 1);
+                                                                    repulseplayer(p, entity1, -2, 1);
 
-                                                                p.getWorld().playSound(entity1.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.4F, 0.3F);
+                                                                    p.getWorld().playSound(entity1.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.4F, 0.3F);
 
-                                                                hitplayers.add(entity1);
+                                                                    hitplayers.add(entity1);
 
+                                                                }
                                                             }
                                                         }
                                                     }
+                                                    cancel();
+                                                    break;
                                                 }
-                                                cancel();
-                                                break;
                                             }
                                         }
                                     }
@@ -110,16 +113,18 @@ public class Spectre implements Listener {
                                 DashAmount.getAndDecrement();
 
                                 if (DashAmount.get() <= 0) {
-                                    p.setVelocity(p.getVelocity().add(direction.multiply(-0.5)));
+                                    p.setVelocity(p.getVelocity().add(direction.multiply(-0.8)));
 
                                     Particle.DustTransition dustTransition1 = new Particle.DustTransition(Color.fromRGB(0, 0, 0), Color.fromRGB(180, 180, 180), 10.0F);
                                     p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation().add(0,1,0), 25, 0.5, 0.7, 0.5, dustTransition1);
 
                                     for (Entity entity1 : p.getLocation().getWorld().getNearbyEntities(p.getLocation(), 5, 10, 5)) {
                                         if (entity1 != p) {
-                                            if (entity1.getType() != EntityType.DROPPED_ITEM && entity1.getType() != EntityType.ARMOR_STAND) {
-                                                if (entity1.getLocation().add(0.5, 1, 0.5).distance(p.getLocation().add(0.5, 1, 0.5)) <= 3) {
-                                                    AnyPlayersCheck.add(entity1);
+                                            if (entity1 instanceof Player hitplayer) {
+                                                if (hitplayer.getGameMode() == GameMode.SURVIVAL) {
+                                                    if (entity1.getLocation().add(0.5, 1, 0.5).distance(p.getLocation().add(0.5, 1, 0.5)) <= 3) {
+                                                        AnyPlayersCheck.add(entity1);
+                                                    }
                                                 }
                                             }
                                         }
@@ -127,16 +132,20 @@ public class Spectre implements Listener {
 
                                     if (AnyPlayersCheck.size() > 0) {
                                         for (Entity entity1 : AnyPlayersCheck) {
+                                            if (entity1 instanceof Player hitplayer) {
+                                                if (hitplayer.getGameMode() == GameMode.SURVIVAL) {
 
-                                            repulseplayer(p, entity1, -2, 1);
+                                                    repulseplayer(p, entity1, -2, 1);
 
-                                            p.getWorld().playSound(entity1.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.4F, 0.3F);
+                                                    p.getWorld().playSound(entity1.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.4F, 0.3F);
 
-                                            hitplayers.add(entity1);
+                                                    hitplayers.add(entity1);
 
+                                                }
+                                            }
                                         }
                                     } else {
-                                        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW,60,3,true,false,false));
+                                        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW,140,3,true,false,false));
                                     }
                                     cancel();
                                 }
@@ -224,8 +233,6 @@ public class Spectre implements Listener {
 
                 e.setCancelled(true);
 
-                p.setFlySpeed(0);
-
                 if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
 
                     if (primaryCooldown.isEmpty()) {
@@ -240,13 +247,11 @@ public class Spectre implements Listener {
 
                     /** CODE >> */
 
-                    p.setAllowFlight(false);
-                    p.setFlying(false);
+                    p.setFlySpeed(0);
 
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            p.setAllowFlight(true);
                             p.setFlySpeed(flyspeed);
                         }
                     }.runTaskLater(plugin, secondaryTimer * 20);
@@ -256,7 +261,7 @@ public class Spectre implements Listener {
                     /** END << */
 
                 } else {
-                    DecimalFormat df = new DecimalFormat("0.00");
+                    DecimalFormat df = new DecimalFormat("0.00/");
                     String timer = df.format((double) (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
                     p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.LIGHT_PURPLE + " Secondary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.LIGHT_PURPLE + ChatColor.ITALIC + timer + "s!");
                 }
@@ -270,21 +275,23 @@ public class Spectre implements Listener {
         Player p = e.getPlayer();
 
         if (AbilityExtras.itemcheck(p, itemname) == true) {
-            if (p.getGameMode() != GameMode.CREATIVE) {
+            if (p.getGameMode() == GameMode.SURVIVAL) {
 
-                if (secondaryCooldown.containsKey(p.getUniqueId())) {
-                    p.setAllowFlight(false);
-                }
+                if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
 
-                if (p.getVelocity().getY() < -0.7) {
-                    p.setAllowFlight(false);
+                    if (p.getVelocity().getY() < -0.7) {
+                        p.setAllowFlight(false);
+                    } else {
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                p.setAllowFlight(true);
+                            }
+                        }.runTaskLater(plugin, 1);
+                    }
+
                 } else {
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            p.setAllowFlight(true);
-                        }
-                    }.runTaskLater(plugin, 1);
+                    p.setAllowFlight(false);
                 }
 
             }
@@ -355,12 +362,16 @@ public class Spectre implements Listener {
 
                                 for (Entity entity1 : p.getLocation().getWorld().getNearbyEntities(p.getLocation(), 300, 400, 300)) {
                                     if (entity1 != p) {
-                                        if (entity1.getType() != EntityType.ARMOR_STAND) {
+                                        if (entity1 instanceof Player hitplayer) {
+                                            if (hitplayer.getGameMode() == GameMode.SURVIVAL) {
 
-                                        repulseplayer(p, entity1, -6, 2);
+                                                repulseplayer(p, entity1, -12, 2);
 
-                                        hitplayers.add(entity1);
+                                                hitplayers.add(entity1);
 
+                                            }
+                                        } else {
+                                            repulseplayer(p, entity1, -12, 2);
                                         }
                                     }
                                 }
@@ -408,20 +419,14 @@ public class Spectre implements Listener {
 
     public void doublejump (Player p) {
 
-        if (p.getLocation().getPitch() != -90) {
-            Location playerLocation = p.getLocation();
-            Vector direction = playerLocation.getDirection();
+        double yaw = Math.toRadians(p.getLocation().getYaw());
 
-            double deltaX = direction.getX() * 2;
-            double deltaZ = direction.getZ() * 2;
+        double xOffset = -2 * Math.sin(yaw);
+        double zOffset = 2 * Math.cos(yaw);
 
-            Location blockLocation = playerLocation.clone().add(deltaX, 0, deltaZ);
-            Vector vec1 = blockLocation.toVector().subtract(p.getLocation().toVector()).normalize();
+        Vector vec = p.getLocation().add(xOffset, 0, zOffset).toVector().subtract(p.getLocation().toVector()).normalize();
 
-            p.setVelocity(vec1.multiply(0.6).add(new Vector(0, 0.4, 0)));
-        } else {
-            p.setVelocity(new Vector(0,0.8,0));
-        }
+        p.setVelocity(vec.multiply(0.5).add(new Vector(0,0.5,0)));
 
         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 0.2F, 0.5F);
         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 0.2F, 1F);

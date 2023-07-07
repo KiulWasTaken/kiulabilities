@@ -59,16 +59,6 @@ public class Ignition implements Listener {
 
                         /** PRIMARY - CODE START >> */
 
-                        Location originalLocation = p.getLocation();
-                        double yaw = Math.toRadians(originalLocation.getYaw()); // Convert yaw to radians
-
-                        // Calculate the x and z offsets based on yaw
-                        double xOffset = -6 * Math.sin(yaw);
-                        double zOffset = 6 * Math.cos(yaw);
-
-                        // Calculate the new location by adding offsets to the player's location
-                         p.teleport(originalLocation.add(xOffset, 0, zOffset));
-
                         new BukkitRunnable() {
                             double t = Math.PI / 4;
                             Location loc = p.getLocation().add(0, -1, 0);
@@ -151,7 +141,6 @@ public class Ignition implements Listener {
                                 /** ULTIMATE - CODE START >> */
 
                                 fireballrain(p);
-                                fireballrain(p);
 
                                 /** CODE END << */
 
@@ -176,38 +165,40 @@ public class Ignition implements Listener {
         Entity damagedentity = e.getEntity();
 
         if (e.getDamager() instanceof Player p) {
-            if (ChatColor.stripColor(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName()).equalsIgnoreCase(itemname)) {
-                if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
+            if (p.getInventory().getItemInMainHand() != null && p.getInventory().getItemInMainHand().hasItemMeta()) {
+                if (ChatColor.stripColor(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName()).equalsIgnoreCase(itemname)) {
+                    if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
 
-                    /** SECONDARY - CODE START >> */
+                        /** SECONDARY - CODE START >> */
 
-                    damagedentity.setFireTicks(60);
+                        damagedentity.setFireTicks(60);
 
-                    p.getWorld().spawn(damagedentity.getLocation().add(0.5, 1.8, 0.5), Firework.class, (firework) -> {
+                        p.getWorld().spawn(damagedentity.getLocation().add(0.5, 1.8, 0.5), Firework.class, (firework) -> {
 
-                        FireworkMeta fireworkMeta = firework.getFireworkMeta();
-                        fireworkMeta.setPower(3);
-                        fireworkMeta.addEffect(FireworkEffect.builder().withColor(Color.YELLOW).flicker(true).build());
-                        fireworkMeta.addEffect(FireworkEffect.builder().withColor(Color.RED).trail(true).build());
-                        firework.setFireworkMeta(fireworkMeta);
-                        firework.detonate();
-                    });
+                            FireworkMeta fireworkMeta = firework.getFireworkMeta();
+                            fireworkMeta.setPower(3);
+                            fireworkMeta.addEffect(FireworkEffect.builder().withColor(Color.YELLOW).flicker(true).build());
+                            fireworkMeta.addEffect(FireworkEffect.builder().withColor(Color.RED).trail(true).build());
+                            firework.setFireworkMeta(fireworkMeta);
+                            firework.detonate();
+                        });
 
-                    /** CODE END << */
+                        /** CODE END << */
 
-                    if (primaryCooldown.isEmpty()) {
-                        primaryCooldown.put(p.getUniqueId(), (long) 0);
+                        if (primaryCooldown.isEmpty()) {
+                            primaryCooldown.put(p.getUniqueId(), (long) 0);
+                        }
+                        secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
+                        if (!Kiulabilities.ABILITYUSED.contains(p.getUniqueId())) {
+                            Kiulabilities.ABILITYUSED.add(p.getUniqueId());
+                            AbilityExtras.TimerTask(p, primaryTimer, primaryCooldown, secondaryTimer, secondaryCooldown);
+                        }
+
+                    } else {
+                        DecimalFormat df = new DecimalFormat("0.00");
+                        String timer = df.format((double) (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
+                        p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.LIGHT_PURPLE + " Secondary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.LIGHT_PURPLE + ChatColor.ITALIC + timer + "s!");
                     }
-                    secondaryCooldown.put(p.getUniqueId(), Long.valueOf(System.currentTimeMillis()));
-                    if (!Kiulabilities.ABILITYUSED.contains(p.getUniqueId())) {
-                        Kiulabilities.ABILITYUSED.add(p.getUniqueId());
-                        AbilityExtras.TimerTask(p, primaryTimer, primaryCooldown, secondaryTimer, secondaryCooldown);
-                    }
-
-                } else {
-                    DecimalFormat df = new DecimalFormat("0.00");
-                    String timer = df.format((double) (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
-                    p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.LIGHT_PURPLE + " Secondary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.LIGHT_PURPLE + ChatColor.ITALIC + timer + "s!");
                 }
             }
         }

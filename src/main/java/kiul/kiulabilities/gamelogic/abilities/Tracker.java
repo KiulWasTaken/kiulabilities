@@ -9,6 +9,7 @@ import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.*;
@@ -20,6 +21,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
@@ -121,18 +123,26 @@ public class Tracker implements Listener {
 
                             // ABILITY CODE START
 
-                            for (Block nearbyBlocks : getBlocks(p.getLocation().getBlock(), 2)) {
-                                if (nearbyBlocks.getType() == Material.GRASS) {
-                                    nearbyBlocks.setType(Material.SWEET_BERRY_BUSH);
-                                    BlockState state = nearbyBlocks.getState();
-                                    Ageable ageable = (Ageable) state.getBlockData();
-                                    ageable.setAge(2);
-                                    state.setBlockData(ageable);
-                                    state.update();
+                            Random random = new Random();
 
-
+                            for (Block nearbyBlocks : getBlocks(p.getLocation().getBlock(), 4)) {
+                                if (nearbyBlocks.getType() == Material.AIR) {
+                                    if (nearbyBlocks.getRelative(BlockFace.DOWN).getType() != Material.AIR && nearbyBlocks.getRelative(BlockFace.DOWN).getType() != Material.SWEET_BERRY_BUSH && nearbyBlocks.getRelative(BlockFace.DOWN).getType().isOccluding() == true) {
+                                        Location loc = nearbyBlocks.getLocation();
+                                        if (random.nextInt(5) == 1) {
+                                            loc.getBlock().setType(Material.SWEET_BERRY_BUSH);
+                                            if (loc.getBlock().getType() == Material.SWEET_BERRY_BUSH) {
+                                                BlockState state = loc.getBlock().getState();
+                                                Ageable ageable = (Ageable) state.getBlockData();
+                                                ageable.setAge(2);
+                                                state.setBlockData(ageable);
+                                                state.update();
+                                            }
+                                        }
+                                    }
                                 }
                             }
+
                             Location center = p.getLocation().add(0, 1, 0); // replace world, x, y, z with your desired values
                             double radius = 2;
 
@@ -146,18 +156,6 @@ public class Tracker implements Listener {
                             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                                 @Override
                                 public void run() {
-                                    for (Block nearbyBlocks : getBlocks(p.getLocation().getBlock(), 3)) {
-                                        if (nearbyBlocks.getType() == Material.GRASS) {
-                                            nearbyBlocks.setType(Material.SWEET_BERRY_BUSH);
-                                            BlockState state = nearbyBlocks.getState();
-                                            Ageable ageable = (Ageable) state.getBlockData();
-                                            ageable.setAge(2);
-                                            state.setBlockData(ageable);
-                                            state.update();
-
-
-                                        }
-                                    }
                                     Location center = p.getLocation().add(0, 0.5, 0); // replace world, x, y, z with your desired values
                                     double radius = 3;
 
@@ -248,8 +246,21 @@ public class Tracker implements Listener {
                                     isActive = true;
                                     p.sendTitle("","Press [OFFHAND] to toggle ultimate");
 
-                                    //fuck you intellij
+                                    List<String> lore = new ArrayList<>();
 
+                                    ItemMeta itemMeta = p.getInventory().getItemInMainHand().getItemMeta();
+
+                                    for (String str : itemMeta.getLore()) {
+                                        lore.add(str);
+                                    }
+
+                                    lore.remove(lore.size() - 1);
+
+                                    lore.add(ColoredText.translateHexCodes("&#919090&lUltimate-Status &6» " + "&a&lACTIVATED"));
+
+                                    itemMeta.setLore(lore);
+
+                                    p.getInventory().getItemInMainHand().setItemMeta(itemMeta);
 
                                     // ULT CODE END
                                 }
@@ -322,7 +333,7 @@ public class Tracker implements Listener {
     public void combatPassive (PlayerDeathEvent e) {
         Player killer = e.getEntity().getKiller();
 
-        if (killer.hasMetadata("tracker")) {
+        if (e.getEntity() != null && killer != null && killer.hasMetadata("tracker")) {
             killer.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 160, 0));
         }
     }
