@@ -362,7 +362,7 @@ public class Catalyst implements Listener {
             preventInfiniteRepeatingTask.add(e.getPlayer());
             new BukkitRunnable() {
                 public void run() {
-                    if (e.getPlayer().getLocation().add(0,-1,0).getBlock().getType() == Material.SCULK) {
+                    if (e.getPlayer().getLocation().add(0,-1,0).getBlock().getType() == Material.SCULK && e.getPlayer().hasMetadata("catalyst")) {
                         e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,15,0));
                     } else {
                         preventInfiniteRepeatingTask.remove(e.getPlayer());
