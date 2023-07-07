@@ -235,13 +235,14 @@ public class Commands implements TabExecutor, Listener {
             }
         } else if (label.equalsIgnoreCase("cata")) { /** /resetactionbar */
             Location loc = p.getLocation().add(0,-1,0);
-            if (loc.getBlock().getType().isOccluding() == true) {
-                loc.getBlock().setType(Material.SCULK);
-            }
-            cata(loc.clone().add(1,0,0), 0, 0 , 20, 1, 10);
-            cata(loc.clone().add(-1,0,0), 0, 0 , 20, 1, 10);
-            cata(loc.clone().add(0,0,1), 0, 0 , 20, 1, 10);
-            cata(loc.clone().add(0,0,-1), 0, 0 , 20, 1, 10);
+            cata(loc.clone().add(2,0,0), 0, 0 , 20, 1, 10);
+            cata(loc.clone().add(-2,0,0), 0, 0 , 20, 1, 10);
+            cata(loc.clone().add(0,0,2), 0, 0 , 20, 1, 10);
+            cata(loc.clone().add(0,0,-2), 0, 0 , 20, 1, 10);
+            cata(loc.clone().add(2,0,2), 0, 0 , 20, 1, 10);
+            cata(loc.clone().add(-2,0,2), 0, 0 , 20, 1, 10);
+            cata(loc.clone().add(-2,0,-2), 0, 0 , 20, 1, 10);
+            cata(loc.clone().add(2,0,-2), 0, 0 , 20, 1, 10);
         }
         return false;
     }
@@ -265,10 +266,6 @@ public class Commands implements TabExecutor, Listener {
             check.add(loc.getBlock().getRelative(BlockFace.WEST).getRelative(BlockFace.DOWN));
             for (Block block1 : check) {
                 if (block1.getType() != Material.SCULK && block1.getType().isOccluding() == true && block1.getRelative(BlockFace.UP).getType().isOccluding() == false) {
-                    for (Player player : Bukkit.getOnlinePlayers()) {
-                        player.sendMessage(rint + "");
-                    }
-
                     Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                         Block block = loc.getBlock();
 
@@ -326,7 +323,7 @@ public class Commands implements TabExecutor, Listener {
 
                             if (block.getType() != Material.SCULK && block.getType() != Material.AIR && block.getType().isOccluding() == true && block.getRelative(BlockFace.UP).getType().isOccluding() == false) {
 
-                                if (block.getRelative(BlockFace.UP).getType() == Material.SCULK_VEIN) {
+                                if (block.getRelative(BlockFace.UP).getType().isOccluding() == false) {
                                     block.getRelative(BlockFace.UP).setType(Material.AIR);
                                 }
 
@@ -352,13 +349,15 @@ public class Commands implements TabExecutor, Listener {
 
                                 block.getLocation().getWorld().playSound(block.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_SCULK_CATALYST_BLOOM, 0.5F, 0.5F);
                                 block.getLocation().getWorld().playSound(block.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_SCULK_CHARGE, 0.5F, 0.5F);
-                                block.getLocation().getWorld().spawnParticle(Particle.SCULK_CHARGE_POP, block.getLocation().clone().add(0.5, 1, 0.5), 5, 0.5, 0, 0.5, 0);
+                                block.getLocation().getWorld().spawnParticle(Particle.SCULK_CHARGE_POP, block.getLocation().clone().add(0.5, 1.1, 0.5), 5, 0.5, 0, 0.5, 0);
+                                block.getLocation().getWorld().spawnParticle(Particle.SCULK_CHARGE, block.getLocation().clone().add(0.5, 1.1, 0.5), 5, 0.5, 0, 0.5, 0,1F);
                                 block.getLocation().getWorld().spawnParticle(Particle.SCULK_SOUL, block.getLocation().clone().add(0.5, 1, 0.5), 5, 0.5, 0, 0.5, 0);
 
                                 Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                                     @Override
                                     public void run() {
                                         if (block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).getType().isOccluding() == false && block.getRelative(BlockFace.NORTH).getType() != Material.SCULK && block.getRelative(BlockFace.NORTH).getType() != Material.AIR && block.getRelative(BlockFace.NORTH).getType().isOccluding() == true) {
+                                            block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).setType(Material.AIR);
                                             block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).setType(Material.SCULK_VEIN);
                                             if (block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).getType() == Material.SCULK_VEIN) {
                                                 SculkVein sculkVein = (SculkVein) block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).getBlockData();
@@ -377,6 +376,7 @@ public class Commands implements TabExecutor, Listener {
                                             }, revertAfter * 20);
                                         }
                                         if (block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).getType().isOccluding() == false && block.getRelative(BlockFace.EAST).getType() != Material.SCULK && block.getRelative(BlockFace.EAST).getType() != Material.AIR && block.getRelative(BlockFace.EAST).getType().isOccluding() == true) {
+                                            block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).setType(Material.AIR);
                                             block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).setType(Material.SCULK_VEIN);
                                             if (block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).getType() == Material.SCULK_VEIN) {
                                                 SculkVein sculkVein = (SculkVein) block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).getBlockData();
@@ -395,6 +395,7 @@ public class Commands implements TabExecutor, Listener {
                                             }, revertAfter * 20);
                                         }
                                         if (block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).getType().isOccluding() == false && block.getRelative(BlockFace.SOUTH).getType() != Material.SCULK && block.getRelative(BlockFace.SOUTH).getType() != Material.AIR && block.getRelative(BlockFace.SOUTH).getType().isOccluding() == true) {
+                                            block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).setType(Material.AIR);
                                             block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).setType(Material.SCULK_VEIN);
                                             if (block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).getType() == Material.SCULK_VEIN) {
                                                 SculkVein sculkVein = (SculkVein) block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).getBlockData();
@@ -413,6 +414,7 @@ public class Commands implements TabExecutor, Listener {
                                             }, revertAfter * 20);
                                         }
                                         if (block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).getType().isOccluding() == false && block.getRelative(BlockFace.WEST).getType() != Material.SCULK && block.getRelative(BlockFace.WEST).getType() != Material.AIR && block.getRelative(BlockFace.WEST).getType().isOccluding() == true) {
+                                            block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).setType(Material.AIR);
                                             block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).setType(Material.SCULK_VEIN);
                                             if (block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).getType() == Material.SCULK_VEIN) {
                                                 SculkVein sculkVein = (SculkVein) block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).getBlockData();

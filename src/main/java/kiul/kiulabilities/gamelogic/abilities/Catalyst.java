@@ -70,7 +70,6 @@ public class Catalyst implements Listener {
 
                         /** PRIMARY - CODE START >> */
 
-
                         Location inFront = p.getLocation().add(p.getLocation().getDirection().normalize().multiply(2));
                         inFront.setY(p.getLocation().add(0,-1,0).getY());
                         Block spreadCenter = inFront.getBlock();
