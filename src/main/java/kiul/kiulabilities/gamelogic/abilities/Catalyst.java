@@ -418,8 +418,7 @@ public class Catalyst implements Listener {
                                     }
                                 }, revertAfter * 20);
 
-                                block.getLocation().getWorld().playSound(block.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_SCULK_CATALYST_BLOOM, 0.5F, 0.5F);
-                                block.getLocation().getWorld().playSound(block.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_SCULK_CHARGE, 0.5F, 0.5F);
+                                block.getLocation().getWorld().playSound(block.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_SCULK_CHARGE, 0.3F, 1F);
                                 block.getLocation().getWorld().spawnParticle(Particle.SCULK_CHARGE_POP, block.getLocation().clone().add(0.5, 1.1, 0.5), 5, 0.5, 0, 0.5, 0);
                                 block.getLocation().getWorld().spawnParticle(Particle.SCULK_CHARGE, block.getLocation().clone().add(0.5, 1.1, 0.5), 5, 0.5, 0, 0.5, 0,1F);
                                 block.getLocation().getWorld().spawnParticle(Particle.SCULK_SOUL, block.getLocation().clone().add(0.5, 1, 0.5), 5, 0.5, 0, 0.5, 0);
