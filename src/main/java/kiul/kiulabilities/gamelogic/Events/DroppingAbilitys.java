@@ -1,12 +1,12 @@
-package kiul.kiulabilities.gamelogic;
+package kiul.kiulabilities.gamelogic.Events;
 
+import kiul.kiulabilities.gamelogic.AbilityItemNames;
+import kiul.kiulabilities.gamelogic.Methods.ColoredText;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
-
-import java.util.List;
 
 public class DroppingAbilitys implements Listener {
 
@@ -17,7 +17,7 @@ public class DroppingAbilitys implements Listener {
 
         if (e.getItemDrop().getItemStack().hasItemMeta()) {
             for (AbilityItemNames names : AbilityItemNames.values()) {
-                String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(names.getLabel()));
+                String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(names.getDisplayName()));
                 if (ChatColor.stripColor(e.getItemDrop().getItemStack().getItemMeta().getDisplayName()).equalsIgnoreCase(itemname)) {
                     e.setCancelled(true);
                     break;

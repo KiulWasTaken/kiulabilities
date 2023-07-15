@@ -1,5 +1,6 @@
-package kiul.kiulabilities;
+package kiul.kiulabilities.gamelogic.Methods;
 
+import kiul.kiulabilities.Kiulabilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Particle;

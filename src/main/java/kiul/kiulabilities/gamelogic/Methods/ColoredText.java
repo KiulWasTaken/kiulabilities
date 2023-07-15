@@ -1,4 +1,4 @@
-package kiul.kiulabilities.gamelogic;
+package kiul.kiulabilities.gamelogic.Methods;
 
 import org.bukkit.ChatColor;
 

@@ -1,11 +1,11 @@
 package kiul.kiulabilities.gamelogic.abilities;
 
 import kiul.kiulabilities.Kiulabilities;
-import kiul.kiulabilities.StatusEffects;
-import kiul.kiulabilities.gamelogic.AbilityExtras;
+import kiul.kiulabilities.gamelogic.Methods.StatusEffects;
+import kiul.kiulabilities.gamelogic.Methods.AbilityExtras;
 import kiul.kiulabilities.gamelogic.AbilityItemNames;
-import kiul.kiulabilities.gamelogic.ColoredText;
-import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
+import kiul.kiulabilities.gamelogic.Methods.ColoredText;
+import kiul.kiulabilities.gamelogic.Methods.ultimatePointsListeners;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -50,7 +50,7 @@ public class Catalyst implements Listener {
 
     private int primaryMode = 0;
 
-    String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.CATALYST.getLabel()));
+    String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.CATALYST.getDisplayName()));
 
     boolean isCharged = false;
     boolean isUltimateActive = false;
@@ -288,7 +288,7 @@ public class Catalyst implements Listener {
 
     @EventHandler
     public void catalystKillEvent (PlayerDeathEvent e) {
-        if (e.getEntity().getKiller().hasMetadata("catalyst") && e.getEntity().getKiller() instanceof Player && e.getEntity().isOnGround()) {
+        if (e.getEntity().getKiller() != null && e.getEntity().getKiller().hasMetadata("catalyst") && e.getEntity().getKiller() instanceof Player && e.getEntity().isOnGround()) {
             spread(e.getEntity().getLocation().add(0,-1,0),0,2,10,2,600);
         }
 

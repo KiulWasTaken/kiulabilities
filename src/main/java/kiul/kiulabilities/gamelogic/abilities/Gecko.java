@@ -1,10 +1,10 @@
 package kiul.kiulabilities.gamelogic.abilities;
 
 import kiul.kiulabilities.Kiulabilities;
-import kiul.kiulabilities.gamelogic.AbilityExtras;
+import kiul.kiulabilities.gamelogic.Methods.AbilityExtras;
 import kiul.kiulabilities.gamelogic.AbilityItemNames;
-import kiul.kiulabilities.gamelogic.ColoredText;
-import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
+import kiul.kiulabilities.gamelogic.Methods.ColoredText;
+import kiul.kiulabilities.gamelogic.Methods.ultimatePointsListeners;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
@@ -17,7 +17,6 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -47,7 +46,7 @@ public class Gecko implements Listener {
     private int secondaryTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Secondary");
     private int ultimateTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Ultimate");
 
-    String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.GECKO.getLabel()));
+    String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.GECKO.getDisplayName()));
 
     @EventHandler
     public void onClick(PlayerInteractEvent e) throws InterruptedException {
@@ -484,7 +483,7 @@ public class Gecko implements Listener {
                             explosive.ignite();
                             explosive.setInvisible(true);
                             explosive.setSilent(true);
-                            explosive.setExplosionRadius(5);
+                            explosive.setExplosionRadius(2);
                         });
 
                         cancel();
