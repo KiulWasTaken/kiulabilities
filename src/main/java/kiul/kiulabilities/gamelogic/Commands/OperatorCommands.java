@@ -29,7 +29,6 @@ public class OperatorCommands implements TabExecutor, Listener {
             if (label.equalsIgnoreCase("test")) {
 
                 for (AbilityItemNames abilitys : AbilityItemNames.values()) {
-
                     if (abilitys.name().toString().toLowerCase().equalsIgnoreCase(args[0])) {
 
                         p.sendMessage(abilitys.getDisplayName() + " " + abilitys.getMaxPoints() + " " + abilitys.getRequiredPoints() + " " +
@@ -40,6 +39,7 @@ public class OperatorCommands implements TabExecutor, Listener {
 
                     }
                 }
+
             } else if (label.equalsIgnoreCase("giveultpoint")) { /** /giveultpoint */
                 ultimatePointsListeners.addUltPoint(p);
             }
