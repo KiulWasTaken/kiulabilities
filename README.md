@@ -1,2 +1,2 @@
 # kiulabilities
-kiul's abilities. Made specifically for pat events (pat wont do it cuz hes lazy)
+kiul's abilities. Made specifically for pat's events (pat will do it, cuz hes cool)
