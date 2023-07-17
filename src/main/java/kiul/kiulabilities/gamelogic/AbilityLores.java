@@ -16,9 +16,9 @@ public class AbilityLores {
     };
 
     public static String[] atificerLore = new String[]{
-            "&#d8d8d8&lRight-Click &6» &#d8d8d8" + "",
-            "&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "",
-            "&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "",
+            "&#d8d8d8&lRight-Click &6» &#d8d8d8" + "Launch yourself a short distance in the direction you are facing",
+            "&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "Create an explosion at your location. Damages enemies and destroys terrain",
+            "&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "Spawn 3 TNT in the air above all players",
             " ",
             "&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.ARTIFICER.Class")
     };
@@ -43,17 +43,17 @@ public class AbilityLores {
     };
 
     public static String[] trackerLore = new String[]{
-            "&#d8d8d8&lRight-Click &6» &#d8d8d8" + "",
-            "&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "",
-            "&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "",
+            "&#d8d8d8&lRight-Click &6» &#d8d8d8" + "Summon a wolf that hunts down the nearest player. On hit, the wolf damages, stuns and inflicts bleed on the hunted player.",
+            "&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "Grows sweet berries in a small radius around the player",
+            "&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "Spawn particles around you that point towards all living players. Brighter = closer.",
             " ",
             "&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.TRACKER.Class")
     };
 
     public static String[] stealthLore = new String[]{
-            "&#d8d8d8&lRight-Click &6» &#d8d8d8" + "",
-            "&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "",
-            "&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "",
+            "&#d8d8d8&lRight-Click &6» &#d8d8d8" + "Enter 'stealth mode' for a brief time, where you are unable to be damaged by any source and are completely invisible",
+            "&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "Create a blinding orb that moves forwards and afflicts players close to it with blindness",
+            "&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "Enter 'stealth-mode' for a longer duration than normal, and teleport to a player of your choice anywhere on the map",
             " ",
             "&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.STEALTH.Class")
     };

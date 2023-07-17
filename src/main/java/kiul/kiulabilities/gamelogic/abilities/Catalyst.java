@@ -149,6 +149,7 @@ public class Catalyst implements Listener {
                                 p.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,frontTopRight.getLocation(),5,1,1,1, 0.0005);
                             }
                         }, 5);
+
                         /** CODE END << */
 
                         if (secondaryCooldown.isEmpty()) {
@@ -259,7 +260,7 @@ public class Catalyst implements Listener {
 
     @EventHandler
     public void getHurtOnSculkEvent (EntityDamageByEntityEvent e) {
-        if (e.getEntity() instanceof Player && e.getEntity().hasMetadata("catalyst") && e.getEntity().isOnGround()) {
+        if (e.getEntity() instanceof Player p && AbilityExtras.itemcheck(p,itemname) && e.getEntity().isOnGround()) {
             spread(e.getEntity().getLocation().add(0,-1,0),0,1,5,1,600);
         }
     }
@@ -267,7 +268,7 @@ public class Catalyst implements Listener {
 
     @EventHandler
     public void dismissOnSculkCrouch (PlayerToggleSneakEvent e) {
-        if (e.getPlayer().isSneaking() && e.getPlayer().hasMetadata("catalyst") && isCharged) {
+        if (e.getPlayer().isSneaking() && AbilityExtras.itemcheck(e.getPlayer(),itemname) && isCharged) {
             e.getPlayer().getWorld().spawnParticle(Particle.SCULK_CHARGE_POP,e.getPlayer().getLocation().add(0,1,0),10,1,1,1,0.0005);
             for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
                 onlinePlayers.hidePlayer(plugin,e.getPlayer());
@@ -288,7 +289,7 @@ public class Catalyst implements Listener {
 
     @EventHandler
     public void catalystKillEvent (PlayerDeathEvent e) {
-        if (e.getEntity().getKiller() != null && e.getEntity().getKiller().hasMetadata("catalyst") && e.getEntity().getKiller() instanceof Player && e.getEntity().isOnGround()) {
+        if (e.getEntity().getKiller() != null && AbilityExtras.itemcheck(e.getEntity().getKiller(),itemname) && e.getEntity().getKiller() instanceof Player && e.getEntity().isOnGround()) {
             spread(e.getEntity().getLocation().add(0,-1,0),0,2,10,2,600);
         }
 
@@ -522,7 +523,7 @@ public class Catalyst implements Listener {
     public void Passive (PlayerMoveEvent e) {
         ArrayList<Player> preventInfiniteRepeatingTask = new ArrayList<>();
 
-        if (!preventInfiniteRepeatingTask.contains(e.getPlayer()) && e.getPlayer().hasMetadata("catalyst")) {
+        if (!preventInfiniteRepeatingTask.contains(e.getPlayer()) && AbilityExtras.itemcheck(e.getPlayer(),itemname)) {
             preventInfiniteRepeatingTask.add(e.getPlayer());
             new BukkitRunnable() {
                 public void run() {
@@ -548,6 +549,7 @@ public class Catalyst implements Listener {
         Vector forwardVector = direction.multiply(forwards);
 
 // Calculate the left vector by rotating the forward vector 90 degrees
+
 
         Vector leftVector = new Vector(-forwardVector.getZ(), 0, forwardVector.getX()).normalize().multiply(left);
 

@@ -333,7 +333,7 @@ public class Tracker implements Listener {
     public void combatPassive (PlayerDeathEvent e) {
         Player killer = e.getEntity().getKiller();
 
-        if (e.getEntity() != null && killer != null && killer.hasMetadata("tracker")) {
+        if (e.getEntity() != null && killer != null && AbilityExtras.itemcheck(killer,itemname)) {
             killer.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 160, 0));
         }
     }
@@ -346,7 +346,7 @@ public class Tracker implements Listener {
 
     @EventHandler
     public void berriesDontHurt (EntityDamageByBlockEvent e) {
-        if (e.getEntity().hasMetadata("tracker") && e.getDamager().getType() == Material.SWEET_BERRY_BUSH) {
+        if (e.getEntity() instanceof  Player p && AbilityExtras.itemcheck(p,itemname) && e.getDamager().getType() == Material.SWEET_BERRY_BUSH) {
             e.setCancelled(true);
         }
     }

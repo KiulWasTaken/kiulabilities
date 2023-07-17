@@ -207,7 +207,7 @@ public class Stealth implements Listener {
                 e.setCancelled(true);
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
-                if (p.isSneaking() == true && p.hasMetadata("stealth")) {
+                if (p.isSneaking() == true && AbilityExtras.itemcheck(p,itemname)) {
                     e.setDamage(e.getDamage() / 2);
                 }
             }

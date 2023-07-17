@@ -191,14 +191,12 @@ public class Artificer implements Listener {
 
     @EventHandler
     public void noDamage (EntityDamageByEntityEvent e) {
-        if (e.getDamager().hasMetadata("boom") && e.getEntity().hasMetadata("artificer")) {
+        if (e.getEntity() instanceof Player p && e.getDamager().hasMetadata("boom") && AbilityExtras.itemcheck(p,itemname)) {
             e.setCancelled(true);
         }
-        if (e.getDamager().hasMetadata("boom") && !e.getEntity().hasMetadata("artificer")) {
+        if (e.getEntity() instanceof Player p && e.getDamager().hasMetadata("boom") && !AbilityExtras.itemcheck(p,itemname)) {
             e.setCancelled(true);
-            if (e.getEntity() instanceof Player p) {
-                p.damage(1.5);
-            }
+            p.damage(1.5);
         }
     }
 }
