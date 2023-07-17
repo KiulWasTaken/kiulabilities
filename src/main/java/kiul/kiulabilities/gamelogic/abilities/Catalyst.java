@@ -309,7 +309,7 @@ public class Catalyst implements Listener {
             }
             new BukkitRunnable() {
                 public void run() {
-                    if (p.getPotionEffect(PotionEffectType.INCREASE_DAMAGE).getDuration() <= 0 ) {
+                    if (!p.getActivePotionEffects().contains(PotionEffectType.INCREASE_DAMAGE)) {
                         isCharged = false;
                         cancel();
                     }
