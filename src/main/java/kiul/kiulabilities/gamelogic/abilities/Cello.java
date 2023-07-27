@@ -97,7 +97,7 @@ public class Cello implements Listener {
 
                         /** SECONDARY - CODE START >> */
                         if (mode == 0) {
-
+                            bestFriend.get(p).
                         }
 
                         /** CODE END << */
