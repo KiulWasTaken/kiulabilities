@@ -1,11 +1,11 @@
 package kiul.kiulabilities.gamelogic.abilities;
 
 import kiul.kiulabilities.Kiulabilities;
-import kiul.kiulabilities.StatusEffects;
-import kiul.kiulabilities.gamelogic.AbilityExtras;
+import kiul.kiulabilities.gamelogic.Methods.StatusEffects;
+import kiul.kiulabilities.gamelogic.Methods.AbilityExtras;
 import kiul.kiulabilities.gamelogic.AbilityItemNames;
-import kiul.kiulabilities.gamelogic.ColoredText;
-import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
+import kiul.kiulabilities.gamelogic.Methods.ColoredText;
+import kiul.kiulabilities.gamelogic.Methods.ultimatePointsListeners;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
@@ -49,7 +49,7 @@ public class Tracker implements Listener {
     private int secondaryTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Secondary");
     private int ultimateTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Ultimate");
 
-    String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.TRACKER.getLabel()));
+    String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.TRACKER.getDisplayName()));
 
     @EventHandler
     public void onClick(PlayerInteractEvent e) {
@@ -220,10 +220,10 @@ public class Tracker implements Listener {
                                         int distanceBetween = (int) p.getEyeLocation().distance(onlinePlayers.getEyeLocation());
                                         if (distanceBetween / 10 >= 1) {
                                             int scaledValue = 255 / (distanceBetween / 10);
-                                            p.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 3, new Particle.DustOptions(Color.fromRGB(scaledValue, 0, 0), 1));
+                                            p.spawnParticle(Particle.REDSTONE, particleLocation, 3, new Particle.DustOptions(Color.fromRGB(scaledValue, 0, 0), 1));
                                         } else {
                                             int scaledValue = 255;
-                                            p.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 3, new Particle.DustOptions(Color.fromRGB(scaledValue, 0, 0), 1));
+                                            p.spawnParticle(Particle.REDSTONE, particleLocation, 3, new Particle.DustOptions(Color.fromRGB(scaledValue, 0, 0), 1));
                                         }
 
                                     }
@@ -333,7 +333,7 @@ public class Tracker implements Listener {
     public void combatPassive (PlayerDeathEvent e) {
         Player killer = e.getEntity().getKiller();
 
-        if (e.getEntity() != null && killer != null && killer.hasMetadata("tracker")) {
+        if (e.getEntity() != null && killer != null && AbilityExtras.itemcheck(killer,itemname)) {
             killer.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 160, 0));
         }
     }
@@ -346,7 +346,7 @@ public class Tracker implements Listener {
 
     @EventHandler
     public void berriesDontHurt (EntityDamageByBlockEvent e) {
-        if (e.getEntity().hasMetadata("tracker") && e.getDamager().getType() == Material.SWEET_BERRY_BUSH) {
+        if (e.getEntity() instanceof  Player p && AbilityExtras.itemcheck(p,itemname) && e.getDamager().getType() == Material.SWEET_BERRY_BUSH) {
             e.setCancelled(true);
         }
     }

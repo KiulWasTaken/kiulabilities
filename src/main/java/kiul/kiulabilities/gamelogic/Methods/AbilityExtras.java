@@ -1,4 +1,4 @@
-package kiul.kiulabilities.gamelogic;
+package kiul.kiulabilities.gamelogic.Methods;
 
 import kiul.kiulabilities.Kiulabilities;
 import net.md_5.bungee.api.ChatMessageType;

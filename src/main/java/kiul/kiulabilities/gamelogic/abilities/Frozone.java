@@ -1,13 +1,12 @@
 package kiul.kiulabilities.gamelogic.abilities;
 
 import kiul.kiulabilities.Kiulabilities;
-import kiul.kiulabilities.gamelogic.AbilityExtras;
+import kiul.kiulabilities.gamelogic.Methods.AbilityExtras;
 import kiul.kiulabilities.gamelogic.AbilityItemNames;
-import kiul.kiulabilities.gamelogic.ColoredText;
-import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
+import kiul.kiulabilities.gamelogic.Methods.ColoredText;
+import kiul.kiulabilities.gamelogic.Methods.ultimatePointsListeners;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -15,7 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFadeEvent;
-import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -29,7 +27,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.sql.Time;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -49,7 +46,7 @@ public class Frozone implements Listener {
     private int secondaryTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Secondary");
     private int ultimateTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Ultimate");
 
-    String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.FROZONE.getLabel()));
+    String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.FROZONE.getDisplayName()));
 
     @EventHandler
     public void onClick(PlayerInteractEvent e) throws InterruptedException {
@@ -64,6 +61,8 @@ public class Frozone implements Listener {
                         e.setCancelled(true);
 
                         /** PRIMARY - CODE START >> */
+
+                        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ILLUSIONER_CAST_SPELL, 0.2F, 1.3F);
 
                         new BukkitRunnable() {
                             Vector dir = p.getLocation().getDirection().normalize();
@@ -154,12 +153,12 @@ public class Frozone implements Listener {
 
             p.getWorld().spawn(loc, Creeper.class, (explosive) -> {
                 explosive.setMaxFuseTicks(0);
+                explosive.setCustomName("frozonecreeper");
                 explosive.ignite();
                 explosive.setInvisible(true);
                 explosive.setSilent(true);
                 explosive.setMetadata("frozonecreeper", new FixedMetadataValue(plugin, "pat"));
                 explosive.setExplosionRadius(6);
-                explosive.setCustomName("frozonecreeper");
             });
 
     }
@@ -375,7 +374,7 @@ public class Frozone implements Listener {
                         }
                     }
                 }
-            }, i*2);
+            }, i*1);
         }
     }
 

@@ -1,10 +1,10 @@
 package kiul.kiulabilities.gamelogic.abilities;
 
 import kiul.kiulabilities.Kiulabilities;
-import kiul.kiulabilities.gamelogic.AbilityExtras;
+import kiul.kiulabilities.gamelogic.Methods.AbilityExtras;
 import kiul.kiulabilities.gamelogic.AbilityItemNames;
-import kiul.kiulabilities.gamelogic.ColoredText;
-import kiul.kiulabilities.gamelogic.ultimatePointsListeners;
+import kiul.kiulabilities.gamelogic.Methods.ColoredText;
+import kiul.kiulabilities.gamelogic.Methods.ultimatePointsListeners;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
@@ -17,7 +17,6 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -47,7 +46,7 @@ public class Gecko implements Listener {
     private int secondaryTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Secondary");
     private int ultimateTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Ultimate");
 
-    String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.GECKO.getLabel()));
+    String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.GECKO.getDisplayName()));
 
     @EventHandler
     public void onClick(PlayerInteractEvent e) throws InterruptedException {
@@ -316,7 +315,7 @@ public class Gecko implements Listener {
             public void run() {
                 Vector vector = p.getEyeLocation().toVector().clone().subtract(p1).normalize().multiply(space);
                 p1.add(vector);
-                world.spawnParticle(Particle.BLOCK_DUST, p1.getX(), p1.getY(), p1.getZ(), 10, 0.1, 0.1, 0.1, 0, Material.REDSTONE_BLOCK.createBlockData());
+                world.spawnParticle(Particle.BLOCK_DUST, p1.getX(), p1.getY(), p1.getZ(), 10, 0.1, 0.1, 0.1, 0, Material.PINK_WOOL.createBlockData());
                 Particle.DustTransition dustTransition = new Particle.DustTransition(Color.fromRGB(150 - ((int) length * 7), 0, 0), Color.fromRGB(168, 64, 64), 2F);
                 world.spawnParticle(Particle.DUST_COLOR_TRANSITION, p1.getX(), p1.getY(), p1.getZ(), 2, 0, 0, 0, dustTransition);
                 length += space;
@@ -484,7 +483,7 @@ public class Gecko implements Listener {
                             explosive.ignite();
                             explosive.setInvisible(true);
                             explosive.setSilent(true);
-                            explosive.setExplosionRadius(5);
+                            explosive.setExplosionRadius(2);
                         });
 
                         cancel();

@@ -2,8 +2,10 @@ package kiul.kiulabilities.gamelogic.abilities;
 
 import kiul.kiulabilities.Kiulabilities;
 import kiul.kiulabilities.gamelogic.*;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import kiul.kiulabilities.gamelogic.Methods.AbilityExtras;
+import kiul.kiulabilities.gamelogic.AbilityItemNames;
+import kiul.kiulabilities.gamelogic.Methods.ColoredText;
+import kiul.kiulabilities.gamelogic.Methods.ultimatePointsListeners;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -14,19 +16,18 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -44,7 +45,7 @@ public class Featherweight implements Listener {
     private int secondaryTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Secondary");
     private int ultimateTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Ultimate");
 
-    String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.FEATHERWEIGHT.getLabel()));
+    String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.FEATHERWEIGHT.getDisplayName()));
 
     @EventHandler
     public void onClick(PlayerInteractEvent e) {
@@ -62,8 +63,10 @@ public class Featherweight implements Listener {
 
                             p.setVelocity(new Vector(0, 1.5, 0));
 
-                            p.getWorld().spawnParticle(Particle.SPIT, p.getLocation(), 10);
-                            p.getWorld().spawnParticle(Particle.CLOUD, p.getLocation(), 10);
+                            p.getWorld().spawnParticle(Particle.SPIT, p.getLocation().add(0,0.5,0), 10, 0, 0, 0, 0.1);
+                            p.getWorld().spawnParticle(Particle.CLOUD, p.getLocation().add(0,0.5,0), 10, 0, 0, 0, 0.2);
+
+                            p.getWorld().playSound(p.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 0.3F, 1);
 
                             List<String> lore = p.getInventory().getItemInMainHand().getItemMeta().getLore();
 
@@ -136,6 +139,10 @@ public class Featherweight implements Listener {
 
                             /** SECONDARY CODE START */
 
+                            p.getWorld().playSound(p.getLocation(), Sound.ENTITY_SHULKER_SHOOT, 0.3F, 1);
+
+                            p.getWorld().spawnParticle(Particle.CLOUD, p.getLocation().add(0,1,0), 10, 0, 0, 0, 0.1);
+
                             for (int i = 0; i <= 15; i++) {
                                 double playeryaw = p.getLocation().getYaw();
                                 if (playeryaw > 180) {
@@ -151,6 +158,7 @@ public class Featherweight implements Listener {
 
                                 ShulkerBullet shulkerBullet = (ShulkerBullet) p.getWorld().spawnEntity(p.getEyeLocation().add(0,-0.5,0).add(vec.multiply(2)), EntityType.SHULKER_BULLET);
 
+                                shulkerBullet.setMetadata("shulkerbullet", new FixedMetadataValue(plugin, "pat"));
                                 shulkerBullet.setVelocity(vec.multiply(0.5).add(new Vector(0,0.1,0)));
 
                                 if (i == 15) {
@@ -169,9 +177,9 @@ public class Featherweight implements Listener {
                                 AbilityExtras.TimerTask(p, primaryTimer, primaryCooldown, secondaryTimer, secondaryCooldown);
                             }
                         } else {
-
-                            p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.LIGHT_PURPLE + " Secondary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.LIGHT_PURPLE + ChatColor.ITALIC + (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())) + "ms!");
-                        }
+                            DecimalFormat df = new DecimalFormat("0.00");
+                            String timer = df.format((double) (secondaryTimer * 1000 - (System.currentTimeMillis() - ((Long) secondaryCooldown.get(p.getUniqueId())).longValue())) / 1000);
+                            p.sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "»" + ChatColor.GRAY + "]" + ChatColor.LIGHT_PURPLE + " Secondary ability " + ChatColor.GRAY + "is on cooldown for another " + ChatColor.LIGHT_PURPLE + ChatColor.ITALIC + timer + "s!");                        }
                     }
                 }
             }
@@ -202,7 +210,6 @@ public class Featherweight implements Listener {
 
                                 if (ChatColor.stripColor(lore1.get(lore1.size()-1)).equalsIgnoreCase("Elytra-Status » " + "ACTIVATED")) {
 
-
                                     ultimatePointsListeners.maximumUltPoints.put(p.getUniqueId(),6);
                                     ultimatePointsListeners.requiredUltPoints.put(p.getUniqueId(),2);
 
@@ -210,9 +217,19 @@ public class Featherweight implements Listener {
                                         if (entity != p) {
                                             if (entity.getType() != EntityType.ARMOR_STAND && entity.getType() != EntityType.DROPPED_ITEM && entity.getType() != EntityType.SHULKER_BULLET) {
 
+                                                entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_SHULKER_AMBIENT, 0.5F, 1);
+
                                                 ShulkerBullet shulkerBullet = (ShulkerBullet) p.getWorld().spawnEntity(entity.getLocation().add(0, 5, 0), EntityType.SHULKER_BULLET);
                                                 shulkerBullet.setTarget(entity);
                                                 shulkerBullet.setVelocity(new Vector(0,0.3,0));
+
+                                                ShulkerBullet shulkerBullet1 = (ShulkerBullet) p.getWorld().spawnEntity(entity.getLocation().add(0, 5, 0), EntityType.SHULKER_BULLET);
+                                                shulkerBullet1.setTarget(entity);
+                                                shulkerBullet1.setVelocity(new Vector(0,0.3,0));
+
+                                                ShulkerBullet shulkerBullet2 = (ShulkerBullet) p.getWorld().spawnEntity(entity.getLocation().add(0, 5, 0), EntityType.SHULKER_BULLET);
+                                                shulkerBullet2.setTarget(entity);
+                                                shulkerBullet2.setVelocity(new Vector(0,0.3,0));
 
                                             }
                                         }
@@ -305,6 +322,13 @@ public class Featherweight implements Listener {
         if (e.getDamager() instanceof ShulkerBullet shulkerBullet) {
             Particle.DustTransition dustTransition = new Particle.DustTransition(Color.fromRGB(122, 0, 122), Color.fromRGB(0, 0, 0), 3.0F);
             shulkerBullet.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, e.getEntity().getLocation(), 5, 0.5, 0.5, 0.5, dustTransition);
+            if (shulkerBullet.hasMetadata("shulkerbullet")) {
+                if (e.getEntity() instanceof Player p) {
+                    e.setCancelled(true);
+                    shulkerBullet.remove();
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 60, 1, true, false));
+                }
+            }
         }
 
     }

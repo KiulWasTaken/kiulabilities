@@ -2,9 +2,19 @@ package kiul.kiulabilities;
 
 import kiul.kiulabilities.CommandMethods.SupplyDrop;
 import kiul.kiulabilities.gamelogic.*;
+import kiul.kiulabilities.gamelogic.Commands.OperatorCommands;
+import kiul.kiulabilities.gamelogic.Commands.PattyEventCommands;
+import kiul.kiulabilities.gamelogic.Configs.AbilityConfig;
+import kiul.kiulabilities.gamelogic.Configs.ultimatePointsConfig;
+import kiul.kiulabilities.gamelogic.Events.DroppingAbilitys;
+import kiul.kiulabilities.gamelogic.Events.InventoryEvent;
+import kiul.kiulabilities.gamelogic.Events.JoinEvent;
+import kiul.kiulabilities.gamelogic.Events.MovingAbilityItems;
+import kiul.kiulabilities.gamelogic.Methods.ultimatePointsListeners;
 import kiul.kiulabilities.gamelogic.abilities.*;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
@@ -25,18 +35,27 @@ public final class Kiulabilities extends JavaPlugin {
         ultimatePointsConfig.setup();
         ultimatePointsConfig.save();
 
+        AbilityConfig.setup();
+        AbilityConfig.get().options().copyDefaults(true);
+        AbilityConfig.save();
+
         this.saveDefaultConfig();
         saveConfig();
 
-        getCommand("test").setExecutor(new Commands());
-        getCommand("giveultpoint").setExecutor(new Commands());
-        getCommand("resetactionbar").setExecutor(new Commands());
-        getCommand("spawnlootcrate").setExecutor(new Commands());
-        getServer().getPluginManager().registerEvents(new Commands(), this);
+        getCommand("test").setExecutor(new OperatorCommands());
+        getCommand("giveultpoint").setExecutor(new OperatorCommands());
+        getCommand("resetactionbar").setExecutor(new PattyEventCommands());
+        getCommand("spawnlootcrate").setExecutor(new PattyEventCommands());
+        getCommand("setconfig").setExecutor(new PattyEventCommands());
+        getCommand("opengui").setExecutor(new PattyEventCommands());
+        getCommand("abilitymenu").setExecutor(new PattyEventCommands());
+        getServer().getPluginManager().registerEvents(new OperatorCommands(), this);
         getServer().getPluginManager().registerEvents(new ultimatePointsListeners(), this);
-        getServer().getPluginManager().registerEvents(new menuClickListener(), this);
         getServer().getPluginManager().registerEvents(new DroppingAbilitys(), this);
         getServer().getPluginManager().registerEvents(new SupplyDrop(), this);
+        getServer().getPluginManager().registerEvents(new MovingAbilityItems(), this);
+        getServer().getPluginManager().registerEvents(new JoinEvent(), this);
+        getServer().getPluginManager().registerEvents(new InventoryEvent(), this);
 
         /** ABILITIES */
         getServer().getPluginManager().registerEvents(new Catalyst(), this);
