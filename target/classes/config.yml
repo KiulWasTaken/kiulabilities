@@ -50,13 +50,6 @@ Abilities:
       Ultimate: 10
     Class: ""
     DisplayName: "&f&lTracker Ability"
-  DISCHARGE:
-    Cooldowns:
-      Primary: 10
-      Secondary: 10
-      Ultimate: 10
-    Class: ""
-    DisplayName: "&f&lDischarge Ability"
   IGNITION:
     Cooldowns:
       Primary: 10
@@ -78,5 +71,11 @@ Abilities:
       Ultimate: 10
     Class: "&4&lCOMBAT&6, &f&lMOVEMENT"
     DisplayName: "&#237b00&lG&#398805&le&#4f960a&lc&#66a30f&lk&#7cb114&lo &#92be19&lA&#92be19&lb&#7cb114&li&#66a30f&ll&#4f960a&li&#398805&lt&#237b00&ly"
-
+  CELLO:
+    Cooldowns:
+      Primary: 10
+      Secondary: 10
+      Ultimate: 10
+    Class: ""
+    DisplayName: "&f&CELLO Ability"
 

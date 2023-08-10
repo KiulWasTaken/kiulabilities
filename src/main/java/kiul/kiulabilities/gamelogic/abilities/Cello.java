@@ -103,29 +103,30 @@ public class Cello implements Listener {
                     if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
 
                         /** SECONDARY - CODE START >> */
+                        Location infront = p.getLocation().add(p.getLocation().getDirection().multiply(1));
                         if (mode == 0) { //heal
-                            ArmorStand stand = (ArmorStand) p.getWorld().spawnEntity(p.getLocation().multiply(1), EntityType.ARMOR_STAND);
+                            ArmorStand stand = (ArmorStand) p.getWorld().spawnEntity(infront, EntityType.ARMOR_STAND);
                             stand.setInvisible(true);
                             stand.setInvulnerable(true);
                             moveArmorStand(stand);
                             Location headLocation = stand.getLocation().clone().add(0, stand.getHeight(), 0);
-                            stand.getWorld().spawnParticle(Particle.SLIME, headLocation, 10);
+                            stand.getWorld().spawnParticle(Particle.SLIME, headLocation, 50);
                         }
                         if (mode == 1) { //fling
-                            ArmorStand stand = (ArmorStand) p.getWorld().spawnEntity(p.getLocation().multiply(1), EntityType.ARMOR_STAND);
+                            ArmorStand stand = (ArmorStand) p.getWorld().spawnEntity(infront, EntityType.ARMOR_STAND);
                             stand.setInvisible(true);
                             stand.setInvulnerable(true);
                             moveArmorStand(stand);
                             Location headLocation = stand.getLocation().clone().add(0, stand.getHeight(), 0);
-                            stand.getWorld().spawnParticle(Particle.CRIT, headLocation, 10);
+                            stand.getWorld().spawnParticle(Particle.CRIT, headLocation, 50);
                         }
                         if (mode == 2) { //stun
-                            ArmorStand stand = (ArmorStand) p.getWorld().spawnEntity(p.getLocation().multiply(1), EntityType.ARMOR_STAND);
+                            ArmorStand stand = (ArmorStand) p.getWorld().spawnEntity(infront, EntityType.ARMOR_STAND);
                             stand.setInvisible(true);
                             stand.setInvulnerable(true);
                             moveArmorStand(stand);
                             Location headLocation = stand.getLocation().clone().add(0, stand.getHeight(), 0);
-                            stand.getWorld().spawnParticle(Particle.WAX_ON, headLocation, 10);
+                            stand.getWorld().spawnParticle(Particle.WAX_ON, headLocation, 50);
                         }
                         }
 
@@ -267,13 +268,13 @@ public class Cello implements Listener {
                     if (nearbyEntities instanceof LivingEntity) {
                         switch (mode) {
                             case (0):
-                                ((LivingEntity) nearbyEntities).addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 2,2));
+                                ((LivingEntity) nearbyEntities).addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 10,2));
                                 break;
                             case (1):
-                                ((LivingEntity) nearbyEntities).setVelocity(new Vector(-1,1,-1));
+                                ((LivingEntity) nearbyEntities).setVelocity(new Vector(-1,1,-1).normalize());
                                 break;
                             case (2):
-                                StatusEffects.stun((Player) nearbyEntities,40);
+                                StatusEffects.stun((Player) nearbyEntities,200);
                                 break;
                         }
                     }
@@ -285,6 +286,21 @@ public class Cello implements Listener {
         // Check for collisions with blocks
         Location blockLocation = location.clone().add(0, 0.5, 0);
         if (blockLocation.getBlock().getType() != Material.AIR) {
+            for (Entity nearbyEntities : location.getWorld().getNearbyEntities(location,2,2,2)) {
+                if (nearbyEntities instanceof LivingEntity) {
+                    switch (mode) {
+                        case (0):
+                            ((LivingEntity) nearbyEntities).addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 2));
+                            break;
+                        case (1):
+                            ((LivingEntity) nearbyEntities).setVelocity(new Vector(1, 1, 1).normalize());
+                            break;
+                        case (2):
+                            StatusEffects.stun((Player) nearbyEntities, 200);
+                            break;
+                    }
+                }
+            }
             return true;
         }
 
