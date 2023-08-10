@@ -27,6 +27,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -108,22 +109,20 @@ public class Stealth implements Listener {
                             stand.setVisible(false);
                             stand.setMetadata("blind", new FixedMetadataValue(plugin, "pat"));
                             stand.setRotation(p.getLocation().getYaw(), p.getLocation().getPitch());
-
+                            Vector playerDirection = p.getLocation().getDirection();
                             new BukkitRunnable() {
                                 @Override
                                 public void run() {
                                     if (!stand.isDead()) {
                                         p.getWorld().spawnParticle(Particle.BLOCK_CRACK, stand.getLocation().add(0, 1.5, 0), 10, 0.1, 0.3, 0.1, Material.PURPLE_WOOL.createBlockData());
-                                        stand.setVelocity(stand.getLocation().getDirection().multiply(0.5));
-                                        for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
-
-                                            for (Entity nearby : onlinePlayers.getWorld().getNearbyEntities(onlinePlayers.getLocation(), 4, 4, 4)) {
-                                                if (nearby.hasMetadata("blind") && onlinePlayers != p) {
-                                                    onlinePlayers.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 1, false, false));
+                                        stand.setVelocity(playerDirection.normalize().multiply(0.5));
+                                            for (Entity nearby : stand.getWorld().getNearbyEntities(stand.getLocation(), 4, 4, 4)) {
+                                                if (nearby instanceof Player nearbyPlayer && nearby != p) {
+                                                    nearbyPlayer.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 1, false, false));
 
                                                 }
                                             }
-                                        }
+
                                     } else {
                                         cancel();
                                     }
