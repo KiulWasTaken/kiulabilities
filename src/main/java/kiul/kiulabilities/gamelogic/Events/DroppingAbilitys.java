@@ -21,6 +21,8 @@ public class DroppingAbilitys implements Listener {
                 if (ChatColor.stripColor(e.getItemDrop().getItemStack().getItemMeta().getDisplayName()).equalsIgnoreCase(itemname)) {
                     e.setCancelled(true);
                     break;
+
+                    // fuck you pat combine all the events into one class you pussy
                 }
             }
         }

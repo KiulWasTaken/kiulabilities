@@ -4,6 +4,8 @@ import kiul.kiulabilities.Kiulabilities;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -149,4 +151,23 @@ public class AbilityExtras {
 
         return name;
     }
+    public static Entity getNearestEntity(Location targetLocation) {
+        double nearestDistanceSquared = Double.MAX_VALUE;
+        Entity nearestEntity = null;
+
+        for (Entity entity : targetLocation.getWorld().getEntities()) {
+            if (entity.equals(targetLocation)) {
+                continue; // Skip the target location itself if it's an entity
+            }
+
+            double distanceSquared = entity.getLocation().distanceSquared(targetLocation);
+            if (distanceSquared < nearestDistanceSquared) {
+                nearestDistanceSquared = distanceSquared;
+                nearestEntity = entity;
+            }
+        }
+
+        return nearestEntity;
+    }
 }
+

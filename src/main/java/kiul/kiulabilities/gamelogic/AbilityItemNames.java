@@ -2,6 +2,7 @@ package kiul.kiulabilities.gamelogic;
 
 import kiul.kiulabilities.Kiulabilities;
 import kiul.kiulabilities.gamelogic.Methods.AbilityExtras;
+import kiul.kiulabilities.gamelogic.Methods.AbilityExtras.*;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
@@ -17,6 +18,7 @@ public enum AbilityItemNames {
         FROZONE(AbilityExtras.displayname("FROZONE.DisplayName"), 2, 1, Material.LIGHT_BLUE_DYE, AbilityLores.frozoneLore),
         DISCHARGE(AbilityExtras.displayname("DISCHARGE.DisplayName"), 6, 4, Material.BLUE_DYE, AbilityLores.dischargeLore),
         SPECTRE(AbilityExtras.displayname("SPECTRE.DisplayName"), 4, 2, Material.PINK_DYE, AbilityLores.spectreLore);
+        CELLO(AbilityExtras.displayname("CELLO.DisplayName"), 4, 2, Material.PURPLE_DYE, AbilityLores.celloLore);
 
         private String displayName;
         private int maxPoints;

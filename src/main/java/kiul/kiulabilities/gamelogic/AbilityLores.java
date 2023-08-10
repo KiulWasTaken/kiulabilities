@@ -97,5 +97,12 @@ public class AbilityLores {
             " ",
             "&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.GECKO.Class")
     };
+    public static String[] celloLore = new String[]{
+            "&#d8d8d8&lRight-Click &6» &#d8d8d8" + "",
+            "&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "",
+            "&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "",
+            " ",
+            "&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.CELLO.Class")
+    };
 
 }
