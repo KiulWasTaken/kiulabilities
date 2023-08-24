@@ -67,8 +67,8 @@ public class AbilityLores {
     };
 
     public static String[] dischargeLore = new String[]{
-            "&#d8d8d8&lRight-Click &6» &#d8d8d8" + "",
-            "&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "",
+            "&#d8d8d8&lRight-Click &6» &#d8d8d8" + "Gives the player a riptide trident with one use",
+            "&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "Fires a channelling trident in the direction the player is facing",
             "&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "",
             " ",
             "&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.DISCHARGE.Class")

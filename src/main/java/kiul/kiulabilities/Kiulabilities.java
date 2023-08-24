@@ -68,6 +68,7 @@ public final class Kiulabilities extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Frozone(), this);
         getServer().getPluginManager().registerEvents(new Gecko(), this);
         getServer().getPluginManager().registerEvents(new Cello(),this);
+        getServer().getPluginManager().registerEvents(new Discharge(),this);
         /***/
     }
 

@@ -211,7 +211,7 @@ public class Cello implements Listener {
     public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
         Player p = event.getPlayer();
 
-        if (event.isSneaking()) {
+        if (event.isSneaking() && AbilityExtras.itemcheck(p,itemname)) {
             cycleMode();
             String modeName = getModeName(mode);
             p.sendTitle("", "Mode: " + modeName);
