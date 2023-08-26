@@ -7,6 +7,7 @@ import kiul.kiulabilities.gamelogic.Methods.ColoredText;
 import kiul.kiulabilities.gamelogic.Methods.StatusEffects;
 import kiul.kiulabilities.gamelogic.Methods.ultimatePointsListeners;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -15,6 +16,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRiptideEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
@@ -23,7 +25,9 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.lang.reflect.Array;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -42,6 +46,8 @@ public class Discharge implements Listener {
     private int primaryTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Primary");
     private int secondaryTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Secondary");
     private int ultimateTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Ultimate");
+
+    public ArrayList<Player> ultimateActive = new ArrayList<>();
 
     String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.DISCHARGE.getDisplayName())); /** CHANGE 'ARTIFICER'*/
 
@@ -135,16 +141,18 @@ public class Discharge implements Listener {
 
                                 /** ULTIMATE - CODE START >> */
                                 p.getWorld().setThundering(true);
+                                ultimateActive.add(p);
                                 new BukkitRunnable() {
                                     @Override
                                     public void run() {
-                                        if (!p.isDead()) {
+                                        if (p.getGameMode() != GameMode.SPECTATOR) {
                                             for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
                                                 if (onlinePlayers.getGameMode() == GameMode.SURVIVAL && onlinePlayers.getLocation().getY() > 80) {
                                                     onlinePlayers.getWorld().spawnEntity(onlinePlayers.getLocation(),EntityType.LIGHTNING);
                                                 }
                                             }
                                         } else {
+                                            ultimateActive.remove(p);
                                             p.getWorld().setThundering(false);
                                             cancel();
                                         }
@@ -206,6 +214,61 @@ public class Discharge implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void passiveAbility (PlayerMoveEvent e) {
+        Player p = e.getPlayer();
+
+        ArrayList<Player> preventInfiniteRepeatingTask = new ArrayList<>();
+
+        if (!preventInfiniteRepeatingTask.contains(p) && AbilityExtras.itemcheck(p,itemname)) {
+            preventInfiniteRepeatingTask.add(p);
+            new BukkitRunnable() {
+                boolean passiveActive = true;
+                @Override
+                public void run() {
+                    if (passiveActive) {
+                        if (p.getLocation().getBlock().getType() == Material.LAVA || p.getLocation().getBlock().getType() == Material.FIRE) {
+                            for (Block b : getBlocks(p.getLocation().getBlock(), 3)) {
+                                if (b.getType() == Material.FIRE) {
+                                    b.setType(Material.AIR);
+                                    p.getWorld().spawnParticle(Particle.SMOKE_NORMAL, b.getLocation(), 5);
+                                    p.getWorld().playSound(p.getLocation(), Sound.BLOCK_LAVA_EXTINGUISH, 2, 1);
+                                }
+                                if (b.getType() == Material.LAVA) {
+                                    b.setType(Material.OBSIDIAN);
+                                    p.getWorld().spawnParticle(Particle.SMOKE_NORMAL, b.getLocation(), 5);
+                                    p.getWorld().playSound(p.getLocation(), Sound.BLOCK_LAVA_EXTINGUISH, 2, 1);
+                                }
+                                passiveActive = !passiveActive;
+                            }
+                        } else {
+                            p.getWorld().spawnParticle(Particle.WATER_DROP,p.getLocation().add(0,1,0),6,0.2,0.2,0.2);
+                        }
+                    } else {
+                        preventInfiniteRepeatingTask.remove(p);
+                        cancel();
+                    }
+                }
+            }.runTaskTimer(plugin, 0L, 10L);
+
+
+        }
+    }
+
+
+    public ArrayList<Block> getBlocks(Block start, int radius){
+        ArrayList<Block> blocks = new ArrayList<Block>();
+        for(double x = start.getLocation().getX() - radius; x <= start.getLocation().getX() + radius; x++){
+            for(double y = start.getLocation().getY() - radius; y <= start.getLocation().getY() + radius; y++){
+                for(double z = start.getLocation().getZ() - radius; z <= start.getLocation().getZ() + radius; z++){
+                    Location loc = new Location(start.getWorld(), x, y, z);
+                    blocks.add(loc.getBlock());
+                }
+            }
+        }
+        return blocks;
     }
 }
 
