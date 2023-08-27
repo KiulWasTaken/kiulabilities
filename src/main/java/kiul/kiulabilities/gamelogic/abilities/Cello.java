@@ -17,6 +17,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.Potion;
@@ -41,6 +42,7 @@ public class Cello implements Listener {
     private final HashMap<UUID, Long> ultimateCooldown = new HashMap<>();
 
     private final HashMap<Player, Player> bestFriend = new HashMap<>();
+    static int mode = 0;
 
     String configname = AbilityItemNames.CELLO.name();
 
@@ -63,21 +65,17 @@ public class Cello implements Listener {
                         e.setCancelled(true);
 
                         /** PRIMARY - CODE START >> */
-                        if (bestFriend.get(p) == null) {
                             if (getNearestEntityInSight(p, 10) instanceof Player bff) {
                                 bestFriend.put(p, bff);
                                 Location headLocation = bff.getLocation().clone().add(0, bff.getHeight(), 0);
                                 bff.getWorld().spawnParticle(Particle.NOTE, headLocation, 5);
-                            }
-                        } else {
-                            Player bff = bestFriend.get(p);
-                            if (p.getNearbyEntities(10, 10, 10).contains(bestFriend.get(p))) {
-                                StatusEffects.shield(bff, 1, 9999999);
+                        } else if (p.getNearbyEntities(10, 10, 10).contains(bestFriend.get(p)) || bestFriend.get(p) != null) {
+                                StatusEffects.shield(bestFriend.get(p), 1, 9999999);
                             } else {
+                                createExpandingParticleCircle(p, p.getLocation(), Particle.NOTE, 50, 3.5, 100);
                                 for (Entity nearby : p.getNearbyEntities(7, 7, 7)) {
                                     if (nearby instanceof Player nearbyPlayer) {
-                                        ((Player) nearby).addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 200, 0, true, false));
-                                        createExpandingParticleCircle(p,p.getLocation(),Particle.BUBBLE_POP,50,3.5,100);
+                                        (nearbyPlayer).addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 200, 0, true, false));
                                     }
                                 }
                             }
@@ -103,32 +101,78 @@ public class Cello implements Listener {
                     if (!secondaryCooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - (secondaryCooldown.get(p.getUniqueId())).longValue() > secondaryTimer * 1000)) {
 
                         /** SECONDARY - CODE START >> */
-                        Location infront = p.getLocation().add(p.getLocation().getDirection().multiply(1));
+
+                        Location infront = p.getEyeLocation().add(p.getEyeLocation().getDirection().multiply(1));
                         if (mode == 0) { //heal
                             ArmorStand stand = (ArmorStand) p.getWorld().spawnEntity(infront, EntityType.ARMOR_STAND);
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                @Override
+                                public void run() {
+                                    stand.remove();
+                                }
+                            }, 50);
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    if (!stand.isDead()) {
+                                        p.getWorld().spawnParticle(Particle.BLOCK_CRACK, stand.getLocation(), 5, 0, 0, 0, 1, Material.LIME_WOOL.createBlockData());
+                                    } else {
+                                        cancel();
+                                    }
+                                }
+                            }.runTaskTimer(plugin, 0L, 1L);
                             stand.setInvisible(true);
                             stand.setInvulnerable(true);
-                            moveArmorStand(stand);
-                            Location headLocation = stand.getLocation().clone().add(0, stand.getHeight(), 0);
-                            stand.getWorld().spawnParticle(Particle.SLIME, headLocation, 50);
+                            stand.setSmall(true);
+                            moveArmorStand(stand,p);
                         }
                         if (mode == 1) { //fling
                             ArmorStand stand = (ArmorStand) p.getWorld().spawnEntity(infront, EntityType.ARMOR_STAND);
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                @Override
+                                public void run() {
+                                    stand.remove();
+                                }
+                            }, 50);
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    if (!stand.isDead()) {
+                                        p.getWorld().spawnParticle(Particle.BLOCK_CRACK, stand.getLocation(), 5, 0, 0, 0, 1, Material.GRAY_WOOL.createBlockData());
+                                    } else {
+                                        cancel();
+                                    }
+                                }
+                            }.runTaskTimer(plugin, 0L, 1L);
                             stand.setInvisible(true);
                             stand.setInvulnerable(true);
-                            moveArmorStand(stand);
-                            Location headLocation = stand.getLocation().clone().add(0, stand.getHeight(), 0);
-                            stand.getWorld().spawnParticle(Particle.CRIT, headLocation, 50);
+                            stand.setSmall(true);
+                            moveArmorStand(stand, p);
                         }
                         if (mode == 2) { //stun
                             ArmorStand stand = (ArmorStand) p.getWorld().spawnEntity(infront, EntityType.ARMOR_STAND);
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                @Override
+                                public void run() {
+                                    stand.remove();
+                                }
+                            }, 50);
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    if (!stand.isDead()) {
+                                        p.getWorld().spawnParticle(Particle.BLOCK_CRACK, stand.getLocation(), 5, 0, 0, 0, 1, Material.YELLOW_WOOL.createBlockData());
+                                    } else {
+                                        cancel();
+                                    }
+                                }
+                            }.runTaskTimer(plugin, 0L, 1L);
                             stand.setInvisible(true);
                             stand.setInvulnerable(true);
-                            moveArmorStand(stand);
-                            Location headLocation = stand.getLocation().clone().add(0, stand.getHeight(), 0);
-                            stand.getWorld().spawnParticle(Particle.WAX_ON, headLocation, 50);
+                            stand.setSmall(true);
+                            moveArmorStand(stand, p);
                         }
-                        }
+
 
                         /** CODE END << */
 
@@ -206,7 +250,6 @@ public class Cello implements Listener {
         return null; //Return null/nothing if no entity was found
     }
 
-    static int mode = 0;
 
     @EventHandler
     public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
@@ -239,44 +282,50 @@ public class Cello implements Listener {
         }
     }
 
-    private void moveArmorStand(ArmorStand armorStand) {
+    private void moveArmorStand(ArmorStand armorStand, Player p) {
         new BukkitRunnable() {
-            private final Vector direction = armorStand.getLocation().getDirection().normalize();
-            private final double speed = 0.2; // Adjust this value to control the speed of movement
+            private final double speed = 0.5; // Adjust this value to control the speed of movement
 
             @Override
             public void run() {
+                armorStand.setVelocity(armorStand.getLocation().getDirection().multiply(speed).normalize());
                 Location currentLocation = armorStand.getLocation();
-                Location newLocation = currentLocation.add(direction.clone().multiply(speed));
-                armorStand.teleport(newLocation);
+
 
                 // Check for collisions with entities or blocks
-                if (checkForCollisions(newLocation)) {
+                if (checkForCollisions(currentLocation, p)) {
                     this.cancel();
                 }
             }
         }.runTaskTimer(plugin, 0, 1);
     }
 
-    private boolean checkForCollisions(Location location) {
+    private boolean checkForCollisions(Location location, Player p) {
         double tolerance = 0.2; // Adjust this value to control the tolerance for collision detection
 
         // Check for collisions with entities
         for (Entity entity : location.getWorld().getNearbyEntities(location, tolerance, tolerance, tolerance)) {
-            if (entity.getType() != EntityType.ARMOR_STAND) {
-                for (Entity nearbyEntities : location.getWorld().getNearbyEntities(location,2,2,2)) {
+            if (entity.getType() != EntityType.ARMOR_STAND && entity != p) {
+                for (Entity nearbyEntities : location.getWorld().getNearbyEntities(location, 2, 2, 2)) {
+                    if (nearbyEntities instanceof ArmorStand stand) {
+                        stand.remove();
+                    }
                     if (nearbyEntities instanceof LivingEntity) {
                         switch (mode) {
                             case (0):
-                                ((LivingEntity) nearbyEntities).addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 10,2));
+                                ((LivingEntity) nearbyEntities).addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 10, 2));
+                                launchColoredFirework(entity,0, location);
                                 break;
                             case (1):
-                                ((LivingEntity) nearbyEntities).setVelocity(new Vector(-1,1,-1).normalize());
+                                sendPlayerAway(nearbyEntities, location, 1);
+                                launchColoredFirework(entity,1, location);
                                 break;
                             case (2):
-                                StatusEffects.stun((Player) nearbyEntities,200);
+                                StatusEffects.stun((Player) nearbyEntities, 200);
+                                launchColoredFirework(entity,2, location);
                                 break;
                         }
+
                     }
                 }
                 return true;
@@ -285,18 +334,26 @@ public class Cello implements Listener {
 
         // Check for collisions with blocks
         Location blockLocation = location.clone().add(0, 0.5, 0);
-        if (blockLocation.getBlock().getType() != Material.AIR) {
-            for (Entity nearbyEntities : location.getWorld().getNearbyEntities(location,2,2,2)) {
+        if (location.add(0,-0.5,0).getBlock().getType() != Material.AIR || location.add(-0.5,0,0).getBlock().getType() != Material.AIR || location.add(0,0,-0.5).getBlock().getType() != Material.AIR || location.add(0,0.5,0).getBlock().getType() != Material.AIR || location.add(0.5,0,0).getBlock().getType() != Material.AIR || location.add(0,0,0.5).getBlock().getType() != Material.AIR) {
+            for (Entity nearbyEntities : location.getWorld().getNearbyEntities(location, 4, 4, 4)) {
+                if (nearbyEntities instanceof ArmorStand stand) {
+                    stand.remove();
+                }
                 if (nearbyEntities instanceof LivingEntity) {
                     switch (mode) {
                         case (0):
                             ((LivingEntity) nearbyEntities).addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 2));
+                            launchColoredFirework(nearbyEntities,0, location);
                             break;
                         case (1):
-                            ((LivingEntity) nearbyEntities).setVelocity(new Vector(1, 1, 1).normalize());
+                            sendPlayerAway(nearbyEntities, location, 1);
+                            launchColoredFirework(nearbyEntities,1, location);
                             break;
                         case (2):
-                            StatusEffects.stun((Player) nearbyEntities, 200);
+                            if (nearbyEntities instanceof Player) {
+                                StatusEffects.stun((Player) nearbyEntities, 200);
+                            }
+                            launchColoredFirework(nearbyEntities,2, location);
                             break;
                     }
                 }
@@ -306,6 +363,7 @@ public class Cello implements Listener {
 
         return false;
     }
+
     public void createExpandingParticleCircle(Player player, Location center, Particle particleType, int particleCount, double radius, int durationTicks) {
         new BukkitRunnable() {
             private int ticks = 0;
@@ -324,14 +382,41 @@ public class Cello implements Listener {
                     double z = center.getZ() + radius * Math.sin(angle);
                     double y = center.getY();
 
-                    Location particleLocation = player.getLocation();
-                    player.spawnParticle(Particle.SNEEZE, particleLocation, 1);
+                    Location particleLocation = new Location(player.getWorld(), x, y, z);
+
+                    player.spawnParticle(particleType, particleLocation, 1);
                 }
 
 
                 ticks++;
             }
         }.runTaskTimer(plugin, 0, 1);
+    }
+
+    public void launchColoredFirework(Entity player, int mode, Location location) {
+        Firework firework = player.getWorld().spawn(location, Firework.class);
+        FireworkMeta fireworkMeta = firework.getFireworkMeta();
+
+        // Create a firework effect with multiple colors and a trail
+        switch (mode) {
+            case (0): //heal
+                fireworkMeta.addEffect(FireworkEffect.builder().withColor(Color.GREEN).flicker(true).build());
+                break;
+            case (1): //fling
+                fireworkMeta.addEffect(FireworkEffect.builder().withColor(Color.GRAY).flicker(true).build());
+                break;
+            case (2): //stun
+                fireworkMeta.addEffect(FireworkEffect.builder().withColor(Color.YELLOW).flicker(true).build());
+                break;
+        }
+        fireworkMeta.setPower(0);
+        firework.setFireworkMeta(fireworkMeta);
+        firework.detonate();
+    }
+    public void sendPlayerAway(Entity player, Location sourceLocation, double velocityMultiplier) {
+        Vector velocity = player.getLocation().toVector().subtract(sourceLocation.toVector());
+        velocity = velocity.normalize().multiply(velocityMultiplier);
+        player.setVelocity(velocity);
     }
 }
 

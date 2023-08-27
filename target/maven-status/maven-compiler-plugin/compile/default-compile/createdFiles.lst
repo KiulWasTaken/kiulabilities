@@ -9,6 +9,7 @@ kiul\kiulabilities\gamelogic\AbilityLores.class
 kiul\kiulabilities\gamelogic\abilities\Stealth.class
 kiul\kiulabilities\gamelogic\abilities\Earth$2.class
 kiul\kiulabilities\gamelogic\Methods\ColoredText.class
+kiul\kiulabilities\gamelogic\abilities\Cello$5.class
 kiul\kiulabilities\gamelogic\abilities\Frozone$1.class
 kiul\kiulabilities\gamelogic\abilities\Tracker$2.class
 kiul\kiulabilities\gamelogic\abilities\Featherweight$5.class
@@ -17,6 +18,7 @@ kiul\kiulabilities\gamelogic\Methods\ultimatePointsListeners$2.class
 kiul\kiulabilities\gamelogic\abilities\Featherweight.class
 kiul\kiulabilities\gamelogic\Methods\StatusEffects$3.class
 kiul\kiulabilities\gamelogic\abilities\Frozone$7.class
+kiul\kiulabilities\gamelogic\abilities\Cello$8.class
 kiul\kiulabilities\gamelogic\abilities\Ignition$1.class
 kiul\kiulabilities\gamelogic\abilities\Frozone$4.class
 kiul\kiulabilities\gamelogic\Methods\AbilityExtras$1.class
@@ -27,6 +29,7 @@ kiul\kiulabilities\gamelogic\abilities\Spectre$2.class
 kiul\kiulabilities\gamelogic\abilities\Ignition.class
 kiul\kiulabilities\gamelogic\abilities\Ignition$4.class
 kiul\kiulabilities\gamelogic\abilities\Tracker.class
+kiul\kiulabilities\gamelogic\abilities\Cello$7.class
 kiul\kiulabilities\gamelogic\abilities\Spectre$5.class
 kiul\kiulabilities\gamelogic\Events\MovingAbilityItems.class
 kiul\kiulabilities\gamelogic\abilities\Tracker$1.class
@@ -41,6 +44,7 @@ kiul\kiulabilities\gamelogic\Methods\AbilityExtras.class
 kiul\kiulabilities\gamelogic\abilities\Frozone$2.class
 kiul\kiulabilities\gamelogic\abilities\Spectre$4.class
 kiul\kiulabilities\gamelogic\abilities\Ignition$3.class
+kiul\kiulabilities\gamelogic\abilities\Cello$6.class
 kiul\kiulabilities\gamelogic\abilities\Spectre.class
 kiul\kiulabilities\gamelogic\abilities\Gecko.class
 kiul\kiulabilities\gamelogic\abilities\Earth.class
@@ -73,6 +77,7 @@ kiul\kiulabilities\gamelogic\abilities\Gecko$5.class
 kiul\kiulabilities\gamelogic\abilities\Earth$1.class
 kiul\kiulabilities\gamelogic\abilities\ABILITY_TEMPLATE$1.class
 kiul\kiulabilities\gamelogic\abilities\Stealth$4.class
+kiul\kiulabilities\gamelogic\abilities\Cello$4.class
 kiul\kiulabilities\gamelogic\abilities\Tracker$3.class
 kiul\kiulabilities\Kiulabilities.class
 kiul\kiulabilities\gamelogic\abilities\Gecko$2.class
@@ -105,4 +110,5 @@ kiul\kiulabilities\gamelogic\abilities\Frozone$5.class
 kiul\kiulabilities\gamelogic\abilities\Gecko$4.class
 kiul\kiulabilities\gamelogic\abilities\Spectre$7.class
 kiul\kiulabilities\gamelogic\abilities\Featherweight$1.class
+kiul\kiulabilities\gamelogic\abilities\Cello$9.class
 kiul\kiulabilities\gamelogic\Methods\StatusEffects$4.class
