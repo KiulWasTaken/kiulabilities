@@ -48,8 +48,6 @@ public class Catalyst implements Listener {
     private int secondaryTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Secondary");
     private int ultimateTimer = plugin.getConfig().getInt("Abilities." + configname + ".Cooldowns.Ultimate");
 
-    private int primaryMode = 0;
-
     String itemname = ChatColor.stripColor(ColoredText.translateHexCodes(AbilityItemNames.CATALYST.getDisplayName()));
 
     boolean isCharged = false;
@@ -519,9 +517,10 @@ public class Catalyst implements Listener {
         }
     }
 // fuck you intellij
+    ArrayList<Player> preventInfiniteRepeatingTask = new ArrayList<>();
     @EventHandler
     public void Passive (PlayerMoveEvent e) {
-        ArrayList<Player> preventInfiniteRepeatingTask = new ArrayList<>();
+
 
         if (!preventInfiniteRepeatingTask.contains(e.getPlayer()) && AbilityExtras.itemcheck(e.getPlayer(),itemname)) {
             preventInfiniteRepeatingTask.add(e.getPlayer());
@@ -535,7 +534,7 @@ public class Catalyst implements Listener {
                     }
 
                 }
-            }.runTaskTimer(plugin, 0L, 1L);
+            }.runTaskTimer(plugin, 0L, 5L);
         }
     }
 
