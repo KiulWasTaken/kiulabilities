@@ -78,11 +78,11 @@ public class Stealth implements Listener {
                                     for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
                                         onlinePlayers.showPlayer(plugin, p);
                                         voidthing.remove(p);
-                                        onlinePlayers.spawnParticle(Particle.BLOCK_CRACK, p.getLocation().clone().add(0, 1, 0), 15, 0.1, 0.5, 0.1, Material.NETHER_PORTAL.createBlockData());
+                                        onlinePlayers.spawnParticle(Particle.BLOCK_CRACK, p.getLocation().clone().add(0, 1, 0), 15, 0.1, 0.5, 0.1, Material.GRAY_WOOL.createBlockData());
                                         onlinePlayers.playSound(p.getLocation(), Sound.BLOCK_GLASS_BREAK, 1, 0.5f);
                                     }
                                 }
-                            }, 40);
+                            }, 30);
                             //ABILITY CODE END
 
                             if (secondaryCooldown.isEmpty()) {
@@ -115,11 +115,11 @@ public class Stealth implements Listener {
                                 @Override
                                 public void run() {
                                     if (!stand.isDead()) {
-                                        p.getWorld().spawnParticle(Particle.BLOCK_CRACK, stand.getLocation().add(0, 1.5, 0), 10, 0.1, 0.3, 0.1, Material.PURPLE_WOOL.createBlockData());
+                                        p.getWorld().spawnParticle(Particle.BLOCK_CRACK, stand.getLocation().add(0, 1.5, 0), 10, 0.1, 0.3, 0.1, Material.LIGHT_GRAY_WOOL.createBlockData());
                                         stand.setVelocity(stand.getLocation().getDirection().normalize().multiply(0.5));
                                             for (Entity nearby : stand.getWorld().getNearbyEntities(stand.getLocation(), 4, 4, 4)) {
                                                 if (nearby instanceof Player nearbyPlayer && nearby != p) {
-                                                    nearbyPlayer.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 1, false, false));
+                                                    nearbyPlayer.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 40, 1, false, false));
 
                                                 }
                                             }
