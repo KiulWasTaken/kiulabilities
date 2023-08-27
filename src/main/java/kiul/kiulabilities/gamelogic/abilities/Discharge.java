@@ -15,10 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerRiptideEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -29,6 +26,7 @@ import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.UUID;
 
 public class Discharge implements Listener {
@@ -66,13 +64,21 @@ public class Discharge implements Listener {
                         /** PRIMARY - CODE START >> */
                         ItemStack dischargeTrident = new ItemStack(Material.TRIDENT);
                         ItemMeta dischargeTridentMeta = dischargeTrident.getItemMeta();
-                        dischargeTridentMeta.addEnchant(Enchantment.RIPTIDE,2,false);
+                        dischargeTridentMeta.addEnchant(Enchantment.RIPTIDE,1,false);
                         dischargeTridentMeta.setDisplayName(ChatColor.BLUE + "Discharge Trident");
                         dischargeTridentMeta.setUnbreakable(true);
                         dischargeTridentMeta.setLocalizedName("Discharge Trident");
                         dischargeTrident.setItemMeta(dischargeTridentMeta);
                         p.getInventory().setItemInOffHand(dischargeTrident);
-
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                            @Override
+                            public void run() {
+                                if (p.getInventory().getItemInOffHand().getType() != Material.SHIELD) {
+                                    p.getInventory().setItemInOffHand(new ItemStack(Material.SHIELD));
+                                    p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_CHAIN, 1, 1);
+                                }
+                            }
+                        }, 160);
 
                         /** CODE END << */
 
@@ -140,24 +146,30 @@ public class Discharge implements Listener {
                             public void run() {
 
                                 /** ULTIMATE - CODE START >> */
+
                                 p.getWorld().setThundering(true);
+                                p.getWorld().setWeatherDuration(999999999);
                                 ultimateActive.add(p);
                                 new BukkitRunnable() {
                                     @Override
                                     public void run() {
-                                        if (p.getGameMode() != GameMode.SPECTATOR) {
+                                        Random random = new Random();
+                                        if (p.getGameMode() != GameMode.ADVENTURE) {
                                             for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
-                                                if (onlinePlayers.getGameMode() == GameMode.SURVIVAL && onlinePlayers.getLocation().getY() > 80) {
-                                                    onlinePlayers.getWorld().spawnEntity(onlinePlayers.getLocation(),EntityType.LIGHTNING);
+                                                if (onlinePlayers.getGameMode() == GameMode.SURVIVAL && onlinePlayers.getLocation().getY() > 80 && onlinePlayers.isOnGround()) {
+                                                    if (random.nextInt(0,8) == 3) {
+                                                        onlinePlayers.getWorld().spawnEntity(onlinePlayers.getLocation().getBlock().getLocation(),EntityType.LIGHTNING);
+                                                    }
                                                 }
                                             }
                                         } else {
                                             ultimateActive.remove(p);
                                             p.getWorld().setThundering(false);
+                                            p.getWorld().setClearWeatherDuration(999999999);
                                             cancel();
                                         }
                                     }
-                                }.runTaskTimer(plugin, 0L, 60L);
+                                }.runTaskTimer(plugin, 0L, 100L);
 
                                 /** CODE END << */
 
@@ -180,7 +192,13 @@ public class Discharge implements Listener {
     public void removeTridentAfterUse (PlayerRiptideEvent e) {
         Player p = e.getPlayer();
         if (AbilityExtras.itemcheck(p,itemname)) {
-            p.getInventory().setItemInOffHand(new ItemStack(Material.SHIELD));
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    p.getInventory().setItemInOffHand(new ItemStack(Material.SHIELD));
+                    p.playSound(p.getLocation(),Sound.ITEM_ARMOR_EQUIP_CHAIN,1,1);
+                }
+            }, 10);
         }
     }
     @EventHandler
@@ -203,7 +221,7 @@ public class Discharge implements Listener {
             victim.getWorld().spawnEntity(victim.getLocation(),EntityType.LIGHTNING);
             ((Player)trident.getShooter()).getWorld().playSound(((Player)trident.getShooter()),Sound.ITEM_TRIDENT_THUNDER,1,1);
             if (victim instanceof Player) {
-                StatusEffects.root((Player) victim, 20);
+                StatusEffects.root((Player) victim, 10);
             }
             if (victim.getLocation().getBlock().getType() == Material.WATER) {
                 for (Entity nearbyEntities : victim.getNearbyEntities(7,7,7)) {
@@ -215,43 +233,47 @@ public class Discharge implements Listener {
             }
         }
     }
-
+    ArrayList<Player> preventInfiniteRepeatingTask = new ArrayList<>();
     @EventHandler
     public void passiveAbility (PlayerMoveEvent e) {
         Player p = e.getPlayer();
 
-        ArrayList<Player> preventInfiniteRepeatingTask = new ArrayList<>();
 
-        if (!preventInfiniteRepeatingTask.contains(p) && AbilityExtras.itemcheck(p,itemname)) {
+
+        if (!preventInfiniteRepeatingTask.contains(p) && AbilityExtras.itemcheck(p,itemname) && p.getGameMode() == GameMode.SURVIVAL) {
             preventInfiniteRepeatingTask.add(p);
             new BukkitRunnable() {
-                boolean passiveActive = true;
+                boolean abilityActive = false;
                 @Override
                 public void run() {
-                    if (passiveActive) {
-                        if (p.getLocation().getBlock().getType() == Material.LAVA || p.getLocation().getBlock().getType() == Material.FIRE) {
-                            for (Block b : getBlocks(p.getLocation().getBlock(), 3)) {
-                                if (b.getType() == Material.FIRE) {
-                                    b.setType(Material.AIR);
-                                    p.getWorld().spawnParticle(Particle.SMOKE_NORMAL, b.getLocation(), 5);
-                                    p.getWorld().playSound(p.getLocation(), Sound.BLOCK_LAVA_EXTINGUISH, 2, 1);
-                                }
-                                if (b.getType() == Material.LAVA) {
-                                    b.setType(Material.OBSIDIAN);
-                                    p.getWorld().spawnParticle(Particle.SMOKE_NORMAL, b.getLocation(), 5);
-                                    p.getWorld().playSound(p.getLocation(), Sound.BLOCK_LAVA_EXTINGUISH, 2, 1);
-                                }
-                                passiveActive = !passiveActive;
-                            }
-                        } else {
-                            p.getWorld().spawnParticle(Particle.WATER_DROP,p.getLocation().add(0,1,0),6,0.2,0.2,0.2);
+                        if (p.getLocation().getBlock().getType() == Material.WATER && !p.getLocation().getBlock().hasMetadata("passivePlaced")) {
+                            abilityActive = true;
                         }
-                    } else {
-                        preventInfiniteRepeatingTask.remove(p);
-                        cancel();
-                    }
+
+
+                        if (abilityActive) {
+                            p.getWorld().spawnParticle(Particle.WATER_DROP,p.getLocation().add(0,1,0),12,0.2,0.2,0.2);
+                            if (p.getLocation().getBlock().getType() == Material.LAVA || p.getLocation().getBlock().getType() == Material.FIRE || p.getFireTicks() > 0) {
+                                p.setFireTicks(0);
+                                for (Block b : getBlocks(p.getLocation().getBlock(), 3)) {
+                                    if (b.getType() == Material.FIRE) {
+                                        b.setType(Material.AIR);
+                                        p.getWorld().spawnParticle(Particle.SMOKE_NORMAL, b.getLocation(), 5);
+                                        p.getWorld().playSound(p.getLocation(), Sound.BLOCK_LAVA_EXTINGUISH, 2, 1);
+                                    }
+                                    if (b.getType() == Material.LAVA) {
+                                        b.setType(Material.OBSIDIAN);
+                                        p.getWorld().spawnParticle(Particle.SMOKE_NORMAL, b.getLocation(), 5);
+                                        p.getWorld().playSound(p.getLocation(), Sound.BLOCK_LAVA_EXTINGUISH, 2, 1);
+                                    }
+                                }
+                                abilityActive = !abilityActive;
+                                preventInfiniteRepeatingTask.remove(p);
+                                cancel();
+                            }
+                        }
                 }
-            }.runTaskTimer(plugin, 0L, 10L);
+            }.runTaskTimer(plugin, 0L, 2L);
 
 
         }

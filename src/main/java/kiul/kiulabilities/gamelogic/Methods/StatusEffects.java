@@ -3,6 +3,7 @@ package kiul.kiulabilities.gamelogic.Methods;
 import kiul.kiulabilities.Kiulabilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -128,10 +129,15 @@ public class StatusEffects implements Listener {
 
 
     @EventHandler
-    public void preventMoveWhenRooted(PlayerVelocityEvent e) {
+    public void preventMoveWhenRooted(PlayerMoveEvent e) {
         if (preventMove.contains(e.getPlayer())) {
-            e.setCancelled(true);
-
+            if (e.getPlayer().isOnGround()) {
+                e.setCancelled(true);
+                Location to = e.getFrom();
+                to.setPitch(e.getTo().getPitch());
+                to.setYaw(e.getTo().getYaw());
+                e.setTo(to);
+            }
         }
     }
 }

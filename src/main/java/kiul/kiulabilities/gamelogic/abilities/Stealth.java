@@ -110,12 +110,13 @@ public class Stealth implements Listener {
                             stand.setMetadata("blind", new FixedMetadataValue(plugin, "pat"));
                             stand.setRotation(p.getLocation().getYaw(), p.getLocation().getPitch());
                             Vector playerDirection = p.getLocation().getDirection();
+                            stand.getLocation().setDirection(playerDirection);
                             new BukkitRunnable() {
                                 @Override
                                 public void run() {
                                     if (!stand.isDead()) {
                                         p.getWorld().spawnParticle(Particle.BLOCK_CRACK, stand.getLocation().add(0, 1.5, 0), 10, 0.1, 0.3, 0.1, Material.PURPLE_WOOL.createBlockData());
-                                        stand.setVelocity(playerDirection.normalize().multiply(0.5));
+                                        stand.setVelocity(stand.getLocation().getDirection().normalize().multiply(0.5));
                                             for (Entity nearby : stand.getWorld().getNearbyEntities(stand.getLocation(), 4, 4, 4)) {
                                                 if (nearby instanceof Player nearbyPlayer && nearby != p) {
                                                     nearbyPlayer.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 1, false, false));
