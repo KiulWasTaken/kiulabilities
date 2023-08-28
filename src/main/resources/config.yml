@@ -13,14 +13,14 @@ Abilities:
       Primary: 10
       Secondary: 10
       Ultimate: 10
-    Class: ""
+    Class: "&4&lCOMBAT"
     DisplayName: "&f&lArtificer Ability"
   CATALYST:
     Cooldowns:
       Primary: 1
       Secondary: 10
       Ultimate: 10
-    Class: ""
+    Class: "&#0345fc&lCONTROL"
     DisplayName: "&f&lCatalyst Ability"
   EARTH:
     Cooldowns:
@@ -76,6 +76,12 @@ Abilities:
       Primary: 10
       Secondary: 10
       Ultimate: 10
-    Class: ""
-    DisplayName: "&f&CELLO Ability"
-
+    Class: "&a&lSUPPORT"
+    DisplayName: "&fCELLO Ability"
+  DISCHARGE:
+    Cooldowns:
+      Primary: 10
+      Secondary: 10
+      Ultimate: 10
+    Class: "&#0345fc&lCONTROL"
+    DisplayName: "&9DISCHARGE Ability"

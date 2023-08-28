@@ -24,9 +24,9 @@ public class AbilityLores {
     };
 
     public static String[] earthLore = new String[]{
-            "&#d8d8d8&lRight-Click &6» &#d8d8d8" + "",
-            "&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "",
-            "&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "",
+            "&#d8d8d8&lRight-Click &6» &#d8d8d8" + "broken",
+            "&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "dont",
+            "&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "use",
             " ",
             "&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.EARTH.Class")
     };
@@ -59,17 +59,17 @@ public class AbilityLores {
     };
 
     public static String[] catalystLore = new String[]{
-            "&#d8d8d8&lRight-Click &6» &#d8d8d8" + "",
-            "&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "",
-            "&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "",
+            "&#d8d8d8&lRight-Click &6» &#d8d8d8" + "Create a wall of sculk directly in front of you and spread sculk around your feet",
+            "&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "Spawn an evoker fang that snaps at all nearby players' locations, ROOTing them on hit.",
+            "&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "Once active, kills will give you temporary speed, absorption and strength.",
             " ",
             "&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.CATALYST.Class")
     };
 
     public static String[] dischargeLore = new String[]{
-            "&#d8d8d8&lRight-Click &6» &#d8d8d8" + "Gives the player a riptide trident with one use",
-            "&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "Fires a channelling trident in the direction the player is facing",
-            "&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "",
+            "&#d8d8d8&lRight-Click &6» &#d8d8d8" + "Replace your shield with a riptide trident; can only be used once before disappearing",
+            "&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "Fire a trident in the direction you are facing. Strikes hit players with lightning. Hitting a player in water will chain the attack with nearby players also in water",
+            "&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "Create a map-wide thunderstorm that randomly strikes any player above y80",
             " ",
             "&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.DISCHARGE.Class")
     };
@@ -85,7 +85,7 @@ public class AbilityLores {
     public static String[] frozoneLore = new String[]{
             "&#d8d8d8&lRight-Click &6» &#d8d8d8" + "Shoot a icey projectile that explodes on impact.",
             "&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "Construct a wall of ice, that also catches you.",
-            "&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "Every player is incased within a ice ball.",
+            "&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "Every player is encased within a ice ball.",
             " ",
             "&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.FROZONE.Class")
     };
@@ -98,9 +98,9 @@ public class AbilityLores {
             "&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.GECKO.Class")
     };
     public static String[] celloLore = new String[]{
-            "&#d8d8d8&lRight-Click &6» &#d8d8d8" + "",
-            "&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "",
-            "&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "",
+            "&#d8d8d8&lRight-Click &6» &#d8d8d8" + "Look at a player to mark them as your 'best-friend'. if you have a best friend and they are in range (10) , give them a shield. If they are outside range, afflict nearby players with weakness.",
+            "&#c4c4c4&lLeft-Click &6» &#c4c4c4" + "Fire a bolt that STUNs, FLINGs or HEALs players near its impact point. Toggle mode with sneak.",
+            "&#b1b1b1&lSwap-Item &6» &#b1b1b1" + "Revive your best friend at the cost of yours and their max hp (reduced to 8 hearts)",
             " ",
             "&#919090&lClass &6» " + plugin.getConfig().getString("Abilities.CELLO.Class")
     };
