@@ -83,6 +83,9 @@ public class StatusEffects implements Listener {
                 if (i > 0) {
                     i--;
                     p.getWorld().spawnParticle(Particle.REDSTONE, p.getEyeLocation().add(0, 0.5, 0), 5, new Particle.DustOptions(Color.TEAL, 1));
+                    if (p.getAbsorptionAmount() <= 0) {
+                        cancel();
+                    }
 
                 } else {
                     cancel();

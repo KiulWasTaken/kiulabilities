@@ -67,7 +67,7 @@ public class Stealth implements Listener {
                             for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
                                 onlinePlayers.hidePlayer(plugin, p);
                                 voidthing.add(p);
-                                onlinePlayers.spawnParticle(Particle.BLOCK_CRACK, p.getLocation().clone().add(0, 1, 0), 15, 0.1, 0.5, 0.1,Material.NETHER_PORTAL.createBlockData());
+                                onlinePlayers.spawnParticle(Particle.BLOCK_CRACK, p.getLocation().clone().add(0, 1, 0), 15, 0.2, 0.5, 0.2,Material.GRAY_WOOL.createBlockData());
                                 onlinePlayers.playSound(p.getLocation(), Sound.BLOCK_GLASS_BREAK, 1, 0.5f);
                             }
                             p.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, 60, 5, true, false));
@@ -78,7 +78,7 @@ public class Stealth implements Listener {
                                     for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
                                         onlinePlayers.showPlayer(plugin, p);
                                         voidthing.remove(p);
-                                        onlinePlayers.spawnParticle(Particle.BLOCK_CRACK, p.getLocation().clone().add(0, 1, 0), 15, 0.1, 0.5, 0.1, Material.GRAY_WOOL.createBlockData());
+                                        onlinePlayers.spawnParticle(Particle.BLOCK_CRACK, p.getLocation().clone().add(0, 1, 0), 15, 0.2, 0.5, 0.2, Material.GRAY_WOOL.createBlockData());
                                         onlinePlayers.playSound(p.getLocation(), Sound.BLOCK_GLASS_BREAK, 1, 0.5f);
                                     }
                                 }
