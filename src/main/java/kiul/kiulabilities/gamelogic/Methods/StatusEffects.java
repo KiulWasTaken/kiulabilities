@@ -135,7 +135,6 @@ public class StatusEffects implements Listener {
     public void preventMoveWhenRooted(PlayerMoveEvent e) {
         if (preventMove.contains(e.getPlayer())) {
             if (e.getPlayer().isOnGround()) {
-                e.setCancelled(true);
                 Location to = e.getFrom();
                 to.setPitch(e.getTo().getPitch());
                 to.setYaw(e.getTo().getYaw());
