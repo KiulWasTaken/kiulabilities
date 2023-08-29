@@ -39,7 +39,7 @@ public final class Kiulabilities extends JavaPlugin {
         AbilityConfig.get().options().copyDefaults(true);
         AbilityConfig.save();
 
-        this.saveDefaultConfig();
+        saveDefaultConfig();
         saveConfig();
 
         getCommand("test").setExecutor(new OperatorCommands());

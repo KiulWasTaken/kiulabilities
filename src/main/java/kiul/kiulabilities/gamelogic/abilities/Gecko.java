@@ -90,7 +90,7 @@ public class Gecko implements Listener {
                                     if (entity.getType() != EntityType.ARMOR_STAND && entity != p) {
                                         cancel();
                                         drawLine1(loc, 1, p);
-                                        entity.setVelocity(p.getEyeLocation().toVector().clone().subtract(entity.getLocation().toVector()).normalize().multiply(1.4).add(new Vector(0,0.1,0)));
+                                        entity.setVelocity(p.getEyeLocation().toVector().clone().subtract(entity.getLocation().toVector()).normalize().multiply(1.2).add(new Vector(0,0.1,0)));
                                     }
                                 }
 

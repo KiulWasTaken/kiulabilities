@@ -395,8 +395,10 @@ public class Frozone implements Listener {
             @Override
             public void run() {
                 if (material != null && material != Material.GLASS && material != Material.LIGHT_BLUE_STAINED_GLASS && material != Material.PACKED_ICE && material != Material.BLUE_ICE && material != Material.ICE) {
-                    blockloc.getBlock().setType(material);
-                    blockloc.getBlock().setBlockData(blockData);
+                    if (blockloc.getBlock().getType() != Material.AIR) {
+                        blockloc.getBlock().setType(material);
+                        blockloc.getBlock().setBlockData(blockData);
+                    }
                 } else {
                     blockloc.getBlock().setType(Material.AIR);
                 }

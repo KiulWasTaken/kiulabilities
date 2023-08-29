@@ -65,18 +65,17 @@ public class Cello implements Listener {
                         e.setCancelled(true);
 
                         /** PRIMARY - CODE START >> */
-                            if (getNearestEntityInSight(p, 10) instanceof Player bff) {
-                                bestFriend.put(p, bff);
-                                Location headLocation = bff.getLocation().clone().add(0, bff.getHeight(), 0);
-                                bff.getWorld().spawnParticle(Particle.NOTE, headLocation, 5);
+                        if (getNearestEntityInSight(p, 10) instanceof Player bff) {
+                            bestFriend.put(p, bff);
+                            Location headLocation = bff.getLocation().clone().add(0, bff.getHeight(), 0);
+                            bff.getWorld().spawnParticle(Particle.NOTE, headLocation, 5);
                         } else if (p.getNearbyEntities(10, 10, 10).contains(bestFriend.get(p)) || bestFriend.get(p) != null) {
-                                StatusEffects.shield(bestFriend.get(p), 1, 9999999);
-                            } else {
-                                createExpandingParticleCircle(p, p.getLocation(), Particle.NOTE, 50, 3.5, 100);
-                                for (Entity nearby : p.getNearbyEntities(7, 7, 7)) {
-                                    if (nearby instanceof Player nearbyPlayer) {
-                                        (nearbyPlayer).addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 200, 0, true, false));
-                                    }
+                            StatusEffects.shield(bestFriend.get(p), 1, 9999999);
+                        } else {
+                            createExpandingParticleCircle(p, p.getLocation(), Particle.NOTE, 50, 3.5, 100);
+                            for (Entity nearby : p.getNearbyEntities(7, 7, 7)) {
+                                if (nearby instanceof Player nearbyPlayer) {
+                                    (nearbyPlayer).addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 200, 0, true, false));
                                 }
                             }
                         }
@@ -124,7 +123,7 @@ public class Cello implements Listener {
                             stand.setInvisible(true);
                             stand.setInvulnerable(true);
                             stand.setSmall(true);
-                            moveArmorStand(stand,p);
+                            moveArmorStand(stand, p);
                         }
                         if (mode == 1) { //fling
                             ArmorStand stand = (ArmorStand) p.getWorld().spawnEntity(infront, EntityType.ARMOR_STAND);
@@ -193,6 +192,7 @@ public class Cello implements Listener {
                 }
             }
         }
+    }
 
     @EventHandler
     public void ultCheckActivate(PlayerSwapHandItemsEvent e) {
@@ -255,7 +255,7 @@ public class Cello implements Listener {
     public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
         Player p = event.getPlayer();
 
-        if (event.isSneaking() && AbilityExtras.itemcheck(p,itemname)) {
+        if (event.isSneaking() && AbilityExtras.itemcheck(p, itemname)) {
             cycleMode();
             String modeName = getModeName(mode);
             p.sendTitle("", "Mode: " + modeName);
@@ -314,15 +314,15 @@ public class Cello implements Listener {
                         switch (mode) {
                             case (0):
                                 ((LivingEntity) nearbyEntities).addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 10, 2));
-                                launchColoredFirework(entity,0, location);
+                                launchColoredFirework(entity, 0, location);
                                 break;
                             case (1):
                                 sendPlayerAway(nearbyEntities, location, 1);
-                                launchColoredFirework(entity,1, location);
+                                launchColoredFirework(entity, 1, location);
                                 break;
                             case (2):
                                 StatusEffects.stun((Player) nearbyEntities, 200);
-                                launchColoredFirework(entity,2, location);
+                                launchColoredFirework(entity, 2, location);
                                 break;
                         }
 
@@ -334,7 +334,7 @@ public class Cello implements Listener {
 
         // Check for collisions with blocks
         Location blockLocation = location.clone().add(0, 0.5, 0);
-        if (location.add(0,-0.5,0).getBlock().getType() != Material.AIR || location.add(-0.5,0,0).getBlock().getType() != Material.AIR || location.add(0,0,-0.5).getBlock().getType() != Material.AIR || location.add(0,0.5,0).getBlock().getType() != Material.AIR || location.add(0.5,0,0).getBlock().getType() != Material.AIR || location.add(0,0,0.5).getBlock().getType() != Material.AIR) {
+        if (location.add(0, -0.5, 0).getBlock().getType() != Material.AIR || location.add(-0.5, 0, 0).getBlock().getType() != Material.AIR || location.add(0, 0, -0.5).getBlock().getType() != Material.AIR || location.add(0, 0.5, 0).getBlock().getType() != Material.AIR || location.add(0.5, 0, 0).getBlock().getType() != Material.AIR || location.add(0, 0, 0.5).getBlock().getType() != Material.AIR) {
             for (Entity nearbyEntities : location.getWorld().getNearbyEntities(location, 4, 4, 4)) {
                 if (nearbyEntities instanceof ArmorStand stand) {
                     stand.remove();
@@ -343,17 +343,17 @@ public class Cello implements Listener {
                     switch (mode) {
                         case (0):
                             ((LivingEntity) nearbyEntities).addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 2));
-                            launchColoredFirework(nearbyEntities,0, location);
+                            launchColoredFirework(nearbyEntities, 0, location);
                             break;
                         case (1):
                             sendPlayerAway(nearbyEntities, location, 1);
-                            launchColoredFirework(nearbyEntities,1, location);
+                            launchColoredFirework(nearbyEntities, 1, location);
                             break;
                         case (2):
                             if (nearbyEntities instanceof Player) {
                                 StatusEffects.stun((Player) nearbyEntities, 200);
                             }
-                            launchColoredFirework(nearbyEntities,2, location);
+                            launchColoredFirework(nearbyEntities, 2, location);
                             break;
                     }
                 }
@@ -413,6 +413,7 @@ public class Cello implements Listener {
         firework.setFireworkMeta(fireworkMeta);
         firework.detonate();
     }
+
     public void sendPlayerAway(Entity player, Location sourceLocation, double velocityMultiplier) {
         Vector velocity = player.getLocation().toVector().subtract(sourceLocation.toVector());
         velocity = velocity.normalize().multiply(velocityMultiplier);
