@@ -29,25 +29,10 @@ public class ultimatePointsListeners implements Listener {
 
     public static void useUltPoints (Player p, final int amount) {
         ultimatePointsConfig.save();
-        new BukkitRunnable() {
-            int repeat = amount;
             int ultPoints = (Integer) ultimatePointsConfig.get().get(p.getUniqueId().toString());
-            @Override
-            public void run() {
-                if (repeat >= 1) {
-                    ultimatePointsConfig.get().set(p.getUniqueId().toString(), ultPoints - 1);
-                    ultPoints --;
+                    ultimatePointsConfig.get().set(p.getUniqueId().toString(), ultPoints - amount);
                     ultimatePointsConfig.save();
                     CheckUltPoints(p);
-                    p.playSound(p.getLocation(), Sound.ITEM_HONEY_BOTTLE_DRINK,1,2f);
-                    repeat--;
-                } else {
-                    ultimatePointsConfig.save();
-                    CheckUltPoints(p);
-                    cancel();
-                }
-            }
-        }.runTaskTimer(Kiulabilities.getPlugin(Kiulabilities.class), 0L, 20L);
 
     }
     public static void CheckUltPoints (Player p) {

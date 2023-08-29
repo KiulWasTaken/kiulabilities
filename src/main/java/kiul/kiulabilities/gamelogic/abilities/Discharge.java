@@ -146,7 +146,7 @@ public class Discharge implements Listener {
                             public void run() {
 
                                 /** ULTIMATE - CODE START >> */
-
+                                p.getWorld().setStorm(true);
                                 p.getWorld().setThundering(true);
                                 p.getWorld().setWeatherDuration(999999999);
                                 ultimateActive.add(p);
@@ -157,7 +157,7 @@ public class Discharge implements Listener {
                                         if (p.getGameMode() != GameMode.ADVENTURE) {
                                             for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
                                                 if (onlinePlayers.getGameMode() == GameMode.SURVIVAL && onlinePlayers.getLocation().getY() > 80 && onlinePlayers.isOnGround()) {
-                                                    if (random.nextInt(0,8) == 3) {
+                                                    if (random.nextInt(0,3) == 2) {
                                                         onlinePlayers.getWorld().spawnEntity(onlinePlayers.getLocation().getBlock().getLocation(),EntityType.LIGHTNING);
                                                     }
                                                 }
@@ -204,8 +204,10 @@ public class Discharge implements Listener {
     @EventHandler
     public void preventTridentOrShieldMove (InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
-        if (AbilityExtras.itemcheck(p,itemname) && e.getCurrentItem().getType() == Material.TRIDENT || e.getCurrentItem().getType() == Material.SHIELD) {
+        if (AbilityExtras.itemcheck(p,itemname)) {
+        if (e.getCurrentItem().getType() == Material.TRIDENT || e.getCurrentItem().getType() == Material.SHIELD) {
             e.setCancelled(true);
+            }
         }
     }
 

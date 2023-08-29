@@ -16,7 +16,7 @@ public enum AbilityItemNames {
         GECKO(AbilityExtras.displayname("GECKO.DisplayName"), 2, 1, Material.GREEN_DYE, AbilityLores.geckoLore),
         CATALYST(AbilityExtras.displayname("CATALYST.DisplayName"), 2, 2, Material.CYAN_DYE, AbilityLores.catalystLore),
         FROZONE(AbilityExtras.displayname("FROZONE.DisplayName"), 2, 1, Material.LIGHT_BLUE_DYE, AbilityLores.frozoneLore),
-        DISCHARGE(AbilityExtras.displayname("DISCHARGE.DisplayName"), 6, 4, Material.BLUE_DYE, AbilityLores.dischargeLore),
+        DISCHARGE(AbilityExtras.displayname("DISCHARGE.DisplayName"), 3, 3, Material.BLUE_DYE, AbilityLores.dischargeLore),
         SPECTRE(AbilityExtras.displayname("SPECTRE.DisplayName"), 4, 2, Material.PINK_DYE, AbilityLores.spectreLore),
         CELLO(AbilityExtras.displayname("CELLO.DisplayName"), 4, 2, Material.PURPLE_DYE, AbilityLores.celloLore);
 

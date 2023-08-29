@@ -3,85 +3,85 @@
 Abilities:
   SPECTRE:
     Cooldowns:
-      Primary: 10
-      Secondary: 10
-      Ultimate: 10
+      Primary: 22
+      Secondary: 15
+      Ultimate: 30
     Class: "&f&lMOVEMENT"
     DisplayName: "&#6cff9e&lS&#68f4ad&lp&#65e9bc&le&#61decb&lc&#5ed3da&lt&#5ac8e9&lr&#57bdf8&le &#57bdf8&lA&#5ac8e9&lb&#5ed3da&li&#61decb&ll&#65e9bc&li&#68f4ad&lt&#6cff9e&ly"
   ARTIFICER:
     Cooldowns:
-      Primary: 10
-      Secondary: 10
-      Ultimate: 10
+      Primary: 20
+      Secondary: 18
+      Ultimate: 45
     Class: "&4&lCOMBAT"
     DisplayName: "&f&lArtificer Ability"
   CATALYST:
     Cooldowns:
-      Primary: 1
-      Secondary: 10
-      Ultimate: 10
+      Primary: 20
+      Secondary: 15
+      Ultimate: 300
     Class: "&#0345fc&lCONTROL"
     DisplayName: "&f&lCatalyst Ability"
   EARTH:
     Cooldowns:
-      Primary: 10
-      Secondary: 10
-      Ultimate: 10
+      Primary: 100
+      Secondary: 100
+      Ultimate: 100
     Class: ""
     DisplayName: "&f&lEarth Ability"
   FEATHERWEIGHT:
     Cooldowns:
-      Primary: 10
-      Secondary: 10
-      Ultimate: 10
+      Primary: 19
+      Secondary: 22
+      Ultimate: 30
     Class: "&f&lMOVEMENT"
     DisplayName: "&#7c7c7c&lF&#8a8a8a&le&#989898&la&#a5a5a5&lt&#b3b3b3&lh&#c1c1c1&le&#cfcfcf&lr&#dddddd&lw&#eaeaea&le&#f8f8f8&li&#f8f8f8&lg&#eaeaea&lh&#dddddd&lt &#cfcfcf&lA&#c1c1c1&lb&#b3b3b3&li&#a5a5a5&ll&#989898&li&#8a8a8a&lt&#7c7c7c&ly"
   STEALTH:
     Cooldowns:
-      Primary: 10
-      Secondary: 10
-      Ultimate: 10
+      Primary: 32
+      Secondary: 20
+      Ultimate: 300
     Class: ""
     DisplayName: "&f&lStealth Ability"
   TRACKER:
     Cooldowns:
-      Primary: 10
-      Secondary: 10
-      Ultimate: 10
+      Primary: 30
+      Secondary: 25
+      Ultimate: 300
     Class: ""
     DisplayName: "&f&lTracker Ability"
   IGNITION:
     Cooldowns:
-      Primary: 10
-      Secondary: 10
-      Ultimate: 10
+      Primary: 20
+      Secondary: 23
+      Ultimate: 30
     Class: "&4&lCOMBAT"
     DisplayName: "&#fb1f1f&lI&#f73f23&lg&#f45e27&ln&#f07e2b&li&#ed9e2f&lt&#e9be33&li&#e6dd37&lo&#e2fd3b&ln &#e6dd37&lA&#e9be33&lb&#ed9e2f&li&#f07e2b&ll&#f45e27&li&#f73f23&lt&#fb1f1f&ly"
   FROZONE:
     Cooldowns:
-      Primary: 10
-      Secondary: 10
-      Ultimate: 10
+      Primary: 23
+      Secondary: 18
+      Ultimate: 30
     Class: "&#0345fc&lCONTROL"
     DisplayName: "&#f0f0f0&lF&#d1f2f2&lr&#b2f4f4&lo&#93f6f6&lz&#74f8f8&lo&#55fafa&ln&#36fcfc&le &#36fcfc&lA&#55fafa&lb&#74f8f8&li&#93f6f6&ll&#b2f4f4&li&#d1f2f2&lt&#f0f0f0&ly"
   GECKO:
     Cooldowns:
-      Primary: 10
-      Secondary: 10
-      Ultimate: 10
+      Primary: 22
+      Secondary: 25
+      Ultimate: 30
     Class: "&4&lCOMBAT&6, &f&lMOVEMENT"
     DisplayName: "&#237b00&lG&#398805&le&#4f960a&lc&#66a30f&lk&#7cb114&lo &#92be19&lA&#92be19&lb&#7cb114&li&#66a30f&ll&#4f960a&li&#398805&lt&#237b00&ly"
   CELLO:
     Cooldowns:
-      Primary: 10
-      Secondary: 10
-      Ultimate: 10
+      Primary: 90
+      Secondary: 35
+      Ultimate: 45
     Class: "&a&lSUPPORT"
     DisplayName: "&fCELLO Ability"
   DISCHARGE:
     Cooldowns:
-      Primary: 10
-      Secondary: 10
-      Ultimate: 10
+      Primary: 30
+      Secondary: 20
+      Ultimate: 45
     Class: "&#0345fc&lCONTROL"
     DisplayName: "&9DISCHARGE Ability"
