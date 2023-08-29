@@ -61,7 +61,7 @@ public class Featherweight implements Listener {
 
                             /** ABILITY CODE START**/
 
-                            p.setVelocity(new Vector(0, 1.5, 0));
+                            p.setVelocity(new Vector(0, 1, 0));
 
                             p.getWorld().spawnParticle(Particle.SPIT, p.getLocation().add(0,0.5,0), 10, 0, 0, 0, 0.1);
                             p.getWorld().spawnParticle(Particle.CLOUD, p.getLocation().add(0,0.5,0), 10, 0, 0, 0, 0.2);
@@ -278,12 +278,12 @@ public class Featherweight implements Listener {
         new BukkitRunnable() {
             public void run() {
                 if (p.isSneaking() == true && AbilityExtras.itemcheck(p, itemname) == true) {
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 10, 1, false, false));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 6, 1, false, false));
                 } else {
                     cancel();
                 }
             }
-        }.runTaskTimer(plugin, 0L, 15L);
+        }.runTaskTimer(plugin, 0L, 5L);
         new BukkitRunnable() {
             public void run() {
 

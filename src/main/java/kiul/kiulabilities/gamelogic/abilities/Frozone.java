@@ -158,9 +158,8 @@ public class Frozone implements Listener {
                 explosive.setInvisible(true);
                 explosive.setSilent(true);
                 explosive.setMetadata("frozonecreeper", new FixedMetadataValue(plugin, "pat"));
-                explosive.setExplosionRadius(6);
+                explosive.setExplosionRadius(4);
             });
-
     }
 
     @EventHandler

@@ -62,7 +62,7 @@ public class Spectre implements Listener {
                         List<Entity> hitplayers = new ArrayList<>();
                         List<Entity> AnyPlayersCheck = new ArrayList<>();
 
-                        Vector direction = p.getEyeLocation().getDirection().multiply(1.5);
+                        Vector direction = p.getEyeLocation().getDirection().multiply(1.3);
 
                         AtomicInteger DashAmount = new AtomicInteger(5);
 
