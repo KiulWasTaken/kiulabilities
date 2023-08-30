@@ -165,6 +165,7 @@ public class Discharge implements Listener {
                                         } else {
                                             ultimateActive.remove(p);
                                             p.getWorld().setThundering(false);
+                                            p.getWorld().setStorm(false);
                                             p.getWorld().setClearWeatherDuration(999999999);
                                             cancel();
                                         }
@@ -251,7 +252,11 @@ public class Discharge implements Listener {
                         if (p.getLocation().getBlock().getType() == Material.WATER && !p.getLocation().getBlock().hasMetadata("passivePlaced")) {
                             abilityActive = true;
                         }
-
+                        if (p.getGameMode() != GameMode.SURVIVAL) {
+                            abilityActive = !abilityActive;
+                            preventInfiniteRepeatingTask.remove(p);
+                            cancel();
+                        }
 
                         if (abilityActive) {
                             p.getWorld().spawnParticle(Particle.WATER_DROP,p.getLocation().add(0,1,0),12,0.2,0.2,0.2);

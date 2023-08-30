@@ -393,5 +393,22 @@ public class Tracker implements Listener {
             }
         }
     }
+
+    ArrayList<Player> preventInfiniteRepeatingTask = new ArrayList<>();
+
+    @EventHandler
+    public void passiveAbility (PlayerMoveEvent e) {
+        Player p = e.getPlayer();
+
+
+
+        if (!preventInfiniteRepeatingTask.contains(p) && AbilityExtras.itemcheck(p,itemname) && p.getGameMode() == GameMode.SURVIVAL) {
+            preventInfiniteRepeatingTask.add(p);
+            p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,999999999,0,true,false));
+
+
+
+        }
+    }
 }
 
